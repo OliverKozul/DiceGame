@@ -1,0 +1,84 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhlswt6avrv2v"]
+
+[ext_resource type="Script" path="res://Scripts/DiceButton.gd" id="1_pxfn1"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("1_pxfn1")
+
+[node name="GoldLabel" type="Label" parent="UI"]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+
+[node name="LabelMarginContainer" type="MarginContainer" parent="UI"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -25.0
+offset_right = 40.0
+offset_bottom = 25.0
+grow_vertical = 2
+
+[node name="LabelVBoxContainer" type="VBoxContainer" parent="UI/LabelMarginContainer"]
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="UI/LabelMarginContainer/LabelVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="RollResultLabel" type="Label" parent="UI/LabelMarginContainer/LabelVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="AttackLabel" type="Label" parent="UI/LabelMarginContainer/LabelVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ButtonMarginContainer" type="MarginContainer" parent="UI"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -20.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="ButtonVBoxContainer" type="VBoxContainer" parent="UI/ButtonMarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="NextTurnButton" type="Button" parent="UI/ButtonMarginContainer/ButtonVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Next Turn"
+metadata/_edit_use_anchors_ = true
+
+[node name="RollButton" type="Button" parent="UI/ButtonMarginContainer/ButtonVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Roll Dice"
+metadata/_edit_use_anchors_ = true
+
+[node name="AttackButton" type="Button" parent="UI/ButtonMarginContainer/ButtonVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Attack"
+metadata/_edit_use_anchors_ = true
