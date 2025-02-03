@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bhlswt6avrv2v"]
 
-[ext_resource type="Script" path="res://Scripts/DiceButton.gd" id="1_pxfn1"]
+[ext_resource type="Script" path="res://Scripts/DiceButton.gd" id="1_vb3xm"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="UI" type="CanvasLayer" parent="."]
-script = ExtResource("1_pxfn1")
+script = ExtResource("1_vb3xm")
 
 [node name="GoldLabel" type="Label" parent="UI"]
 unique_name_in_owner = true
