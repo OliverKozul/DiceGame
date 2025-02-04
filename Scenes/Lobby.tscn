@@ -52,6 +52,8 @@ text = "Start Game"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
+text = "127.0.0.1"
+placeholder_text = "127.0.0.1"
 
 [node name="ConnectionStatusLabel" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true

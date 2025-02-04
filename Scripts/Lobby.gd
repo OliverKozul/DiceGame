@@ -72,5 +72,4 @@ func start_game():
 		game_started = true
 		start_game.rpc()  # Broadcast to all clients
 
-	print("Changing scene for peer:", multiplayer.get_unique_id())
 	get_tree().change_scene_to_file("res://Scenes/PlayerUI.tscn")

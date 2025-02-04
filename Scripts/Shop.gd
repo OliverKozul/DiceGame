@@ -6,6 +6,7 @@ extends Panel
 @onready var exit_button = %ExitButton
 
 var player_ui : CanvasLayer
+var player_id : int
 
 signal shop_closed
 
@@ -16,36 +17,35 @@ func _ready() -> void:
 	upgrade_cunning_button.pressed.connect(_on_upgrade_cunning_button_pressed)
 	exit_button.pressed.connect(_on_exit_button_pressed)
 
+func activate(id : int):
+	player_id = id
+	Global.players_acted[player_id] = true  # Mark as acted
+	show()
+
 func _on_upgrade_attack_button_pressed():
-	if player_ui.gold_count > 0:
-		player_ui.gold_count -= 1
-		for i in range(player_ui.die_faces.size()):
-			if player_ui.die_faces[i] == "⚔":
-				player_ui.die_faces[i] = "⚔⚔"  # Increase potency
+	if Global.player_info[player_id].gold > 0:
+		Global.player_info[player_id].gold -= 1
+		Global.player_info[player_id].die_face_values["⚔"] += 1  # Increase value
 		print("Attack dice upgraded!")
-		player_ui.gold_label.text = "💰 count: " + str(player_ui.gold_count)
+		player_ui.gold_label.text = "💰 count: " + str(Global.player_info[player_id].gold)
 	else:
 		print("Not enough gold to upgrade attack dice.")
 
 func _on_upgrade_gold_button_pressed():
-	if player_ui.gold_count > 0:
-		player_ui.gold_count -= 1
-		for i in range(player_ui.die_faces.size()):
-			if player_ui.die_faces[i] == "💰":
-				player_ui.die_faces[i] = "💰💰"  # Increase potency
+	if Global.player_info[player_id].gold > 0:
+		Global.player_info[player_id].gold -= 1
+		Global.player_info[player_id].die_face_values["💰"] += 1  # Increase value
 		print("Gold dice upgraded!")
-		player_ui.gold_label.text = "💰 count: " + str(player_ui.gold_count)
+		player_ui.gold_label.text = "💰 count: " + str(Global.player_info[player_id].gold)
 	else:
 		print("Not enough gold to upgrade gold dice.")
 
 func _on_upgrade_cunning_button_pressed():
-	if player_ui.gold_count > 0:
-		player_ui.gold_count -= 1
-		for i in range(player_ui.die_faces.size()):
-			if player_ui.die_faces[i] == "🧠":
-				player_ui.die_faces[i] = "🧠🧠"  # Increase potency
+	if Global.player_info[player_id].gold > 0:
+		Global.player_info[player_id].gold -= 1
+		Global.player_info[player_id].die_face_values["🧠"] += 1  # Increase value
 		print("Cunning dice upgraded!")
-		player_ui.gold_label.text = "💰 count: " + str(player_ui.gold_count)
+		player_ui.gold_label.text = "💰 count: " + str(Global.player_info[player_id].gold)
 	else:
 		print("Not enough gold to upgrade cunning dice.")
 
