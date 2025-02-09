@@ -18,3 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Global="*res://Scripts/Globals/Global.gd"
+SignalBus="*res://Scripts/Globals/SignalBus.gd"
+
+[debug]
+
+gdscript/warnings/unused_signal=0

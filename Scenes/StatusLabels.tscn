@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://cu6tmmpapw87t"]
+
+[ext_resource type="Script" path="res://Scripts/StatusLabels.gd" id="1_8k87j"]
+
+[node name="StatusLabelsVBox" type="VBoxContainer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 50.0
+grow_horizontal = 0
+script = ExtResource("1_8k87j")
+
+[node name="HPLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="GoldLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CunningLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TrinketsLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+metadata/_edit_use_anchors_ = true

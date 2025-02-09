@@ -1,0 +1,65 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnynslgks7nch"]
+
+[ext_resource type="Script" path="res://Scripts/ActionButtons.gd" id="1_b4lgy"]
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -120.5
+offset_bottom = 120.5
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+script = ExtResource("1_b4lgy")
+
+[node name="ActionButtons" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="RollButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Roll Dice"
+metadata/_edit_use_anchors_ = true
+
+[node name="NextTurnButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Next Turn"
+metadata/_edit_use_anchors_ = true
+
+[node name="AttackPlayerButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Attack Player"
+metadata/_edit_use_anchors_ = true
+
+[node name="AttackMobsButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Attack Mobs"
+metadata/_edit_use_anchors_ = true
+
+[node name="AttackBossButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Attack Boss"
+metadata/_edit_use_anchors_ = true
+
+[node name="ShopButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Shop"
+metadata/_edit_use_anchors_ = true
+
+[node name="SkipButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Skip"
+metadata/_edit_use_anchors_ = true
