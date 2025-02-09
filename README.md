@@ -5,10 +5,17 @@ A fast-paced **dice-building, rogue-like battle game** where players roll dice, 
 ## **Game Flow**
 
 1. **Each player starts with one die** (D6) featuring different face types:
+<<<<<<< HEAD
 	- 🎲 **Gold** – Used to buy new dice faces or items.
 	- ⚔ **Combat** – Used for attacking or countering players, mobs, or bosses.
 	- 🧠 **Cunning** – Determines turn order (higher Cunning acts later).
 	- 🎁 **Special** – Triggers unique effects based on upgrades.
+=======
+    - 🎲 **Gold** – Used to buy new dice faces or items.
+    - ⚔ **Combat** – Used for attacking or countering players, mobs, or bosses.
+    - 🧠 **Cunning** – Determines turn order (higher Cunning acts later).
+    - 🎁 **Special** – Triggers unique effects based on upgrades.
+>>>>>>> 68651ca045e77205a2fedb129da87c5013b03926
 2. **Simultaneous Turns**
 	- All players **roll their dice at the same time**.
 	- Players **secretly choose an action** using an action token.
@@ -24,6 +31,17 @@ A fast-paced **dice-building, rogue-like battle game** where players roll dice, 
 	- **Combat, Shopping, and Countering** are resolved in Cunning order.
 	- More cunning players can attack or counter less cunning players before they act.
 	- In the shop, more cunning players buy first.
+
+## **Turn Order Resolution**
+
+1. **Initiative = Cunning + Gold Tiebreaker**
+    - Players act in ascending Cunning order.
+    - If tied, the player with less Gold acts first.
+    - If still tied, roll a tiebreaker D6.
+2. **Turn Order Applies to All Actions**
+    - **Combat, Shopping, and Countering** are resolved in Cunning order.
+    - More cunning players can attack or counter less cunning players before they act.
+    - In the shop, more cunning players buy first.
 
 ## **Actions**
 

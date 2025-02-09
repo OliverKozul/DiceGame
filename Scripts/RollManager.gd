@@ -40,14 +40,14 @@ func roll_button_pressed(roller_id : int):
 	Global.players_rolled[player_id] = true  # Mark as rolled
 	
 	# Send result to all players
-	#rpc("sync_roll_result", player_id, roll_result)
-	#rpc("sync_player_info", player_id, Global.player_info[player_id])
-	SignalBus.sync_roll_result.emit(player_id, roll_result)
-	SignalBus.sync_player_info.emit(player_id, Global.player_info[player_id])
+	player_ui.sync_manager.rpc("sync_roll_result", player_id, roll_result)
+	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
+	#SignalBus.sync_roll_result.emit(player_id, roll_result)
+	#SignalBus.sync_player_info.emit(player_id, Global.player_info[player_id])
 
 	# Check if all players have rolled
 	if check_all_players_rolled():
-		player_ui.rpc("transition_to_action_phase")
+		player_ui.turn_manager.rpc("transition_to_action_phase")
 		
 ### **Check if All Players Have Rolled**
 func check_all_players_rolled():

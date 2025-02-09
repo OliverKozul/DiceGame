@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhlswt6avrv2v"]
+[gd_scene load_steps=10 format=3 uid="uid://bhlswt6avrv2v"]
 
 [ext_resource type="Script" path="res://Scripts/PlayerUI.gd" id="1_vb3xm"]
 [ext_resource type="PackedScene" uid="uid://cu6tmmpapw87t" path="res://Scenes/StatusLabels.tscn" id="2_7yifw"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://dxc0t67il66w8" path="res://Scenes/Shop.tscn" id="4_0jo41"]
 [ext_resource type="Script" path="res://Scripts/RollManager.gd" id="6_v7tih"]
 [ext_resource type="Script" path="res://Scripts/SyncManager.gd" id="7_2063l"]
+[ext_resource type="Script" path="res://Scripts/TurnManager.gd" id="8_7ajt0"]
+[ext_resource type="Script" path="res://Scripts/ActionManager.gd" id="9_fx54b"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -56,3 +58,11 @@ script = ExtResource("6_v7tih")
 [node name="SyncManager" type="Node" parent="PlayerUI"]
 unique_name_in_owner = true
 script = ExtResource("7_2063l")
+
+[node name="TurnManager" type="Node" parent="PlayerUI"]
+unique_name_in_owner = true
+script = ExtResource("8_7ajt0")
+
+[node name="ActionManager" type="Node" parent="PlayerUI"]
+unique_name_in_owner = true
+script = ExtResource("9_fx54b")

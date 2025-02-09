@@ -28,12 +28,6 @@ layout_mode = 2
 text = "Roll Dice"
 metadata/_edit_use_anchors_ = true
 
-[node name="NextTurnButton" type="Button" parent="ActionButtons"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Next Turn"
-metadata/_edit_use_anchors_ = true
-
 [node name="AttackPlayerButton" type="Button" parent="ActionButtons"]
 unique_name_in_owner = true
 layout_mode = 2
