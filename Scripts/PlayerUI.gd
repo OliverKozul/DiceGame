@@ -16,7 +16,7 @@ var rng = RandomNumberGenerator.new()  # Create a RandomNumberGenerator instance
 
 signal update_all_status_labels
 
-func _ready():
+func _ready() -> void:
 	var player_id = multiplayer.get_unique_id()
 	rng.seed = 32  # Set the seed to 0
 	initialize(player_id)
@@ -26,7 +26,7 @@ func _ready():
 	else:
 		turn_manager.rpc_id(1, "request_turn_sync")
 
-func initialize(player_id : int):
+func initialize(player_id : int) -> void:
 	if not Global.player_info.has(player_id):
 		Global.player_info[player_id] = {
 			"gold": 0,

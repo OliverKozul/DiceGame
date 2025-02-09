@@ -12,7 +12,7 @@ var player_ui : CanvasLayer
 var player_id : int
 
 	
-func initialize(ui : CanvasLayer, id : int):
+func initialize(ui : CanvasLayer, id : int) -> void:
 	player_ui = ui
 	player_id = id
 	
@@ -25,7 +25,7 @@ func initialize(ui : CanvasLayer, id : int):
 	
 	show_buttons("roll")
 
-func show_buttons(phase : String):
+func show_buttons(phase : String) -> void:
 	roll.visible = true if phase == "roll" else false
 	attack_player.visible = false if phase == "roll" or phase == "wait" else true
 	attack_mobs.visible = false if phase == "roll" or phase == "wait" else true

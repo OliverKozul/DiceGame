@@ -9,7 +9,7 @@ func initialize(ui : CanvasLayer):
 
 ### **Attack Player**
 @rpc("any_peer", "call_local")
-func _on_attack_player_button_pressed():
+func _on_attack_player_button_pressed() -> void:
 	if Global.current_phase != "action":
 		print("It's not the action phase!")
 		return
@@ -31,7 +31,7 @@ func _on_attack_player_button_pressed():
 
 ### **Attack Mobs**
 @rpc("any_peer", "call_local")
-func _on_attack_mobs_button_pressed():
+func _on_attack_mobs_button_pressed() -> void:
 	if Global.current_phase != "action":
 		print("It's not the action phase!")
 		return
@@ -54,7 +54,7 @@ func _on_attack_mobs_button_pressed():
 
 ### **Attack Boss**
 @rpc("any_peer", "call_local")
-func _on_attack_boss_button_pressed():
+func _on_attack_boss_button_pressed() -> void:
 	if Global.current_phase != "action":
 		print("It's not the action phase!")
 		return
@@ -76,7 +76,7 @@ func _on_attack_boss_button_pressed():
 
 ### **Shop**
 @rpc("any_peer", "call_local")
-func _on_shop_button_pressed():
+func _on_shop_button_pressed() -> void:
 	if Global.current_phase != "action":
 		print("It's not the action phase!")
 		return
@@ -95,7 +95,7 @@ func _on_shop_button_pressed():
 
 ### **Skip**
 @rpc("any_peer", "call_local")
-func _on_skip_button_pressed():
+func _on_skip_button_pressed() -> void:
 	if Global.current_phase != "action":
 		print("It's not the action phase!")
 		return

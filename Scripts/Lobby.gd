@@ -1,6 +1,5 @@
 extends CanvasLayer
 
-var peer = ENetMultiplayerPeer.new()
 
 @onready var status_label = %ConnectionStatusLabel
 @onready var ip_input = %ServerIPTextEdit
@@ -9,10 +8,11 @@ var peer = ENetMultiplayerPeer.new()
 @onready var join_game_button = %JoinGameButton
 @onready var start_game_button = %StartGameButton
 
-const PORT = 7777
+const PORT : int = 7777
+var peer = ENetMultiplayerPeer.new()
 var game_started : bool = false
 
-func _ready():
+func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
@@ -23,14 +23,14 @@ func _ready():
 	start_game_button.pressed.connect(_on_start_game_pressed)
 
 # Host a Game
-func _on_host_button_pressed():
+func _on_host_button_pressed() -> void:
 	peer.create_server(PORT, 4)  # Max 4 players
 	multiplayer.multiplayer_peer = peer
 	status_label.text = "Hosting game..."
 	print("Server started on port ", PORT)
 
 # Join a Game
-func _on_join_button_pressed():
+func _on_join_button_pressed() -> void:
 	var ip = ip_input.text.strip_edges()
 	if ip.is_empty():
 		status_label.text = "Enter a valid IP."
@@ -42,26 +42,26 @@ func _on_join_button_pressed():
 	print("Attempting to connect to ", ip)
 
 # Connection Success
-func _on_peer_connected(id):
+func _on_peer_connected(id : int) -> void:
 	print("Player ", id, " joined.")
 
-func _on_peer_disconnected(id):
+func _on_peer_disconnected(id : int) -> void:
 	print("Player ", id, " left.")
 
-func _on_connected_to_server():
+func _on_connected_to_server() -> void:
 	status_label.text = "Connected to server!"
 	print("Connected to server!")
 
-func _on_connection_failed():
+func _on_connection_failed() -> void:
 	status_label.text = "Connection failed."
 	print("Failed to connect.")
 
-func _on_start_game_pressed():
+func _on_start_game_pressed() -> void:
 	if multiplayer.is_server():
 		start_game.rpc()  # Broadcast to all players
 
 @rpc("any_peer", "call_local")
-func start_game():
+func start_game() -> void:
 	if not is_inside_tree():
 		print("Error: Node is not inside the scene tree yet!")
 		return
