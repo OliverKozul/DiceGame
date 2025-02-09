@@ -27,12 +27,16 @@ func roll_button_pressed(roller_id : int) -> void:
 	var roll_result = Global.player_info[player_id].die_faces[randi() % Global.player_info[player_id].die_faces.size()]
 	player_ui.turn_info_labels.roll_result.text = "You rolled: " + str(Global.player_info[player_id].die_face_values[roll_result]) + " " + roll_result
 	
-	if roll_result == "💰":
-		Global.player_info[player_id].gold += Global.player_info[player_id].die_face_values[roll_result]
-		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
-	elif roll_result == "🧠":
-		Global.player_info[player_id].cunning += Global.player_info[player_id].die_face_values[roll_result]
-		player_ui.status_labels.cunning.text = "🧠 count: " + str(Global.player_info[player_id].cunning)
+	match roll_result:
+		"💰":
+			Global.player_info[player_id].gold += Global.player_info[player_id].die_face_values[roll_result]
+			player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
+		"🧠":
+			Global.player_info[player_id].cunning += Global.player_info[player_id].die_face_values[roll_result]
+			player_ui.status_labels.cunning.text = "🧠 count: " + str(Global.player_info[player_id].cunning)
+		"⚔":
+			Global.player_info[player_id].combat += Global.player_info[player_id].die_face_values[roll_result]
+			player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
 		
 	Global.players_rolled[player_id] = true  # Mark as rolled
 	
@@ -42,7 +46,7 @@ func roll_button_pressed(roller_id : int) -> void:
 
 	# Check if all players have rolled
 	if check_all_players_rolled():
-		player_ui.turn_manager.rpc("transition_to_action_phase")
+		player_ui.turn_manager.rpc("transition_to_intention_phase")
 		
 ### **Check if All Players Have Rolled**
 func check_all_players_rolled() -> bool:

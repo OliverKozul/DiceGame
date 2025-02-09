@@ -44,6 +44,8 @@ func _on_join_button_pressed() -> void:
 # Connection Success
 func _on_peer_connected(id : int) -> void:
 	print("Player ", id, " joined.")
+	Global.players.append(id)
+	rpc("update_player_array", id)
 
 func _on_peer_disconnected(id : int) -> void:
 	print("Player ", id, " left.")
@@ -59,6 +61,12 @@ func _on_connection_failed() -> void:
 func _on_start_game_pressed() -> void:
 	if multiplayer.is_server():
 		start_game.rpc()  # Broadcast to all players
+
+@rpc("any_peer", "call_local")
+func update_player_array(id : int):
+	if not Global.players.has(id):
+		Global.players.append(id)
+		Global.players.sort()
 
 @rpc("any_peer", "call_local")
 func start_game() -> void:

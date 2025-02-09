@@ -16,12 +16,12 @@ func initialize(ui : CanvasLayer, id : int) -> void:
 	player_ui = ui
 	player_id = id
 	
-	roll.pressed.connect(player_ui.sync_manager._on_roll_button_pressed)
-	attack_player.pressed.connect(player_ui.action_manager._on_attack_player_button_pressed)
-	attack_mobs.pressed.connect(player_ui.action_manager._on_attack_mobs_button_pressed)
-	attack_boss.pressed.connect(player_ui.action_manager._on_attack_boss_button_pressed)
-	shop.pressed.connect(player_ui.action_manager._on_shop_button_pressed)
-	skip.pressed.connect(player_ui.action_manager._on_skip_button_pressed)
+	roll.pressed.connect(player_ui.button_manager._on_roll_button_pressed)
+	attack_player.pressed.connect(player_ui.button_manager._on_attack_player_button_pressed)
+	attack_mobs.pressed.connect(player_ui.button_manager._on_attack_mobs_button_pressed)
+	attack_boss.pressed.connect(player_ui.button_manager._on_attack_boss_button_pressed)
+	shop.pressed.connect(player_ui.button_manager._on_shop_button_pressed)
+	skip.pressed.connect(player_ui.button_manager._on_skip_button_pressed)
 	
 	show_buttons("roll")
 

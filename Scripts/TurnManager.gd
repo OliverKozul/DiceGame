@@ -6,13 +6,36 @@ var player_ui : CanvasLayer
 
 func initialize(ui : CanvasLayer) -> void:
 	player_ui = ui
+	
+@rpc("any_peer", "call_local")
+func transition_to_intention_phase() -> void:
+	player_ui.sync_manager.rpc("sync_phase", "intention")  
+	print("All players have rolled. Transitioning to intention phase.")
+	
+	player_ui.buttons.show_buttons("action")
+	player_ui.current_player_label.text = "Declare your intention!"
+	var rect = Utils.create_rect()
+	player_ui.add_child(rect)
+	var tween = get_tree().create_tween()
+	tween.tween_property(rect, "scale", Vector2(0, 0), 5.0)  # 5-second shrink
+	tween.finished.connect(_on_tween_completed.bind(rect))
+
+func _on_tween_completed(rect: TextureRect) -> void:
+	rect.queue_free()  # Remove the TextureRect
+	rpc("transition_to_action_phase")
 
 ### **Player Rolls**
 @rpc("any_peer", "call_local")
 func transition_to_action_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", "action")  # Synchronize phase transition
-	print("All players have rolled. Transitioning to action phase.")
-	determine_action_order()
+	print("All players have shown their intentions. Transitioning to action phase.")
+	determine_player_order()
+	rpc("allow_current_player_action")
+	
+@rpc("any_peer", "call_local")
+func transition_to_resolve_phase() -> void:
+	player_ui.sync_manager.rpc("sync_phase", "resolve")  # Synchronize phase transition
+	print("All players have acted. Transitioning to resolve phase.")
 	rpc("allow_current_player_action")
 
 @rpc("any_peer", "call_local")
@@ -21,25 +44,25 @@ func sync_phase(new_phase : String) -> void:
 
 ### **Check if All Players Have Performed an Action**
 func check_all_players_acted() -> bool:
-	return Global.current_action_index >= Global.action_order.size()
+	return Global.current_player_index >= Global.player_order.size()
 
 ### **Determine Action Order**
-func determine_action_order() -> void:
+func determine_player_order() -> void:
 	var all_players = multiplayer.get_peers()
 	all_players.append(multiplayer.get_unique_id())  # Include the host in the list
-	Global.action_order = Array(all_players)
+	Global.player_order = Array(all_players)
 	if multiplayer.is_server():
-		Global.action_order.sort_custom(_compare_players)
-		player_ui.sync_manager.rpc("sync_action_order", Global.action_order)
+		Global.player_order.sort_custom(_compare_players)
+		player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	else:
-		rpc_id(1, "request_action_order")
+		rpc_id(1, "request_player_order")
 	
-	Global.current_action_index = 0
+	Global.current_player_index = 0
 
 @rpc("any_peer", "call_local")
-func request_action_order() -> void:
+func request_player_order() -> void:
 	if multiplayer.is_server():
-		player_ui.sync_manager.rpc_id(multiplayer.get_remote_sender_id(), "sync_action_order", Global.action_order)
+		player_ui.sync_manager.rpc_id(multiplayer.get_remote_sender_id(), "sync_player_order", Global.player_order)
 		
 ### **Request Turn Sync (For Late Joiners)**
 @rpc("any_peer", "call_local")
@@ -65,7 +88,7 @@ func _compare_players(player_b_id : int, player_a_id : int) -> bool:
 ### **Allow Current Player Action**
 @rpc("any_peer", "call_local")
 func allow_current_player_action() -> void:
-	var current_player = Global.action_order[Global.current_action_index]
+	var current_player = Global.player_order[Global.current_player_index]
 	
 	if multiplayer.get_unique_id() == current_player:
 		player_ui.buttons.show_buttons("action")
@@ -92,9 +115,9 @@ func initiate_next_turn() -> void:
 ### **Advance to Next Player**
 @rpc("any_peer", "call_local")
 func advance_to_next_player() -> void:
-	Global.current_action_index += 1
+	Global.current_player_index += 1
 	player_ui.current_player_label.text = "Waiting for next turn."
-	player_ui.sync_manager.rpc("sync_current_action_index", Global.current_action_index)
+	player_ui.sync_manager.rpc("sync_current_player_index", Global.current_player_index)
 	
 	if check_all_players_acted():
 		print("All players have acted. Transitioning to next turn.")

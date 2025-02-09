@@ -13,12 +13,13 @@ config_version=5
 config/name="DiceGame"
 run/main_scene="res://Scenes/Lobby.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://Assets/icon.svg"
 
 [autoload]
 
 Global="*res://Scripts/Globals/Global.gd"
 SignalBus="*res://Scripts/Globals/SignalBus.gd"
+Utils="*res://Scripts/Globals/Utils.gd"
 
 [debug]
 

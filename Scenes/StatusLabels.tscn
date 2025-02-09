@@ -20,6 +20,10 @@ metadata/_edit_use_anchors_ = true
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="CombatLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="CunningLabel" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
