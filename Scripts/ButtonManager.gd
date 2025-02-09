@@ -84,3 +84,8 @@ func _on_skip_button_pressed() -> void:
 	if Global.players_acted.get(player_id, false):
 		print("You already performed an action this turn!")
 		return
+
+func _on_resolve_button_pressed() -> void:
+	var player_id = multiplayer.get_unique_id()
+	
+	player_ui.resolve_manager.rpc("resolve_button_pressed", player_id)

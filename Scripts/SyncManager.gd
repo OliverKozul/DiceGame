@@ -26,13 +26,14 @@ func sync_turn(new_turn : int) -> void:
 	Global.player_info[player_id].combat = 0
 	Global.players_rolled.clear()
 	Global.players_acted.clear()
+	Global.players_resolved.clear()
 	Global.current_turn = new_turn
-	#buttons.roll.visible = true
+	
 	player_ui.buttons.show_buttons("roll")
 	player_ui.current_player_label.text = "Roll the dice!"
 	player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
+	
 	rpc("sync_phase", "roll")
-	rpc("sync_current_player_index", 0)
 	
 	player_ui.turn_info_labels.turn.text = "Current turn: " + str(Global.current_turn)
 

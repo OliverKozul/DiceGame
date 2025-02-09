@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dnynslgks7nch"]
 
-[ext_resource type="Script" path="res://Scripts/ActionButtons.gd" id="1_b4lgy"]
+[ext_resource type="Script" path="res://Scripts/Buttons.gd" id="1_b4lgy"]
 
 [node name="MarginContainer" type="MarginContainer"]
 anchors_preset = 6
@@ -56,4 +56,10 @@ metadata/_edit_use_anchors_ = true
 unique_name_in_owner = true
 layout_mode = 2
 text = "Skip"
+metadata/_edit_use_anchors_ = true
+
+[node name="ResolveButton" type="Button" parent="ActionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Resolve"
 metadata/_edit_use_anchors_ = true

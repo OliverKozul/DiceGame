@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 
-@onready var current_player_label = %CurrentPlayerLabel  # Add a label for current player
+@onready var current_player_label = %CurrentPlayerLabel
 @onready var status_labels = %StatusLabels
 @onready var player_intention_labels = %PlayerIntentionLabels
 @onready var turn_info_labels = %TurnInfoLabels
@@ -16,7 +16,7 @@ extends CanvasLayer
 @onready var resolve_manager = %ResolveManager
 @onready var button_manager = %ButtonManager
 
-var rng = RandomNumberGenerator.new()  # Create a RandomNumberGenerator instance
+var rng = RandomNumberGenerator.new()
 
 signal update_all_status_labels
 
@@ -53,6 +53,7 @@ func initialize(player_id : int) -> void:
 	turn_manager.initialize(self)
 	action_manager.initialize(self)
 	intention_manager.initialize(self)
+	resolve_manager.initialize(self)
 	button_manager.initialize(self)
 	
 	current_player_label.text = "Roll the dice!"
