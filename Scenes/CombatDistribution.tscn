@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://ct7solb00s704"]
+
+[ext_resource type="Script" path="res://Scripts/CombatDistribution.gd" id="1_gxn4w"]
+
+[node name="CombatDistribution" type="MarginContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gxn4w")
+
+[node name="CombatDistributionVBox" type="VBoxContainer" parent="."]
+layout_mode = 2

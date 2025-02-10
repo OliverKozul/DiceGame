@@ -6,6 +6,7 @@ extends CanvasLayer
 @onready var turn_info_labels = %TurnInfoLabels
 @onready var buttons = %Buttons
 @onready var shop = %Shop
+@onready var combat_distribution = %CombatDistribution
 
 @onready var roll_manager = %RollManager
 @onready var sync_manager = %SyncManager
@@ -56,5 +57,3 @@ func initialize(player_id : int) -> void:
 	
 	current_player_label.text = "Roll the dice!"
 	
-func show_combat_ui(player_id : int, target: Enums.Target):
-	pass

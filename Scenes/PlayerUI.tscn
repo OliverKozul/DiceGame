@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bhlswt6avrv2v"]
+[gd_scene load_steps=15 format=3 uid="uid://bhlswt6avrv2v"]
 
 [ext_resource type="Script" path="res://Scripts/PlayerUI.gd" id="1_vb3xm"]
 [ext_resource type="PackedScene" uid="uid://cu6tmmpapw87t" path="res://Scenes/StatusLabels.tscn" id="2_7yifw"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dxc0t67il66w8" path="res://Scenes/Shop.tscn" id="4_0jo41"]
 [ext_resource type="Script" path="res://Scripts/RollManager.gd" id="6_v7tih"]
 [ext_resource type="Script" path="res://Scripts/SyncManager.gd" id="7_2063l"]
+[ext_resource type="PackedScene" uid="uid://ct7solb00s704" path="res://Scenes/CombatDistribution.tscn" id="7_xt1sn"]
 [ext_resource type="Script" path="res://Scripts/TurnManager.gd" id="8_7ajt0"]
 [ext_resource type="Script" path="res://Scripts/ActionManager.gd" id="9_fx54b"]
 [ext_resource type="Script" path="res://Scripts/IntentionManager.gd" id="10_6honh"]
@@ -60,6 +61,10 @@ offset_right = 1152.0
 offset_bottom = 460.5
 
 [node name="Shop" parent="PlayerUI" instance=ExtResource("4_0jo41")]
+unique_name_in_owner = true
+z_index = 1
+
+[node name="CombatDistribution" parent="PlayerUI" instance=ExtResource("7_xt1sn")]
 unique_name_in_owner = true
 z_index = 1
 

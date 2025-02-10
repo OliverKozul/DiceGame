@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_r4a8o")
 
-[node name="UpgradesMarginContainer" type="MarginContainer" parent="."]
+[node name="UpgradesMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,25 +23,25 @@ theme_override_constants/margin_top = 256
 theme_override_constants/margin_right = 256
 theme_override_constants/margin_bottom = 256
 
-[node name="UpgradesVBox" type="VBoxContainer" parent="UpgradesMarginContainer"]
+[node name="UpgradesVBox" type="VBoxContainer" parent="UpgradesMargin"]
 layout_mode = 2
 
-[node name="UpgradeAttackButton" type="Button" parent="UpgradesMarginContainer/UpgradesVBox"]
+[node name="UpgradeAttackButton" type="Button" parent="UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Upgrade Attack Faces (1 💰)"
 
-[node name="UpgradeGoldButton" type="Button" parent="UpgradesMarginContainer/UpgradesVBox"]
+[node name="UpgradeGoldButton" type="Button" parent="UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Upgrade Gold Faces (1 💰)"
 
-[node name="UpgradeCunningButton" type="Button" parent="UpgradesMarginContainer/UpgradesVBox"]
+[node name="UpgradeCunningButton" type="Button" parent="UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Upgrade Cunning Faces (1 💰)"
 
-[node name="ExitMarginContainer" type="MarginContainer" parent="."]
+[node name="ExitMargin" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -54,10 +54,10 @@ theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="ExitVBox" type="VBoxContainer" parent="ExitMarginContainer"]
+[node name="ExitVBox" type="VBoxContainer" parent="ExitMargin"]
 layout_mode = 2
 
-[node name="ExitButton" type="Button" parent="ExitMarginContainer/ExitVBox"]
+[node name="ExitButton" type="Button" parent="ExitMargin/ExitVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Exit"

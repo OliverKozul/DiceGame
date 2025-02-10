@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Buttons.gd" id="1_b4lgy"]
 
-[node name="MarginContainer" type="MarginContainer"]
+[node name="ButtonsMargin" type="MarginContainer"]
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
@@ -19,46 +19,46 @@ theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 script = ExtResource("1_b4lgy")
 
-[node name="ActionButtons" type="VBoxContainer" parent="."]
+[node name="ButtonsVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="RollButton" type="Button" parent="ActionButtons"]
+[node name="RollButton" type="Button" parent="ButtonsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Roll Dice"
 metadata/_edit_use_anchors_ = true
 
-[node name="AttackPlayerButton" type="Button" parent="ActionButtons"]
+[node name="AttackPlayerButton" type="Button" parent="ButtonsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Attack Player"
 metadata/_edit_use_anchors_ = true
 
-[node name="AttackMobsButton" type="Button" parent="ActionButtons"]
+[node name="AttackMobsButton" type="Button" parent="ButtonsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Attack Mobs"
 metadata/_edit_use_anchors_ = true
 
-[node name="AttackBossButton" type="Button" parent="ActionButtons"]
+[node name="AttackBossButton" type="Button" parent="ButtonsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Attack Boss"
 metadata/_edit_use_anchors_ = true
 
-[node name="ShopButton" type="Button" parent="ActionButtons"]
+[node name="ShopButton" type="Button" parent="ButtonsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Shop"
 metadata/_edit_use_anchors_ = true
 
-[node name="SkipButton" type="Button" parent="ActionButtons"]
+[node name="SkipButton" type="Button" parent="ButtonsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Skip"
 metadata/_edit_use_anchors_ = true
 
-[node name="ResolveButton" type="Button" parent="ActionButtons"]
+[node name="ResolveButton" type="Button" parent="ButtonsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Resolve"

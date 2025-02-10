@@ -1,7 +1,7 @@
 extends MarginContainer
 
 
-@onready var label_container = $LabelVBoxContainer
+@onready var label_container = $LabelVBox
 var player_intentions = {}
 
 
