@@ -1,11 +1,5 @@
-extends Node
+extends Manager
 
-
-var player_ui : CanvasLayer
-
-
-func initialize(ui : CanvasLayer) -> void:
-	player_ui = ui
 
 ### **Sync Roll Result for Everyone**
 @rpc("any_peer", "call_local")

@@ -1,8 +1,11 @@
 extends Panel
 
-@onready var upgrade_attack_button = %UpgradeAttackButton
-@onready var upgrade_gold_button = %UpgradeGoldButton
-@onready var upgrade_cunning_button = %UpgradeCunningButton
+
+@onready var upgrade_buttons = {
+	"attack": %UpgradeAttackButton,
+	"gold": %UpgradeGoldButton,
+	"cunning": %UpgradeCunningButton
+}
 @onready var exit_button = %ExitButton
 
 var player_ui : CanvasLayer
@@ -10,43 +13,36 @@ var player_id : int
 
 signal shop_closed
 
+
 func _ready() -> void:
 	player_ui = get_parent()
-	upgrade_attack_button.pressed.connect(_on_upgrade_attack_button_pressed)
-	upgrade_gold_button.pressed.connect(_on_upgrade_gold_button_pressed)
-	upgrade_cunning_button.pressed.connect(_on_upgrade_cunning_button_pressed)
+	for key in upgrade_buttons.keys():
+		upgrade_buttons[key].pressed.connect(Callable(self, "_on_upgrade_button_pressed").bind(key))
 	exit_button.pressed.connect(_on_exit_button_pressed)
 
 func initialize(ui : CanvasLayer, id : int) -> void:
 	player_ui = ui
 	player_id = id
 
-func _on_upgrade_attack_button_pressed() -> void:
+func _on_upgrade_button_pressed(type: String) -> void:
 	if Global.player_info[player_id].gold > 0:
 		Global.player_info[player_id].gold -= 1
-		Global.player_info[player_id].die_face_values["⚔"] += 1  # Increase value
-		print("Attack dice upgraded!")
+		Global.player_info[player_id].die_face_values[get_die_face(type)] += 1
+		print(type.capitalize() + " dice upgraded!")
 		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
 	else:
-		print("Not enough gold to upgrade attack dice.")
+		print("Not enough gold to upgrade " + type + " dice.")
 
-func _on_upgrade_gold_button_pressed() -> void:
-	if Global.player_info[player_id].gold > 0:
-		Global.player_info[player_id].gold -= 1
-		Global.player_info[player_id].die_face_values["💰"] += 1  # Increase value
-		print("Gold dice upgraded!")
-		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
-	else:
-		print("Not enough gold to upgrade gold dice.")
-
-func _on_upgrade_cunning_button_pressed() -> void:
-	if Global.player_info[player_id].gold > 0:
-		Global.player_info[player_id].gold -= 1
-		Global.player_info[player_id].die_face_values["🧠"] += 1  # Increase value
-		print("Cunning dice upgraded!")
-		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
-	else:
-		print("Not enough gold to upgrade cunning dice.")
+func get_die_face(type: String) -> String:
+	match type:
+		"attack":
+			return "⚔"
+		"gold":
+			return "💰"
+		"cunning":
+			return "🧠"
+			
+	return ""
 
 func _on_exit_button_pressed() -> void:
 	emit_signal("shop_closed")

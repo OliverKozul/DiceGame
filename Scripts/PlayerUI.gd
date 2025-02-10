@@ -1,6 +1,5 @@
 extends CanvasLayer
 
-
 @onready var current_player_label = %CurrentPlayerLabel
 @onready var status_labels = %StatusLabels
 @onready var player_intention_labels = %PlayerIntentionLabels
@@ -19,7 +18,6 @@ extends CanvasLayer
 var rng = RandomNumberGenerator.new()
 
 signal update_all_status_labels
-
 
 func _ready() -> void:
 	var player_id = multiplayer.get_unique_id()
@@ -51,10 +49,12 @@ func initialize(player_id : int) -> void:
 	roll_manager.initialize(self)
 	sync_manager.initialize(self)
 	turn_manager.initialize(self)
-	action_manager.initialize(self)
 	intention_manager.initialize(self)
+	action_manager.initialize(self)
 	resolve_manager.initialize(self)
 	button_manager.initialize(self)
 	
 	current_player_label.text = "Roll the dice!"
 	
+func show_combat_ui(player_id : int, target: Enums.Target):
+	pass

@@ -20,6 +20,7 @@ config/icon="res://Assets/icon.svg"
 Global="*res://Scripts/Globals/Global.gd"
 SignalBus="*res://Scripts/Globals/SignalBus.gd"
 Utils="*res://Scripts/Globals/Utils.gd"
+Enums="*res://Scripts/Globals/Enums.gd"
 
 [debug]
 

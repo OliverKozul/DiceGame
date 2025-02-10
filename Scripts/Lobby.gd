@@ -12,6 +12,7 @@ const PORT : int = 7777
 var peer = ENetMultiplayerPeer.new()
 var game_started : bool = false
 
+
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
