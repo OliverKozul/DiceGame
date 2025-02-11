@@ -23,7 +23,7 @@ signal update_all_status_labels
 
 func _ready() -> void:
 	var player_id = multiplayer.get_unique_id()
-	rng.seed = 32  # Set the seed to 0
+	#rng.seed = 32  # Set the seed to 0
 	initialize(player_id)
 
 	if multiplayer.is_server():
@@ -39,7 +39,8 @@ func initialize(player_id : int) -> void:
 			"combat": 0,
 			"hp": 10,
 			"trinkets": [],
-			"die_faces": ["⚔", "⚔", "💰", "💰", "🧠", "🧠"],
+			#"die_faces": ["⚔", "⚔", "💰", "💰", "🧠", "🧠"],
+			"die_faces": ["🧠", "🧠", "🧠", "🧠", "🧠", "🧠"],
 			"die_face_values": {"⚔": 1, "💰": 1, "🧠": 1}
 		}
 		

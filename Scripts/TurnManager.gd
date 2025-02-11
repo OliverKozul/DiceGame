@@ -20,8 +20,7 @@ func transition_to_action_phase() -> void:
 	_sync_phase(PHASES.action)
 	_sync_current_player_index(0)
 	_show_phase_ui("action", "All players have declared their intention. Transitioning to action phase.")
-	rpc("_determine_player_order")
-	rpc("allow_current_player_play")
+	rpc_id(1, "_determine_player_order")
 
 # Transition to Resolve Phase
 @rpc("any_peer", "call_local")
@@ -29,8 +28,7 @@ func transition_to_resolve_phase() -> void:
 	_sync_phase(PHASES.resolve)
 	_sync_current_player_index(0)
 	_show_phase_ui("resolve", "All players have acted. Transitioning to resolve phase.")
-	_flip_player_order()
-	rpc("allow_current_player_play")
+	rpc_id(1, "_flip_player_order")
 
 # Check if All Players Have Performed an Action
 func check_all_players_played() -> bool:
@@ -42,28 +40,34 @@ func _determine_player_order() -> void:
 	var all_players = multiplayer.get_peers()
 	all_players.append(multiplayer.get_unique_id())  # Include the host in the list
 	Global.player_order = Array(all_players)
+	Global.player_order.sort()
 	Global.player_order.sort_custom(_compare_players)
-	#player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
+	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
+	rpc("allow_current_player_play")
 	
 # Compare Players for Sorting
 func _compare_players(player_b_id : int, player_a_id : int) -> bool:
 	var cunning_a = Global.player_info[player_a_id].cunning
 	var cunning_b = Global.player_info[player_b_id].cunning
+	
 	if cunning_a != cunning_b:
 		return cunning_a > cunning_b
 	
 	var gold_a = Global.player_info[player_a_id].gold
 	var gold_b = Global.player_info[player_b_id].gold
+	
 	if gold_a != gold_b:
 		return gold_a > gold_b
 	
-	return player_ui.rng.randi() % 2 == 0  # Random tie-breaker using rng
+	#return player_ui.rng.randi() % 2 == 0  # Random tie-breaker using rng
+	return player_a_id > player_b_id  # Random tie-breaker using rng
 	#return false  # Random tie-breaker using rng
 	
+@rpc("any_peer", "call_local")
 func _flip_player_order() -> void:
-	if multiplayer.is_server():
-		Global.player_order.reverse()
-		player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
+	Global.player_order.reverse()
+	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
+	rpc("allow_current_player_play")
 
 # Request Player Order
 @rpc("any_peer", "call_local")

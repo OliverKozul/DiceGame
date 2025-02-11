@@ -62,7 +62,7 @@ offset_bottom = 460.5
 
 [node name="Shop" parent="PlayerUI" instance=ExtResource("4_0jo41")]
 unique_name_in_owner = true
-z_index = 1
+z_index = 2
 
 [node name="CombatDistribution" parent="PlayerUI" instance=ExtResource("7_xt1sn")]
 unique_name_in_owner = true

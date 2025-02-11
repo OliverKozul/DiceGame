@@ -25,8 +25,9 @@ func resolve_current_player_turn(player_id: int) -> void:
 	match action["action"]:
 		Enums.Action.SHOP:
 			show_shop(player_id)
+			player_ui.combat_distribution.show_combat_ui(player_id, Enums.Target.NONE)
 		Enums.Action.ATTACK:
-			perform_attack(player_id)
+			player_ui.combat_distribution.show_combat_ui(player_id, Enums.Target.PLAYER)
 		Enums.Action.SKIP:
 			perform_skip(player_id)
 		_:
@@ -40,10 +41,6 @@ func show_shop(player_id: int) -> void:
 	if player_id == multiplayer.get_unique_id():
 		player_ui.shop.show()
 	print("Showing shop to player: ", player_id)
-
-func perform_attack(player_id: int) -> void:
-	# Logic to perform an attack
-	print("Player ", player_id, " is attacking")
 
 func perform_skip(player_id: int) -> void:
 	# Logic to perform a defend

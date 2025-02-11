@@ -3,22 +3,18 @@ extends Manager
 
 @rpc("any_peer", "call_local")
 func attack_player_button_pressed(player_id: int) -> void:
-	player_ui.combat_distribution.show_combat_ui(player_id, Enums.Target.PLAYER)
 	perform_action(player_id, Enums.Action.ATTACK, Enums.Target.PLAYER, Global.player_info[player_id].combat, "You attacked another player.")
 
 @rpc("any_peer", "call_local")
 func attack_mobs_button_pressed(player_id: int) -> void:
-	player_ui.combat_distribution.show_combat_ui(player_id, Enums.Target.MOB)
 	perform_action(player_id, Enums.Action.ATTACK, Enums.Target.MOB, Global.player_info[player_id].combat, "You attacked a mob.")
 
 @rpc("any_peer", "call_local")
 func attack_boss_button_pressed(player_id: int) -> void:
-	player_ui.combat_distribution.show_combat_ui(player_id, Enums.Target.BOSS)
 	perform_action(player_id, Enums.Action.ATTACK, Enums.Target.BOSS, Global.player_info[player_id].combat, "You attacked the boss.")
 
 @rpc("any_peer", "call_local")
 func shop_button_pressed(player_id: int) -> void:
-	player_ui.combat_distribution.show_combat_ui(player_id, Enums.Target.NONE)
 	perform_action(player_id, Enums.Action.SHOP, Enums.Target.NONE, 0, "")
 
 @rpc("any_peer", "call_local")
