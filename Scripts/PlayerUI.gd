@@ -20,6 +20,7 @@ var rng = RandomNumberGenerator.new()
 
 signal update_all_status_labels
 
+
 func _ready() -> void:
 	var player_id = multiplayer.get_unique_id()
 	rng.seed = 32  # Set the seed to 0

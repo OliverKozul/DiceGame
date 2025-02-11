@@ -20,7 +20,7 @@ func transition_to_action_phase() -> void:
 	_sync_phase(PHASES.action)
 	_sync_current_player_index(0)
 	_show_phase_ui("action", "All players have declared their intention. Transitioning to action phase.")
-	_determine_player_order()
+	rpc("_determine_player_order")
 	rpc("allow_current_player_play")
 
 # Transition to Resolve Phase
@@ -37,16 +37,28 @@ func check_all_players_played() -> bool:
 	return Global.current_player_index >= Global.player_order.size()
 
 # Determine Action Order
+@rpc("any_peer", "call_local")
 func _determine_player_order() -> void:
 	var all_players = multiplayer.get_peers()
 	all_players.append(multiplayer.get_unique_id())  # Include the host in the list
 	Global.player_order = Array(all_players)
-	if multiplayer.is_server():
-		Global.player_order.sort_custom(_compare_players)
-		player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
-	else:
-		rpc_id(1, "request_player_order")
-	Global.current_player_index = 0
+	Global.player_order.sort_custom(_compare_players)
+	#player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
+	
+# Compare Players for Sorting
+func _compare_players(player_b_id : int, player_a_id : int) -> bool:
+	var cunning_a = Global.player_info[player_a_id].cunning
+	var cunning_b = Global.player_info[player_b_id].cunning
+	if cunning_a != cunning_b:
+		return cunning_a > cunning_b
+	
+	var gold_a = Global.player_info[player_a_id].gold
+	var gold_b = Global.player_info[player_b_id].gold
+	if gold_a != gold_b:
+		return gold_a > gold_b
+	
+	return player_ui.rng.randi() % 2 == 0  # Random tie-breaker using rng
+	#return false  # Random tie-breaker using rng
 	
 func _flip_player_order() -> void:
 	if multiplayer.is_server():
@@ -64,20 +76,6 @@ func request_player_order() -> void:
 func request_turn_sync() -> void:
 	if multiplayer.is_server():
 		player_ui.sync_manager.rpc_id(multiplayer.get_remote_sender_id(), "sync_turn", Global.current_turn)
-
-# Compare Players for Sorting
-func _compare_players(player_b_id : int, player_a_id : int) -> bool:
-	var cunning_a = Global.player_info[player_a_id].cunning
-	var cunning_b = Global.player_info[player_b_id].cunning
-	if cunning_a != cunning_b:
-		return cunning_a > cunning_b
-	
-	var gold_a = Global.player_info[player_a_id].gold
-	var gold_b = Global.player_info[player_b_id].gold
-	if gold_a != gold_b:
-		return gold_a > gold_b
-	
-	return player_ui.rng.randi() % 2 == 0  # Random tie-breaker using rng
 
 # Allow Current Player Action
 @rpc("any_peer", "call_local")
