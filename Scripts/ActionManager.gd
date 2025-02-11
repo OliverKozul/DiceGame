@@ -25,12 +25,8 @@ func perform_action(player_id: int, action: Enums.Action, target: Enums.Target, 
 	Global.players_acted[player_id] = {
 		"action": action,
 		"target": target,
-		"amount": amount,
-		"sabotage": {}
+		"amount": amount
 	}
-	
-	for player in Global.players:
-		Global.players_acted[player_id]["sabotage"][player] = 0
 	
 	if player_id != multiplayer.get_unique_id():
 		return

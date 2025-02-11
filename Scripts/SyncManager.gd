@@ -5,6 +5,7 @@ extends Manager
 @rpc("any_peer", "call_local")
 func sync_player_info(player_id : int, player_info : Dictionary) -> void:
 	Global.player_info[player_id] = player_info
+	
 	if multiplayer.get_unique_id() == player_id:
 		player_ui.update_all_status_labels.emit()
 

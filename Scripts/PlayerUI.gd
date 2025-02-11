@@ -39,14 +39,14 @@ func initialize(player_id : int) -> void:
 			"combat": 0,
 			"hp": 10,
 			"trinkets": [],
-			#"die_faces": ["⚔", "⚔", "💰", "💰", "🧠", "🧠"],
-			"die_faces": ["🧠", "🧠", "🧠", "🧠", "🧠", "🧠"],
+			"die_faces": ["⚔", "⚔", "💰", "💰", "🧠", "🧠"],
 			"die_face_values": {"⚔": 1, "💰": 1, "🧠": 1}
 		}
 		
 	status_labels.initialize(self, player_id)
 	turn_info_labels.initialize(self, player_id)
-	buttons.initialize(self, player_id)
+	buttons.initialize(self)
+	combat_distribution.initialize(self)
 	shop.initialize(self, player_id)
 	
 	roll_manager.initialize(self)

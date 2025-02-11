@@ -12,12 +12,10 @@ extends Control
 }
 
 var player_ui : CanvasLayer
-var player_id : int
 
 
-func initialize(ui : CanvasLayer, id : int) -> void:
+func initialize(ui : CanvasLayer) -> void:
 	player_ui = ui
-	player_id = id
 	
 	buttons["roll"].pressed.connect(player_ui.button_manager._on_roll_button_pressed)
 	buttons["attack_player"].pressed.connect(player_ui.button_manager._on_attack_player_button_pressed)
