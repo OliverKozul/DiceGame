@@ -5,16 +5,10 @@ A fast-paced **dice-building, rogue-like battle game** where players roll dice, 
 ## **Game Flow**
 
 1. **Each player starts with one die** (D6) featuring different face types:
-<<<<<<< HEAD
 	- 🎲 **Gold** – Used to buy new dice faces or items.
 	- ⚔ **Combat** – Used for attacking or countering players, mobs, or bosses.
 	- 🧠 **Cunning** – Determines turn order (higher Cunning acts later).
 	- 🎁 **Special** – Triggers unique effects based on upgrades.
-=======
-    - 🎲 **Gold** – Used to buy new dice faces or items.
-    - ⚔ **Combat** – Used for attacking or countering players, mobs, or bosses.
-    - 🧠 **Cunning** – Determines turn order (higher Cunning acts later).
-    - 🎁 **Special** – Triggers unique effects based on upgrades.
 2. **Simultaneous Turns**
 	- All players **roll their dice at the same time**.
 	- Players **secretly choose an action** using an action token.
