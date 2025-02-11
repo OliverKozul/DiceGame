@@ -15,7 +15,6 @@ A fast-paced **dice-building, rogue-like battle game** where players roll dice, 
     - ⚔ **Combat** – Used for attacking or countering players, mobs, or bosses.
     - 🧠 **Cunning** – Determines turn order (higher Cunning acts later).
     - 🎁 **Special** – Triggers unique effects based on upgrades.
->>>>>>> 68651ca045e77205a2fedb129da87c5013b03926
 2. **Simultaneous Turns**
 	- All players **roll their dice at the same time**.
 	- Players **secretly choose an action** using an action token.
