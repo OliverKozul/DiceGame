@@ -15,6 +15,7 @@ extends CanvasLayer
 @onready var action_manager = %ActionManager
 @onready var resolve_manager = %ResolveManager
 @onready var button_manager = %ButtonManager
+@onready var trinket_manager = %TrinketManager
 
 var rng = RandomNumberGenerator.new()
 
@@ -56,6 +57,7 @@ func initialize(player_id : int) -> void:
 	action_manager.initialize(self)
 	resolve_manager.initialize(self)
 	button_manager.initialize(self)
+	trinket_manager.initialize(self)
 	
 	current_player_label.text = "Roll the dice!"
 	

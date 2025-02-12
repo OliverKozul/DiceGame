@@ -39,7 +39,7 @@ func show_combat_ui(player_id : int, target: Enums.Target) -> void:
 		elif target == Enums.Target.BOSS:
 			dropdown_target_ui.target_list.add_item("Boss")
 		
-		if dropdown_target_ui.target_list.item_count == 1:
+		if dropdown_target_ui and dropdown_target_ui.target_list.item_count == 1:
 			dropdown_target_ui.target_list.select(0)
 		
 		var submit_button = Button.new()
@@ -50,6 +50,28 @@ func show_combat_ui(player_id : int, target: Enums.Target) -> void:
 func _on_submit_button_pressed():
 	var children = combat_distribution_vbox.get_children()
 	var player_id = multiplayer.get_unique_id()
+	var targets = extract_targets(children)
+			
+	var combat_total = 0
+	var has_negative = false
+	
+	for target in targets:
+		if target[1] < 0:
+			has_negative = true
+			
+		combat_total += target[1]
+	
+	if (combat_total > Global.player_info[player_id].combat and combat_total != 0) or has_negative:
+		player_ui.current_player_label.text = "Bad inputs, try again!"
+	else:
+		handle_combat(player_id, targets)
+		
+		for child in children:
+			child.queue_free()
+			
+		player_ui.turn_manager.advance_to_next_player()
+		
+func extract_targets(children : Array) -> Array:
 	var targets = []
 	
 	for child in children:
@@ -66,42 +88,28 @@ func _on_submit_button_pressed():
 			
 			targets.append([target, combat_taken, "sabotage"])
 			
-	var combat_total = 0
-	var has_negative = false
+	return targets
+
+func handle_combat(player_id : int, targets : Array) -> void:
+	player_ui.current_player_label.text = "You attacked the enemy!"
 	
 	for target in targets:
-		if target[1] < 0:
-			has_negative = true
+		Global.player_info[player_id].combat -= int(target[1])
+		player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
+		
+		if target[0] == "Mob":
+			print("You attacked a mob!")
 			
-		combat_total += target[1]
-	
-	if combat_total > Global.player_info[player_id].combat and combat_total != 0:
-		player_ui.current_player_label.text = "Insufficient combat, try again!"
-	elif has_negative:
-		player_ui.current_player_label.text = "Negative combat detected, try again!"
-	else:
-		player_ui.current_player_label.text = "You attacked the enemy!"
-		for target in targets:
-			Global.player_info[player_id].combat -= int(target[1])
-			player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
+			continue
+		elif target[0] == "Boss":
+			print("You attacked a boss!")
+			continue
+		
+		target[0] = int(target[0])
+		
+		if target[2] == "sabotage":
+			Global.player_info[target[0]].combat = max(Global.player_info[target[0]].combat - int(target[1]), 0)
+		elif target[2] == "damage":
+			Global.player_info[target[0]].hp = max(Global.player_info[target[0]].hp - int(target[1]), 0)
 			
-			if target[0] == "Mob":
-				print("You attacked a mob!")
-				continue
-			elif target[0] == "Boss":
-				print("You attacked a boss!")
-				continue
-			
-			target[0] = int(target[0])
-			
-			if target[2] == "sabotage":
-				Global.player_info[target[0]].combat = max(Global.player_info[target[0]].combat - int(target[1]), 0)
-			elif target[2] == "damage":
-				Global.player_info[target[0]].hp = max(Global.player_info[target[0]].hp - int(target[1]), 0)
-				
-			player_ui.sync_manager.rpc("sync_player_info", target[0], Global.player_info[target[0]])
-			
-		for child in children:
-			child.queue_free()
-			
-		player_ui.turn_manager.advance_to_next_player()
+		player_ui.sync_manager.rpc("sync_player_info", target[0], Global.player_info[target[0]])

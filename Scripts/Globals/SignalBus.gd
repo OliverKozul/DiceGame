@@ -9,3 +9,5 @@ signal update_trinkets_label()
 
 signal sync_player_info(player_id : int)
 signal sync_roll_result(player_id : int, roll_result : String)
+
+signal _on_combat_roll(player_id : int, combat_amount : int)

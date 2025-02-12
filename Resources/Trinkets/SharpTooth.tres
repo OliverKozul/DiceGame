@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://fkovavv5x2k0"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/SharpTooth.gd" id="1_ukefx"]
+
+[resource]
+script = ExtResource("1_ukefx")
+name = "SharpTooth"
+description = "Your combat roll is increased by 1."

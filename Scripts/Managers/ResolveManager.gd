@@ -29,11 +29,13 @@ func resolve_current_player_turn(player_id: int) -> void:
 	
 	Global.players_acted[player_id] = false
 
+@rpc("any_peer", "call_local")
 func show_shop(player_id: int) -> void:
 	if player_id == multiplayer.get_unique_id():
 		player_ui.shop.show()
 	print("Showing shop to player: ", player_id)
 
+@rpc("any_peer", "call_local")
 func perform_skip(player_id: int) -> void:
 	print("Player ", player_id, " is skipping")
 	if player_id == multiplayer.get_unique_id():

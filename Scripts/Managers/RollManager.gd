@@ -24,13 +24,14 @@ func roll_button_pressed(roller_id : int) -> void:
 	match roll_result:
 		"💰":
 			Global.player_info[player_id].gold += Global.player_info[player_id].die_face_values[roll_result]
-			player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
+			#player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
 		"🧠":
 			Global.player_info[player_id].cunning += Global.player_info[player_id].die_face_values[roll_result]
-			player_ui.status_labels.cunning.text = "🧠 count: " + str(Global.player_info[player_id].cunning)
+			#player_ui.status_labels.cunning.text = "🧠 count: " + str(Global.player_info[player_id].cunning)
 		"⚔":
-			Global.player_info[player_id].combat += Global.player_info[player_id].die_face_values[roll_result]
-			player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
+			SignalBus._on_combat_roll.emit(player_id, Global.player_info[player_id].die_face_values[roll_result])
+			#Global.player_info[player_id].combat += Global.player_info[player_id].die_face_values[roll_result]
+			#player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
 		
 	Global.players_rolled[player_id] = true  # Mark as rolled
 	

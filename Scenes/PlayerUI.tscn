@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bhlswt6avrv2v"]
+[gd_scene load_steps=16 format=3 uid="uid://bhlswt6avrv2v"]
 
 [ext_resource type="Script" path="res://Scripts/PlayerUI.gd" id="1_vb3xm"]
 [ext_resource type="PackedScene" uid="uid://cu6tmmpapw87t" path="res://Scenes/StatusLabels.tscn" id="2_7yifw"]
@@ -6,14 +6,15 @@
 [ext_resource type="PackedScene" uid="uid://cf1efqc0qo8fi" path="res://Scenes/TurnInfoLabels.tscn" id="3_6hlt2"]
 [ext_resource type="PackedScene" uid="uid://c65duq8gmsvb8" path="res://Scenes/PlayerIntentionLabels.tscn" id="3_sxb2c"]
 [ext_resource type="PackedScene" uid="uid://dxc0t67il66w8" path="res://Scenes/Shop.tscn" id="4_0jo41"]
-[ext_resource type="Script" path="res://Scripts/RollManager.gd" id="6_v7tih"]
-[ext_resource type="Script" path="res://Scripts/SyncManager.gd" id="7_2063l"]
+[ext_resource type="Script" path="res://Scripts/Managers/RollManager.gd" id="6_v7tih"]
+[ext_resource type="Script" path="res://Scripts/Managers/SyncManager.gd" id="7_2063l"]
 [ext_resource type="PackedScene" uid="uid://ct7solb00s704" path="res://Scenes/CombatDistribution.tscn" id="7_xt1sn"]
-[ext_resource type="Script" path="res://Scripts/TurnManager.gd" id="8_7ajt0"]
-[ext_resource type="Script" path="res://Scripts/ActionManager.gd" id="9_fx54b"]
-[ext_resource type="Script" path="res://Scripts/IntentionManager.gd" id="10_6honh"]
-[ext_resource type="Script" path="res://Scripts/ButtonManager.gd" id="11_jc1uc"]
-[ext_resource type="Script" path="res://Scripts/ResolveManager.gd" id="12_eexj6"]
+[ext_resource type="Script" path="res://Scripts/Managers/TurnManager.gd" id="8_7ajt0"]
+[ext_resource type="Script" path="res://Scripts/Managers/ActionManager.gd" id="9_fx54b"]
+[ext_resource type="Script" path="res://Scripts/Managers/IntentionManager.gd" id="10_6honh"]
+[ext_resource type="Script" path="res://Scripts/Managers/ButtonManager.gd" id="11_jc1uc"]
+[ext_resource type="Script" path="res://Scripts/Managers/ResolveManager.gd" id="12_eexj6"]
+[ext_resource type="Script" path="res://Scripts/Managers/TrinketManager.gd" id="15_ohair"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -93,3 +94,7 @@ script = ExtResource("12_eexj6")
 [node name="ButtonManager" type="Node" parent="PlayerUI"]
 unique_name_in_owner = true
 script = ExtResource("11_jc1uc")
+
+[node name="TrinketManager" type="Node" parent="PlayerUI"]
+unique_name_in_owner = true
+script = ExtResource("15_ohair")
