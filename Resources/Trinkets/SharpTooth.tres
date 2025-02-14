@@ -1,14 +1,8 @@
 [gd_resource type="Resource" load_steps=2 format=3 uid="uid://fkovavv5x2k0"]
 
-[sub_resource type="GDScript" id="GDScript_47gpu"]
-script/source = "extends Trinket
-
-
-func _on_combat_roll(player_id : int, combat_amount : int) -> void:
-	Global.player_info[player_id].combat += combat_amount + 1
-"
+[ext_resource type="Script" path="res://Scripts/Resources/SharpTooth.gd" id="1_cv27y"]
 
 [resource]
-script = SubResource("GDScript_47gpu")
+script = ExtResource("1_cv27y")
 name = "Sharp Tooth"
 description = "Your combat roll is increased by 1."

@@ -19,9 +19,9 @@ func transition_to_intention_phase() -> void:
 func transition_to_action_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.action)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
-	rpc("show_phase_ui", "action", "All players have declared their intention. Transitioning to action phase.")
 	
 	determine_player_order()
+	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	rpc("allow_current_player_play")
 
 # Transition to Resolve Phase
@@ -29,9 +29,9 @@ func transition_to_action_phase() -> void:
 func transition_to_resolve_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.resolve)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
-	rpc("show_phase_ui", "resolve", "All players have acted. Transitioning to resolve phase.")
 	
-	flip_player_order()
+	Global.player_order.reverse()
+	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	rpc("allow_current_player_play")
 
 # Check if All Players Have Performed an Action
@@ -40,12 +40,8 @@ func check_all_players_played() -> bool:
 
 # Determine Action Order
 func determine_player_order() -> void:
-	var all_players = multiplayer.get_peers()
-	all_players.append(multiplayer.get_unique_id())  # Include the host in the list
-	Global.player_order = Array(all_players)
-	Global.player_order.sort()
+	Global.player_order = Global.players
 	Global.player_order.sort_custom(_compare_players)
-	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	
 # Compare Players for Sorting
 func _compare_players(player_b_id: int, player_a_id: int) -> bool:
@@ -63,10 +59,6 @@ func _compare_players(player_b_id: int, player_a_id: int) -> bool:
 	
 	return player_a_id > player_b_id  # Random tie-breaker using rng
 	
-func flip_player_order() -> void:
-	Global.player_order.reverse()
-	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
-
 # Request Turn Sync (For Late Joiners)
 @rpc("any_peer", "call_local")
 func request_turn_sync() -> void:
@@ -88,6 +80,9 @@ func allow_current_player_play() -> void:
 # Initiate Next Turn (Only Host Can Trigger)
 @rpc("any_peer", "call_local")
 func initiate_next_turn() -> void:
+	if Global.boss.current_hp > 0:
+		player_ui.combat_manager.rpc("deal_boss_damage")
+		
 	Global.current_turn += 1
 	player_ui.sync_manager.rpc("sync_turn", Global.current_turn)
 	print("Turn ", Global.current_turn)

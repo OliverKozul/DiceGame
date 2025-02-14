@@ -22,4 +22,7 @@ signal _on_player_defeated(attacker_id: int, defeated_id: int, combat_amount: in
 signal _on_mob_defeated(player_id: int, combat_amount: int)
 signal _on_boss_defeated(player_id: int, combat_amount: int)
 
-signal _on_player_sabotage(player_id: int, combat_amount: int)
+signal _on_player_sabotaged(attacker_id: int, sabotaged_id:int, combat_amount: int)
+
+signal _on_boss_attack(player_id: int)
+signal _on_mob_attack(player_id: int)

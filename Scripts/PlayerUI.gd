@@ -9,6 +9,7 @@ extends CanvasLayer
 @onready var combat_distribution = %CombatDistribution
 @onready var shop = %Shop
 @onready var defeat_screen: ColorRect = %DefeatScreen
+@onready var victory_screen: ColorRect = %VictoryScreen
 
 @onready var roll_manager = %RollManager
 @onready var sync_manager = %SyncManager
@@ -18,6 +19,7 @@ extends CanvasLayer
 @onready var resolve_manager = %ResolveManager
 @onready var button_manager = %ButtonManager
 @onready var trinket_manager = %TrinketManager
+@onready var combat_manager: Node = %CombatManager
 
 var rng = RandomNumberGenerator.new()
 
@@ -42,7 +44,8 @@ func initialize(player_id: int) -> void:
 			"combat": 0,
 			"hp": 10,
 			"trinkets": [],
-			"die_faces": ["⚔", "⚔", "💰", "💰", "🧠", "🧠"],
+			#"die_faces": ["⚔", "⚔", "💰", "💰", "🧠", "🧠"],
+			"die_faces": ["⚔", "⚔", "⚔", "⚔", "⚔", "⚔"],
 			"die_face_values": {"⚔": 1, "💰": 1, "🧠": 1}
 		}
 		
@@ -60,6 +63,7 @@ func initialize(player_id: int) -> void:
 	resolve_manager.initialize(self)
 	button_manager.initialize(self)
 	trinket_manager.initialize(self)
+	combat_manager.initialize(self)
 	
 	current_player_label.text = "Roll the dice!"
 	
@@ -67,3 +71,7 @@ func initialize(player_id: int) -> void:
 func show_defeat_ui(player_id: int) -> void:
 	if player_id == multiplayer.get_unique_id():
 		defeat_screen.show()
+		
+@rpc("any_peer", "call_local")
+func show_victory_ui() -> void:
+	victory_screen.show()

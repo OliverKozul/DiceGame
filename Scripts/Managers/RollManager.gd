@@ -41,11 +41,8 @@ func roll_button_pressed(roller_id: int) -> void:
 		
 ### **Check if All Players Have Rolled**
 func check_all_players_rolled() -> bool:
-	var all_players = multiplayer.get_peers()
-	all_players.append(multiplayer.get_unique_id())  # Include the host in the list
-
 	var all_rolled = true
-	for id in all_players:
+	for id in Global.players:
 		if not Global.players_rolled.get(id, false):
 			all_rolled = false
 			break

@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("3_6t6q3")
 name = "Red Dragon"
-current_hp = 2
-max_hp = 2
+current_hp = 3
+max_hp = 3
 description = "A fierce dragon."
 drops = Array[ExtResource("1_ke5x8")]([ExtResource("2_0qa72")])

@@ -25,6 +25,9 @@ func initialize(ui: CanvasLayer) -> void:
 	buttons["skip"].pressed.connect(player_ui.button_manager._on_skip_button_pressed)
 	buttons["resolve"].pressed.connect(player_ui.button_manager._on_resolve_button_pressed)
 	
+	buttons["attack_mobs"].text += (" (" + str(Global.mob.hp) + " HP)")
+	buttons["attack_boss"].text += (" (" + str(Global.boss.max_hp) + " HP)")
+	
 	show_buttons("roll")
 
 func show_buttons(phase: String) -> void:

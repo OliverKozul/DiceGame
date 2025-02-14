@@ -1,9 +1,6 @@
 extends Manager
 
 
-func _ready() -> void:
-	SignalBus.connect("_on_player_defeated", _on_player_defeated)
-
 ### **Sync Roll Result for Everyone**
 @rpc("any_peer", "call_local")
 func sync_player_info(player_id : int, player_info : Dictionary) -> void:
@@ -62,8 +59,3 @@ func sync_boss_current_hp(new_current_hp : int) -> void:
 @rpc("any_peer", "call_local")
 func sync_boss_attackers(new_boss_attackers : Array) -> void:
 	Global.boss_attackers = new_boss_attackers
-
-func _on_player_defeated(_attacker_id: int, defeated_id: int, _combat_amount: int) -> void:
-	player_ui.rpc("show_defeat_ui", defeated_id)
-	#Global.players.erase(defeated_id)
-	#rpc("sync_players", Global.players)
