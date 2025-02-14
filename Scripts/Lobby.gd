@@ -22,6 +22,7 @@ func _ready() -> void:
 	host_game_button.pressed.connect(_on_host_button_pressed)
 	join_game_button.pressed.connect(_on_join_button_pressed)
 	start_game_button.pressed.connect(_on_start_game_pressed)
+	rpc("update_player_array", multiplayer.get_unique_id())
 
 # Host a Game
 func _on_host_button_pressed() -> void:
@@ -45,7 +46,6 @@ func _on_join_button_pressed() -> void:
 # Connection Success
 func _on_peer_connected(id: int) -> void:
 	print("Player ", id, " joined.")
-	Global.players.append(id)
 	rpc("update_player_array", id)
 
 func _on_peer_disconnected(id: int) -> void:

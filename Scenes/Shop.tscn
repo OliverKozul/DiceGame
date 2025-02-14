@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://Scripts/Shop.gd" id="1_r4a8o"]
 
 [node name="Shop" type="Panel"]
-visible = false
 z_index = 2
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,53 +11,64 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_r4a8o")
 
-[node name="UpgradesMargin" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -110.0
+offset_bottom = 111.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 128
+theme_override_constants/margin_top = 128
+theme_override_constants/margin_right = 128
+theme_override_constants/margin_bottom = 128
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0.0138645, 0.0667133, 0.106552, 1)
+
+[node name="UpgradesMargin" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
 theme_override_constants/margin_left = 256
 theme_override_constants/margin_top = 256
 theme_override_constants/margin_right = 256
 theme_override_constants/margin_bottom = 256
 
-[node name="UpgradesVBox" type="VBoxContainer" parent="UpgradesMargin"]
+[node name="UpgradesVBox" type="VBoxContainer" parent="MarginContainer/UpgradesMargin"]
 layout_mode = 2
 
-[node name="UpgradeAttackButton" type="Button" parent="UpgradesMargin/UpgradesVBox"]
+[node name="UpgradeAttackButton" type="Button" parent="MarginContainer/UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Upgrade Attack Faces (1 💰)"
 
-[node name="UpgradeGoldButton" type="Button" parent="UpgradesMargin/UpgradesVBox"]
+[node name="UpgradeGoldButton" type="Button" parent="MarginContainer/UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Upgrade Gold Faces (1 💰)"
 
-[node name="UpgradeCunningButton" type="Button" parent="UpgradesMargin/UpgradesVBox"]
+[node name="UpgradeCunningButton" type="Button" parent="MarginContainer/UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Upgrade Cunning Faces (1 💰)"
 
-[node name="ExitMargin" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -40.0
-offset_bottom = 40.0
-grow_horizontal = 0
+[node name="ExitMargin" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="ExitVBox" type="VBoxContainer" parent="ExitMargin"]
+[node name="ExitVBox" type="VBoxContainer" parent="MarginContainer/ExitMargin"]
 layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
 
-[node name="ExitButton" type="Button" parent="ExitMargin/ExitVBox"]
+[node name="ExitButton" type="Button" parent="MarginContainer/ExitMargin/ExitVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Exit"
