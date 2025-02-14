@@ -3,7 +3,7 @@ extends Manager
 
 ### **Player Rolls**
 @rpc("any_peer", "call_local")
-func roll_button_pressed(roller_id : int) -> void:
+func roll_button_pressed(roller_id: int) -> void:
 	var player_id = multiplayer.get_unique_id()
 	
 	if roller_id != player_id:
@@ -23,15 +23,11 @@ func roll_button_pressed(roller_id : int) -> void:
 	
 	match roll_result:
 		"💰":
-			Global.player_info[player_id].gold += Global.player_info[player_id].die_face_values[roll_result]
-			#player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
+			SignalBus._on_gold_roll.emit(player_id, Global.player_info[player_id].die_face_values[roll_result])
 		"🧠":
-			Global.player_info[player_id].cunning += Global.player_info[player_id].die_face_values[roll_result]
-			#player_ui.status_labels.cunning.text = "🧠 count: " + str(Global.player_info[player_id].cunning)
+			SignalBus._on_cunning_roll.emit(player_id, Global.player_info[player_id].die_face_values[roll_result])
 		"⚔":
 			SignalBus._on_combat_roll.emit(player_id, Global.player_info[player_id].die_face_values[roll_result])
-			#Global.player_info[player_id].combat += Global.player_info[player_id].die_face_values[roll_result]
-			#player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
 		
 	Global.players_rolled[player_id] = true  # Mark as rolled
 	
@@ -41,7 +37,7 @@ func roll_button_pressed(roller_id : int) -> void:
 
 	# Check if all players have rolled
 	if check_all_players_rolled():
-		player_ui.turn_manager.rpc("transition_to_intention_phase")
+		player_ui.turn_manager.rpc_id(1, "transition_to_intention_phase")
 		
 ### **Check if All Players Have Rolled**
 func check_all_players_rolled() -> bool:

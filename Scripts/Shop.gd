@@ -8,8 +8,8 @@ extends Panel
 }
 @onready var exit_button = %ExitButton
 
-var player_ui : CanvasLayer
-var player_id : int
+var player_ui: CanvasLayer
+var player_id: int
 
 signal shop_closed
 
@@ -20,7 +20,7 @@ func _ready() -> void:
 		upgrade_buttons[key].pressed.connect(Callable(self, "_on_upgrade_button_pressed").bind(key))
 	exit_button.pressed.connect(_on_exit_button_pressed)
 
-func initialize(ui : CanvasLayer, id : int) -> void:
+func initialize(ui: CanvasLayer, id: int) -> void:
 	player_ui = ui
 	player_id = id
 

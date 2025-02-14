@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://d1i7voohps6o1"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/ThirdEye.gd" id="1_udrfn"]
+
+[resource]
+script = ExtResource("1_udrfn")
+name = "Third Eye"
+description = "You open your third eye."

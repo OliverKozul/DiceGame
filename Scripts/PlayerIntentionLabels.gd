@@ -8,7 +8,7 @@ var player_intentions = {}
 func _ready() -> void:
 	update_players(Global.players)
 
-func update_players(player_list : Array) -> void:
+func update_players(player_list: Array) -> void:
 	for player_id in player_list:
 		var label = Label.new()
 		label.text = "Player " + str(player_id) + ": No intention"

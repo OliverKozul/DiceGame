@@ -1,12 +1,14 @@
 extends CanvasLayer
 
+
 @onready var current_player_label = %CurrentPlayerLabel
 @onready var status_labels = %StatusLabels
 @onready var player_intention_labels = %PlayerIntentionLabels
 @onready var turn_info_labels = %TurnInfoLabels
 @onready var buttons = %Buttons
-@onready var shop = %Shop
 @onready var combat_distribution = %CombatDistribution
+@onready var shop = %Shop
+@onready var defeat_screen: ColorRect = %DefeatScreen
 
 @onready var roll_manager = %RollManager
 @onready var sync_manager = %SyncManager
@@ -32,7 +34,7 @@ func _ready() -> void:
 	else:
 		turn_manager.rpc_id(1, "request_turn_sync")
 
-func initialize(player_id : int) -> void:
+func initialize(player_id: int) -> void:
 	if not Global.player_info.has(player_id):
 		Global.player_info[player_id] = {
 			"gold": 0,
@@ -61,3 +63,7 @@ func initialize(player_id : int) -> void:
 	
 	current_player_label.text = "Roll the dice!"
 	
+@rpc("any_peer", "call_local")
+func show_defeat_ui(player_id: int) -> void:
+	if player_id == multiplayer.get_unique_id():
+		defeat_screen.show()

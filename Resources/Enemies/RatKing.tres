@@ -7,5 +7,6 @@
 [resource]
 script = ExtResource("2_j6tpc")
 name = "Rat King"
+hp = 1
 description = "Simple guy."
 drops = Array[ExtResource("1_gcx3s")]([ExtResource("2_vnc2e")])

@@ -11,10 +11,10 @@ extends Control
 	"resolve": %ResolveButton
 }
 
-var player_ui : CanvasLayer
+var player_ui: CanvasLayer
 
 
-func initialize(ui : CanvasLayer) -> void:
+func initialize(ui: CanvasLayer) -> void:
 	player_ui = ui
 	
 	buttons["roll"].pressed.connect(player_ui.button_manager._on_roll_button_pressed)
@@ -27,7 +27,7 @@ func initialize(ui : CanvasLayer) -> void:
 	
 	show_buttons("roll")
 
-func show_buttons(phase : String) -> void:
+func show_buttons(phase: String) -> void:
 	var visibility = {
 		"roll": phase == "roll",
 		"attack_player": phase == "intention" or phase == "action",
