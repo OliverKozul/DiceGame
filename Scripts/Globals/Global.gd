@@ -15,5 +15,5 @@ var players_resolved: Dictionary = {}
 
 var boss_attackers: Array = []
 
-@onready var mob: Mob = load("res://Resources/Enemies/RatKing.tres")
-@onready var boss: Boss = load("res://Resources/Enemies/RedDragon.tres")
+@onready var mob = load("res://Resources/Enemies/RatKing.tres")
+@onready var boss = load("res://Resources/Enemies/RedDragon.tres")
