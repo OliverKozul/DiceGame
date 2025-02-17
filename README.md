@@ -17,24 +17,12 @@ A fast-paced **dice-building, rogue-like battle game** where players roll dice, 
 ## **Turn Order Resolution**
 
 1. **Initiative = Cunning + Gold Tiebreaker**
-	- Players act in ascending Cunning order.
-	- If tied, the player with less Gold acts first.
-	- If still tied, roll a tiebreaker D6.
-2. **Turn Order Applies to All Actions**
-	- **Combat, Shopping, and Countering** are resolved in Cunning order.
-	- More cunning players can attack or counter less cunning players before they act.
-	- In the shop, more cunning players buy first.
-
-## **Turn Order Resolution**
-
-1. **Initiative = Cunning + Gold Tiebreaker**
     - Players act in ascending Cunning order.
     - If tied, the player with less Gold acts first.
     - If still tied, roll a tiebreaker D6.
 2. **Turn Order Applies to All Actions**
     - **Combat, Shopping, and Countering** are resolved in Cunning order.
     - More cunning players can attack or counter less cunning players before they act.
-    - In the shop, more cunning players buy first.
 
 ## **Actions**
 
