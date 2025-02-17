@@ -2,7 +2,7 @@ extends Manager
 
 
 func _on_roll_button_pressed() -> void:
-	player_ui.roll_manager.rpc("roll_button_pressed", multiplayer.get_unique_id())
+	player_ui.roll_manager.rpc_id(multiplayer.get_unique_id(), "roll_button_pressed", multiplayer.get_unique_id())
 
 func _on_attack_player_button_pressed() -> void:
 	_handle_button_pressed("attack_player_button_pressed")

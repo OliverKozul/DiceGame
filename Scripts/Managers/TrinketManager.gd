@@ -20,7 +20,7 @@ func add_trinket(player_id: int, trinket: Trinket) -> void:
 	trinkets.append(trinket)
 	
 	if trinket.has_method("on_added"):
-		trinket.on_added(self)  # Allow trinkets to register for events
+		trinket.on_added(player_id, self)  # Allow trinkets to register for events
 	
 	Global.player_info[player_id]["trinkets"].append(trinket.name)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])

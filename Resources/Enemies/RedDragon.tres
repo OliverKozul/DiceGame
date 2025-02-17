@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="Boss" load_steps=4 format=3 uid="uid://cqtna88dniegi"]
+[gd_resource type="Resource" script_class="Boss" load_steps=5 format=3 uid="uid://cqtna88dniegi"]
 
 [ext_resource type="Script" path="res://Scripts/Resources/Trinket.gd" id="1_ke5x8"]
 [ext_resource type="Resource" uid="uid://d1i7voohps6o1" path="res://Resources/Trinkets/ThirdEye.tres" id="2_0qa72"]
 [ext_resource type="Script" path="res://Scripts/Resources/Boss.gd" id="3_6t6q3"]
+[ext_resource type="Resource" uid="uid://bnibiw8bo5l2u" path="res://Resources/Trinkets/Opportunity.tres" id="3_eqkma"]
 
 [resource]
 script = ExtResource("3_6t6q3")
 name = "Red Dragon"
 current_hp = 3
 max_hp = 3
+damage = 2
 description = "A fierce dragon."
-drops = Array[ExtResource("1_ke5x8")]([ExtResource("2_0qa72")])
+drops = Array[ExtResource("1_ke5x8")]([ExtResource("2_0qa72"), ExtResource("3_eqkma")])

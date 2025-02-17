@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://bnibiw8bo5l2u"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/Opportunity.gd" id="1_87q7e"]
+
+[resource]
+script = ExtResource("1_87q7e")
+name = "Opportunity"
+description = "Provides an additional default D6."

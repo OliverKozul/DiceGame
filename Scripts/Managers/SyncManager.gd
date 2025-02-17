@@ -11,11 +11,11 @@ func sync_player_info(player_id : int, player_info : Dictionary) -> void:
 
 ### **Sync Roll Result for Everyone**
 @rpc("any_peer", "call_local")
-func sync_roll_result(player_id : int, roll_result : String) -> void:
+func sync_roll_results(player_id : int, roll_results : Array) -> void:
 	Global.players_rolled[player_id] = true
 	
 	if multiplayer.get_unique_id() == player_id:
-		print(Global.current_turn, ". turn, Player %s rolled: %s" % [player_id, roll_result])
+		print(Global.current_turn, ". turn, Player %s rolled: %s" % [player_id, roll_results])
 
 @rpc("any_peer", "call_local")
 func sync_turn(new_turn : int) -> void:

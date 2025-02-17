@@ -27,7 +27,8 @@ func initialize(ui: CanvasLayer, id: int) -> void:
 func _on_upgrade_button_pressed(type: String) -> void:
 	if Global.player_info[player_id].gold > 0:
 		Global.player_info[player_id].gold -= 1
-		Global.player_info[player_id].die_face_values[get_die_face(type)] += 1
+		for die in Global.player_info[player_id].die_face_values:
+			die[get_die_face(type)] += 1
 		print(type.capitalize() + " dice upgraded!")
 		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
 	else:

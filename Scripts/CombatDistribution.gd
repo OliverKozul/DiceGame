@@ -39,7 +39,7 @@ func show_combat_ui(target: Enums.Target) -> void:
 	elif target == Enums.Target.BOSS:
 		dropdown_target_ui.target_list.add_item("Boss")
 	
-	if dropdown_target_ui and dropdown_target_ui.target_list.item_count == 1:
+	if dropdown_target_ui != null and dropdown_target_ui.target_list.item_count == 1:
 		dropdown_target_ui.target_list.select(0)
 	
 	var submit_button = Button.new()
