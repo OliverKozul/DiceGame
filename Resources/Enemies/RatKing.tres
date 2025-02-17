@@ -1,12 +1,14 @@
-[gd_resource type="Resource" script_class="Mob" load_steps=4 format=3 uid="uid://bp7ja4cf8m23m"]
+[gd_resource type="Resource" script_class="Mob" load_steps=5 format=3 uid="uid://bp7ja4cf8m23m"]
 
 [ext_resource type="Script" path="res://Scripts/Resources/Trinket.gd" id="1_gcx3s"]
 [ext_resource type="Script" path="res://Scripts/Resources/Mob.gd" id="2_j6tpc"]
 [ext_resource type="Resource" uid="uid://fkovavv5x2k0" path="res://Resources/Trinkets/SharpTooth.tres" id="2_vnc2e"]
+[ext_resource type="Resource" uid="uid://covx5squoua30" path="res://Resources/Trinkets/SaboteurDagger.tres" id="3_tgeon"]
 
 [resource]
 script = ExtResource("2_j6tpc")
 name = "Rat King"
 hp = 1
+damage = 1
 description = "Simple guy."
-drops = Array[ExtResource("1_gcx3s")]([ExtResource("2_vnc2e")])
+drops = Array[ExtResource("1_gcx3s")]([ExtResource("2_vnc2e"), ExtResource("3_tgeon")])

@@ -108,7 +108,7 @@ func _on_player_sabotaged(attacker_id: int, sabotaged_id: int, combat_amount: in
 	
 	for trinket in trinkets:
 		if trinket.has_method("_on_player_sabotaged"):
-			trinket._on_player_sabotaged(attacker_id, combat_amount)
+			trinket._on_player_sabotaged(attacker_id, sabotaged_id, combat_amount)
 			
 	Global.player_info[sabotaged_id].combat = max(Global.player_info[sabotaged_id].combat - combat_amount, 0)
 	player_ui.sync_manager.rpc("sync_player_info", sabotaged_id, Global.player_info[sabotaged_id])
@@ -122,7 +122,6 @@ func _on_player_attacked(attacker_id: int, defender_id: int, combat_amount: int)
 			trinket._on_player_attacked(attacker_id, combat_amount)
 			
 	Global.player_info[defender_id].hp = max(Global.player_info[defender_id].hp - combat_amount, 0)
-	print("Got here ", attacker_id, " ", defender_id, " ", combat_amount)
 	player_ui.sync_manager.rpc("sync_player_info", defender_id, Global.player_info[defender_id])
 
 func _on_boss_attack(player_id: int) -> void:

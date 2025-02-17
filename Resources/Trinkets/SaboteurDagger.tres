@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://covx5squoua30"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/SaboteurDagger.gd" id="1_5rmd5"]
+
+[resource]
+script = ExtResource("1_5rmd5")
+name = "Saboteur Dagger"
+description = "Increases sabotage amount by 1."
