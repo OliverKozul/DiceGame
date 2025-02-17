@@ -69,6 +69,7 @@ unique_name_in_owner = true
 
 [node name="Shop" parent="PlayerUI" instance=ExtResource("4_0jo41")]
 unique_name_in_owner = true
+visible = false
 
 [node name="DefeatScreen" parent="PlayerUI" instance=ExtResource("8_nhtqx")]
 unique_name_in_owner = true

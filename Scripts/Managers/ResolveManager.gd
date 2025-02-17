@@ -2,16 +2,13 @@ extends Manager
 
 
 @rpc("any_peer", "call_local")
-func resolve_button_pressed(player_id: int) -> void:
+func resolve_current_player_turn(player_id: int) -> void:
 	Global.players_resolved[player_id] = true
 	player_ui.buttons.show_buttons("wait")
 	
-	if Global.players_acted.has(player_id) and Global.players_acted[player_id] and player_id == multiplayer.get_unique_id():
-		resolve_current_player_turn(player_id)
+	if player_id != multiplayer.get_unique_id():
+		return
 		
-	Global.players_acted[player_id] = false
-
-func resolve_current_player_turn(player_id: int) -> void:
 	var action = Global.players_acted[player_id]
 	
 	match action["action"]:
@@ -29,7 +26,7 @@ func resolve_current_player_turn(player_id: int) -> void:
 
 @rpc("any_peer", "call_local")
 func show_shop(player_id: int) -> void:
-	player_ui.shop.show()
+	player_ui.shop.open()
 	print("Showing shop to player: ", player_id)
 
 @rpc("any_peer", "call_local")

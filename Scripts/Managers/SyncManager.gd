@@ -15,7 +15,7 @@ func sync_roll_results(player_id : int, roll_results : Array) -> void:
 	Global.players_rolled[player_id] = true
 	
 	if multiplayer.get_unique_id() == player_id:
-		print(Global.current_turn, ". turn, Player %s rolled: %s" % [player_id, roll_results])
+		print(Global.current_turn, ". turn, Player %s rolled: %s" % [Global.player_names[player_id], roll_results])
 
 @rpc("any_peer", "call_local")
 func sync_turn(new_turn : int) -> void:
@@ -26,9 +26,14 @@ func sync_turn(new_turn : int) -> void:
 	Global.players_resolved.clear()
 	Global.boss_attackers.clear()
 	Global.current_turn = new_turn
+	Global.mob.hp = 1 + int(new_turn / 2)
+	Global.boss.max_hp = new_turn + len(Global.players)
 	Global.boss.current_hp = Global.boss.max_hp
 	
 	player_ui.buttons.show_buttons("roll")
+	player_ui.buttons.buttons["attack_mobs"].text = "Attack Mobs" + " (" + str(Global.mob.hp) + " HP)"
+	player_ui.buttons.buttons["attack_boss"].text = "Attack Boss" + " (" + str(Global.boss.max_hp) + " HP)"
+	
 	player_ui.current_player_label.text = "Roll the dice!"
 	player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
 	

@@ -19,7 +19,7 @@ extends CanvasLayer
 @onready var resolve_manager = %ResolveManager
 @onready var button_manager = %ButtonManager
 @onready var trinket_manager = %TrinketManager
-@onready var combat_manager: Node = %CombatManager
+@onready var combat_manager = %CombatManager
 
 var rng = RandomNumberGenerator.new()
 

@@ -2,6 +2,7 @@ extends Node
 
 
 var players: Array = []
+var player_names: Dictionary = {}
 var player_info: Dictionary = {}
 var player_order: Array = []
 

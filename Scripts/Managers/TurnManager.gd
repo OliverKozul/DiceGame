@@ -69,13 +69,16 @@ func request_turn_sync() -> void:
 @rpc("any_peer", "call_local")
 func allow_current_player_play() -> void:
 	var current_player = Global.player_order[Global.current_player_index]
-	if multiplayer.get_unique_id() == current_player:
+	var player_id = multiplayer.get_unique_id()
+	
+	if player_id == current_player:
 		if Global.current_phase == PHASES.action:
 			show_phase_ui("action", "It's your turn!")
 		elif Global.current_phase == PHASES.resolve:
 			show_phase_ui("resolve", "It's your turn!")
+			player_ui.resolve_manager.rpc("resolve_current_player_turn", player_id)
 	else:
-		show_phase_ui("wait", "Waiting for player %s" % str(current_player))
+		show_phase_ui("wait", "Waiting for player %s" % Global.player_names[current_player])
 
 # Initiate Next Turn (Only Host Can Trigger)
 @rpc("any_peer", "call_local")

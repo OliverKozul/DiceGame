@@ -8,7 +8,6 @@ extends Control
 	"attack_boss": %AttackBossButton,
 	"shop": %ShopButton,
 	"skip": %SkipButton,
-	"resolve": %ResolveButton
 }
 
 var player_ui: CanvasLayer
@@ -23,7 +22,6 @@ func initialize(ui: CanvasLayer) -> void:
 	buttons["attack_boss"].pressed.connect(player_ui.button_manager._on_attack_boss_button_pressed)
 	buttons["shop"].pressed.connect(player_ui.button_manager._on_shop_button_pressed)
 	buttons["skip"].pressed.connect(player_ui.button_manager._on_skip_button_pressed)
-	buttons["resolve"].pressed.connect(player_ui.button_manager._on_resolve_button_pressed)
 	
 	buttons["attack_mobs"].text += (" (" + str(Global.mob.hp) + " HP)")
 	buttons["attack_boss"].text += (" (" + str(Global.boss.max_hp) + " HP)")
@@ -38,7 +36,6 @@ func show_buttons(phase: String) -> void:
 		"attack_boss": phase == "intention" or phase == "action",
 		"shop": phase == "intention" or phase == "action",
 		"skip": phase == "intention" or phase == "action",
-		"resolve": phase == "resolve"
 	}
 	
 	for button_name in buttons.keys():

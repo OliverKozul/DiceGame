@@ -32,6 +32,7 @@ func roll_button_pressed(player_id: int) -> void:
 		
 	# Send result to all players
 	player_ui.turn_info_labels.roll_result.text = roll_results_text + "]"
+	player_ui.current_player_label.text = "Wait for other players to roll."
 	player_ui.sync_manager.rpc("sync_roll_results", player_id, roll_results)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 		
