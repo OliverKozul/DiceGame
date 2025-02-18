@@ -85,7 +85,8 @@ func extract_targets(children: Array) -> Array:
 			var target = Global.player_names.find_key(child.target_name.text)
 			var combat_taken = int(child.target_combat_taken.text)
 			
-			targets.push_front([target, combat_taken, "sabotage"])
+			if combat_taken > 0:
+				targets.push_front([target, combat_taken, "sabotage"])
 		elif child is DropdownTarget:
 			var selected_items = child.target_list.get_selected_items()
 			if len(selected_items) != 0:
@@ -95,6 +96,7 @@ func extract_targets(children: Array) -> Array:
 				if target not in ["Mob", "Boss"]:
 					target = Global.player_names.find_key(target)
 				
-				targets.push_back([target, combat_taken, "damage"])
+				if combat_taken > 0:
+					targets.push_back([target, combat_taken, "damage"])
 			
 	return targets

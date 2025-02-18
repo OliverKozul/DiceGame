@@ -9,6 +9,8 @@ class_name PlayerUI
 @onready var buttons: Buttons = %Buttons
 @onready var combat_distribution: CombatDistribution = %CombatDistribution
 @onready var shop: Shop = %Shop
+@onready var trinkets_ui: TrinketsUI = %TrinketsUI
+@onready var dice_ui: DiceUI = %DiceUI
 @onready var defeat_screen: ColorRect = %DefeatScreen
 @onready var victory_screen: ColorRect = %VictoryScreen
 
@@ -54,6 +56,8 @@ func initialize(player_id: int) -> void:
 	buttons.initialize(self)
 	combat_distribution.initialize(self)
 	shop.initialize(self, player_id)
+	trinkets_ui.initialize(self, player_id)
+	dice_ui.initialize(self, player_id)
 	
 	roll_manager.initialize(self)
 	sync_manager.initialize(self)

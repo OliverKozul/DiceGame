@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bhlswt6avrv2v"]
+[gd_scene load_steps=21 format=3 uid="uid://bhlswt6avrv2v"]
 
 [ext_resource type="Script" path="res://Scripts/PlayerUI.gd" id="1_vb3xm"]
 [ext_resource type="PackedScene" uid="uid://cu6tmmpapw87t" path="res://Scenes/StatusLabels.tscn" id="2_7yifw"]
@@ -9,9 +9,11 @@
 [ext_resource type="Script" path="res://Scripts/Managers/RollManager.gd" id="6_v7tih"]
 [ext_resource type="Script" path="res://Scripts/Managers/SyncManager.gd" id="7_2063l"]
 [ext_resource type="PackedScene" uid="uid://ct7solb00s704" path="res://Scenes/CombatDistribution.tscn" id="7_xt1sn"]
+[ext_resource type="PackedScene" uid="uid://7rtcueb16a1a" path="res://Scenes/TrinketsUI.tscn" id="8_1b88l"]
 [ext_resource type="Script" path="res://Scripts/Managers/TurnManager.gd" id="8_7ajt0"]
 [ext_resource type="PackedScene" uid="uid://dnlgumlh4oclb" path="res://Scenes/DefeatScreen.tscn" id="8_nhtqx"]
 [ext_resource type="Script" path="res://Scripts/Managers/ActionManager.gd" id="9_fx54b"]
+[ext_resource type="PackedScene" uid="uid://bb0m10tpocqjx" path="res://Scenes/DiceUI.tscn" id="9_pke17"]
 [ext_resource type="PackedScene" uid="uid://bgwvggcqb6yqq" path="res://Scenes/VictoryScreen.tscn" id="9_twybn"]
 [ext_resource type="Script" path="res://Scripts/Managers/IntentionManager.gd" id="10_6honh"]
 [ext_resource type="Script" path="res://Scripts/Managers/ButtonManager.gd" id="11_jc1uc"]
@@ -68,6 +70,14 @@ offset_bottom = 460.5
 unique_name_in_owner = true
 
 [node name="Shop" parent="PlayerUI" instance=ExtResource("4_0jo41")]
+unique_name_in_owner = true
+visible = false
+
+[node name="TrinketsUI" parent="PlayerUI" instance=ExtResource("8_1b88l")]
+unique_name_in_owner = true
+visible = false
+
+[node name="DiceUI" parent="PlayerUI" instance=ExtResource("9_pke17")]
 unique_name_in_owner = true
 visible = false
 

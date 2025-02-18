@@ -21,8 +21,6 @@ func update_players() -> void:
 	for i in len(Global.player_order):
 		player_intentions[Global.player_order[i]] = len(Global.player_order) - i - 1
 		labels[player_intentions[Global.player_order[i]]].text = str(Global.player_names[Global.player_order[i]]) + ": No intention"
-		
-		print(i, ", ", Global.player_order[i], ", ", labels[player_intentions[Global.player_order[i]]].text)
 
 @rpc("any_peer", "call_local")
 func update_intention(player_id: int, intention: String) -> void:

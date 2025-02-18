@@ -1,0 +1,68 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqyh7ofxgbkjt"]
+
+[ext_resource type="Script" path="res://Scripts/DicePanel.gd" id="1_fr88g"]
+
+[node name="DicePanel" type="MarginContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+script = ExtResource("1_fr88g")
+
+[node name="DicePanelMargin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="DicePanelHBox" type="HBoxContainer" parent="DicePanelMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TypeLabel" type="Label" parent="DicePanelMargin/DicePanelHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Type"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TrinketPanelSeparator" type="ColorRect" parent="DicePanelMargin/DicePanelHBox"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="SidesLabel" type="Label" parent="DicePanelMargin/DicePanelHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sides"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TrinketPanelSeparator2" type="ColorRect" parent="DicePanelMargin/DicePanelHBox"]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="ValuesLabel" type="Label" parent="DicePanelMargin/DicePanelHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Values
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DicePanelBackground" type="Panel" parent="."]
+layout_mode = 2

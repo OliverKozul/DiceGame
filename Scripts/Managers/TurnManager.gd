@@ -119,7 +119,7 @@ func create_and_animate_rect() -> void:
 	var rect = Utils.create_rect()
 	player_ui.add_child(rect)
 	var tween = get_tree().create_tween()
-	tween.tween_property(rect, "scale", Vector2(0, 0), 5.0)  # 5-second shrink
+	tween.tween_property(rect, "scale", Vector2(0, 0), 1.0)  # 5-second shrink
 	tween.finished.connect(_on_tween_completed.bind(rect))
 
 func _on_tween_completed(rect: TextureRect) -> void:

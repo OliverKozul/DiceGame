@@ -15,7 +15,11 @@ func resolve_current_player_turn(player_id: int) -> void:
 	match action["action"]:
 		Enums.Action.SHOP:
 			show_shop(player_id)
-			player_ui.combat_distribution.show_combat_ui(Enums.Target.NONE)
+			
+			if Global.player_info[player_id].combat > 0 and len(Global.players) > 1:
+				player_ui.combat_distribution.show_combat_ui(Enums.Target.NONE)
+			else:
+				player_ui.turn_manager.advance_to_next_player()
 		Enums.Action.ATTACK:
 			player_ui.combat_distribution.show_combat_ui(action["target"])
 		Enums.Action.SKIP:
