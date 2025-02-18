@@ -2,6 +2,7 @@ extends CanvasLayer
 
 
 @onready var status_label = %ConnectionStatusLabel
+@onready var lobby_text_label: Label = %LobbyTextLabel
 @onready var ip_input = %ServerIPTextEdit
 @onready var player_name_text_edit: LineEdit = %PlayerNameTextEdit
 
@@ -40,6 +41,7 @@ func _on_host_button_pressed() -> void:
 	print("Server started on port ", PORT)
 	rpc_id(player_id, "hide_ui")
 	rpc_id(player_id, "update_player_array_host", player_id)
+	lobby_text_label.text = "Start the game when ready."
 
 # Join a Game
 func _on_join_button_pressed() -> void:
@@ -69,6 +71,9 @@ func _on_peer_connected(player_id: int) -> void:
 	rpc_id(1, "update_player_name_dict_host")
 	rpc_id(1, "update_player_array_host", player_id)
 	rpc_id(player_id, "hide_ui")
+	
+	if multiplayer.get_unique_id() != 1:
+		lobby_text_label.text = "Wait for the host to start the game."
 
 func _on_peer_disconnected(player_id: int) -> void:
 	print("Player ", player_id, " left.")
