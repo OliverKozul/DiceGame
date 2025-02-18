@@ -1,20 +1,29 @@
 extends MarginContainer
+class_name PlayerIntentionLabels
 
 
 @onready var label_container = $LabelVBox
 var player_intentions = {}
+var labels = []
 
 
 func _ready() -> void:
-	update_players(Global.player_order)
-
-func update_players(player_list: Array) -> void:
-	for player_id in player_list:
+	for i in len(Global.player_order):
 		var label = Label.new()
-		label.text = str(Global.player_names[player_id]) + ": No intention"
 		label_container.add_child(label)
-		player_intentions[player_id] = label
+		player_intentions[Global.player_order[i]] = i
+		labels.append(label)
+		
+	update_players()
+
+@rpc("any_peer", "call_local")
+func update_players() -> void:
+	for i in len(Global.player_order):
+		player_intentions[Global.player_order[i]] = len(Global.player_order) - i - 1
+		labels[player_intentions[Global.player_order[i]]].text = str(Global.player_names[Global.player_order[i]]) + ": No intention"
+		
+		print(i, ", ", Global.player_order[i], ", ", labels[player_intentions[Global.player_order[i]]].text)
 
 @rpc("any_peer", "call_local")
 func update_intention(player_id: int, intention: String) -> void:
-	player_intentions[player_id].text = str(Global.player_names[player_id]) + ": " + intention
+	labels[player_intentions[player_id]].text = str(Global.player_names[player_id]) + ": " + intention

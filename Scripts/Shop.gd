@@ -1,4 +1,5 @@
 extends Panel
+class_name Shop
 
 
 @onready var upgrade_buttons = {
@@ -9,7 +10,7 @@ extends Panel
 @onready var exit_button = %ExitButton
 @onready var gold_label: Label = %GoldLabel
 
-var player_ui: CanvasLayer
+var player_ui: PlayerUI
 var player_id: int
 
 signal shop_closed
@@ -23,7 +24,7 @@ func _ready() -> void:
 		
 	exit_button.pressed.connect(_on_exit_button_pressed)
 
-func initialize(ui: CanvasLayer, id: int) -> void:
+func initialize(ui: PlayerUI, id: int) -> void:
 	player_ui = ui
 	player_id = id
 	
@@ -40,7 +41,7 @@ func _on_upgrade_button_pressed(type: String) -> void:
 			
 		print(type.capitalize() + " dice upgraded!")
 		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
-		gold_label.text = "💰 count: " + str(Global.player_info[player_id].gold)
+		gold_label.text = player_ui.status_labels.gold.text
 	else:
 		print("Not enough gold to upgrade " + type + " dice.")
 

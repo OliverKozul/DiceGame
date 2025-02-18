@@ -1,4 +1,5 @@
 extends Manager
+class_name TurnManager
 
 # Constants for phases
 const PHASES = {
@@ -11,6 +12,9 @@ const PHASES = {
 @rpc("any_peer", "call_local")
 func transition_to_intention_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.intention)
+	determine_player_order()
+	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
+	player_ui.player_intention_labels.rpc("update_players")
 	rpc("show_phase_ui", "intention", "Declare your intention!")
 	rpc("create_and_animate_rect")
 
@@ -20,8 +24,6 @@ func transition_to_action_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.action)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
 	
-	determine_player_order()
-	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	rpc("allow_current_player_play")
 
 # Transition to Resolve Phase
@@ -117,7 +119,7 @@ func create_and_animate_rect() -> void:
 	var rect = Utils.create_rect()
 	player_ui.add_child(rect)
 	var tween = get_tree().create_tween()
-	tween.tween_property(rect, "scale", Vector2(0, 0), 1.0)  # 5-second shrink
+	tween.tween_property(rect, "scale", Vector2(0, 0), 5.0)  # 5-second shrink
 	tween.finished.connect(_on_tween_completed.bind(rect))
 
 func _on_tween_completed(rect: TextureRect) -> void:

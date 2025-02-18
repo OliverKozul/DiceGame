@@ -1,5 +1,5 @@
 extends Manager
-
+class_name IntentionManager
 
 ### **Update Intention**
 @rpc("any_peer", "call_local")

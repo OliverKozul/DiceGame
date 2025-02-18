@@ -2,8 +2,8 @@ class_name Manager
 extends Node
 
 
-var player_ui: CanvasLayer
+var player_ui: PlayerUI
 
 
-func initialize(ui: CanvasLayer) -> void:
+func initialize(ui: PlayerUI) -> void:
 	player_ui = ui

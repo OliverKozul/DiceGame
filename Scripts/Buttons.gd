@@ -1,4 +1,5 @@
 extends Control
+class_name Buttons
 
 
 @onready var buttons = {
@@ -10,10 +11,10 @@ extends Control
 	"skip": %SkipButton,
 }
 
-var player_ui: CanvasLayer
+var player_ui: PlayerUI
 
 
-func initialize(ui: CanvasLayer) -> void:
+func initialize(ui: PlayerUI) -> void:
 	player_ui = ui
 	
 	buttons["roll"].pressed.connect(player_ui.button_manager._on_roll_button_pressed)

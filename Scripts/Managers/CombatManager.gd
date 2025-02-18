@@ -1,4 +1,5 @@
 extends Manager
+class_name CombatManager
 
 
 func handle_combat(player_id: int, targets: Array) -> void:
@@ -8,9 +9,9 @@ func handle_combat(player_id: int, targets: Array) -> void:
 		Global.player_info[player_id].combat -= target[1]
 		player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 		
-		if target[0] == "Mob":
+		if str(target[0]) == "Mob":
 			handle_mob_combat(player_id, target)
-		elif target[0] == "Boss":
+		elif str(target[0]) == "Boss":
 			handle_boss_combat(player_id, target)
 		else:
 			handle_player_combat(player_id, target)

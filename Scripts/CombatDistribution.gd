@@ -1,15 +1,16 @@
 extends MarginContainer
+class_name CombatDistribution
 
 
 @onready var combat_distribution_vbox = $CombatDistributionVBox
 const TARGET = preload("res://Scenes/Target.tscn")
 const DROPDOWN_TARGET = preload("res://Scenes/DropdownTarget.tscn")
 
-var player_ui: CanvasLayer
+var player_ui: PlayerUI
 var dropdown_target_ui: DropdownTarget
 
 
-func initialize(ui: CanvasLayer) -> void:
+func initialize(ui: PlayerUI) -> void:
 	player_ui = ui
 
 func show_combat_ui(target: Enums.Target) -> void:
@@ -17,22 +18,27 @@ func show_combat_ui(target: Enums.Target) -> void:
 		
 	if target != Enums.Target.NONE:
 		dropdown_target_ui = DROPDOWN_TARGET.instantiate()
+		var attack_label = Label.new()
+		attack_label.text = "Attack your enemies!"
+		attack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		attack_label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		combat_distribution_vbox.add_child(attack_label)
 		combat_distribution_vbox.add_child(dropdown_target_ui)
 		
-	var label = Label.new()
-	label.text = "Sabotage your enemies!"
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	combat_distribution_vbox.add_child(label)
+	var sabotage_label = Label.new()
+	sabotage_label.text = "Sabotage your enemies!"
+	sabotage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sabotage_label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	combat_distribution_vbox.add_child(sabotage_label)
 	
 	for id in Global.players:
 		if id != player_id:
 			if target == Enums.Target.PLAYER:
-				dropdown_target_ui.target_list.add_item(str(id))
+				dropdown_target_ui.target_list.add_item(Global.player_names[id])
 				
 			var target_ui = TARGET.instantiate()
 			combat_distribution_vbox.add_child(target_ui)
-			target_ui.target_name.text = str(id)
+			target_ui.target_name.text = Global.player_names[id]
 			
 	if target == Enums.Target.MOB:
 		dropdown_target_ui.target_list.add_item("Mob")
@@ -76,7 +82,7 @@ func extract_targets(children: Array) -> Array:
 	
 	for child in children:
 		if child is Target:
-			var target = child.target_name.text
+			var target = Global.player_names.find_key(child.target_name.text)
 			var combat_taken = int(child.target_combat_taken.text)
 			
 			targets.push_front([target, combat_taken, "sabotage"])
@@ -85,6 +91,9 @@ func extract_targets(children: Array) -> Array:
 			if len(selected_items) != 0:
 				var target = child.target_list.get_item_text(selected_items[0])
 				var combat_taken = int(child.target_combat_taken.text)
+				
+				if target not in ["Mob", "Boss"]:
+					target = Global.player_names.find_key(target)
 				
 				targets.push_back([target, combat_taken, "damage"])
 			

@@ -14,4 +14,4 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="LabelVBox"]
 layout_mode = 2
-text = "Player intentions:"
+text = "Player order (descending cunning):"

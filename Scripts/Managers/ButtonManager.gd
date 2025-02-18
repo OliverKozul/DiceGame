@@ -1,4 +1,5 @@
 extends Manager
+class_name ButtonManager
 
 
 func _on_roll_button_pressed() -> void:

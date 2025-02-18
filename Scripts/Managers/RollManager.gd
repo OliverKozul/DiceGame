@@ -1,4 +1,5 @@
 extends Manager
+class_name RollManager
 
 
 ### **Player Rolls**
@@ -10,7 +11,7 @@ func roll_button_pressed(player_id: int) -> void:
 		return
 		
 	var roll_results = []
-	var roll_results_text = "You rolled: ["
+	var roll_results_text = Global.player_names[player_id] + " rolled: ["
 	var die_count = len(Global.player_info[player_id].die_faces)
 	
 	for i in die_count:
@@ -30,15 +31,13 @@ func roll_button_pressed(player_id: int) -> void:
 				
 		roll_results.append(roll_result)
 		
-	# Send result to all players
-	player_ui.turn_info_labels.roll_result.text = roll_results_text + "]"
+	roll_results_text += "]"
 	player_ui.current_player_label.text = "Wait for other players to roll."
-	player_ui.sync_manager.rpc("sync_roll_results", player_id, roll_results)
+	player_ui.sync_manager.rpc("sync_roll_results", player_id, roll_results, roll_results_text)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 		
-	Global.players_rolled[player_id] = true  # Mark as rolled
+	Global.players_rolled[player_id] = true
 
-	# Check if all players have rolled
 	if check_all_players_rolled():
 		player_ui.turn_manager.rpc_id(1, "transition_to_intention_phase")
 		

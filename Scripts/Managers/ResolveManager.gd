@@ -1,4 +1,5 @@
 extends Manager
+class_name ResolveManager
 
 
 @rpc("any_peer", "call_local")

@@ -11,11 +11,13 @@ extends CanvasLayer
 @onready var player_name_button: Button = %PlayerNameButton
 
 @onready var player_name_h_box: HBoxContainer = %PlayerNameHBox
-@onready var server_iph_box: HBoxContainer = $MarginContainer/HBoxContainer/VBoxContainer/ServerIPHBox
+@onready var server_iph_box: HBoxContainer = %ServerIPHBox
+@onready var player_list_v_box: VBoxContainer = $PlayerListMargin/PlayerListVBox
 
 const PORT: int = 7777
 var peer = ENetMultiplayerPeer.new()
 var game_started: bool = false
+var player_labels: Dictionary = {}
 
 
 func _ready() -> void:
@@ -28,7 +30,6 @@ func _ready() -> void:
 	join_game_button.pressed.connect(_on_join_button_pressed)
 	start_game_button.pressed.connect(_on_start_game_pressed)
 	player_name_button.pressed.connect(_on_player_name_button_pressed)
-	#rpc("update_player_array", multiplayer.get_unique_id())
 
 # Host a Game
 func _on_host_button_pressed() -> void:
@@ -54,12 +55,18 @@ func _on_join_button_pressed() -> void:
 	print("Attempting to connect to ", ip)
 	
 func _on_player_name_button_pressed() -> void:
-	status_label.text = "Set name to: " + player_name_text_edit.text
-	rpc("update_player_name", multiplayer.get_unique_id(), player_name_text_edit.text)
+	if player_name_text_edit.text in Global.player_names.values():
+		status_label.text = "Name already taken."
+	elif player_name_text_edit.text in ["Mob", "Boss"]:
+		status_label.text = "Name invalid."
+	else:
+		status_label.text = "Set name to: " + player_name_text_edit.text
+		rpc("update_player_name", multiplayer.get_unique_id(), player_name_text_edit.text)
 
 # Connection Success
 func _on_peer_connected(player_id: int) -> void:
 	print("Player ", player_id, " joined.")
+	rpc_id(1, "update_player_name_dict_host")
 	rpc_id(1, "update_player_array_host", player_id)
 	rpc_id(player_id, "hide_ui")
 
@@ -86,27 +93,44 @@ func _on_start_game_pressed() -> void:
 				break
 		
 		if valid_names:
-			rpc("update_player_array", Global.players)
-			rpc("update_player_name_dict", Global.player_names)
-			start_game.rpc()  # Broadcast to all players
+			start_game.rpc()
 
 @rpc("any_peer", "call_local")
 func update_player_array_host(player_id: int):
 	if not Global.players.has(player_id):
 		Global.players.append(player_id)
 		Global.players.sort()
+		
+	rpc("update_player_array", Global.players)
 
 @rpc("any_peer", "call_local")
-func update_player_array(players_array: Array):
+func update_player_array(players_array: Array) -> void:
 	Global.players = players_array
 	
+	for player_id in players_array:
+		if player_labels.get(player_id, null) == null:
+			var label = Label.new()
+		
+			if Global.player_names.get(player_id, "") == "":
+				label.text = str(player_id)
+			else:
+				label.text = Global.player_names[player_id]
+				
+			player_labels[player_id] = label
+			player_list_v_box.add_child(label)
+
 @rpc("any_peer", "call_local")
-func update_player_name_dict(player_name_array: Dictionary):
+func update_player_name_dict_host() -> void:
+	rpc("update_player_name_dict", Global.player_names)
+
+@rpc("any_peer", "call_local")
+func update_player_name_dict(player_name_array: Dictionary) -> void:
 	Global.player_names = player_name_array
 
 @rpc("any_peer", "call_local")
-func update_player_name(player_id: int, player_name: String):
+func update_player_name(player_id: int, player_name: String) -> void:
 	Global.player_names[player_id] = player_name
+	player_labels[player_id].text = player_name
 
 @rpc("any_peer", "call_local")
 func start_game() -> void:
@@ -117,9 +141,9 @@ func start_game() -> void:
 	
 	if multiplayer.is_server():
 		if game_started:
-			return  # Prevent multiple calls
+			return
 		game_started = true
-		start_game.rpc()  # Broadcast to all clients
+		start_game.rpc()
 
 	get_tree().change_scene_to_file("res://Scenes/PlayerUI.tscn")
 	

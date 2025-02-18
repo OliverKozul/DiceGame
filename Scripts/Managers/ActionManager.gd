@@ -1,4 +1,5 @@
 extends Manager
+class_name ActionManager
 
 
 @rpc("any_peer", "call_local")

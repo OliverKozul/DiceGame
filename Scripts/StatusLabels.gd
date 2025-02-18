@@ -1,4 +1,5 @@
 extends VBoxContainer
+class_name StatusLabels
 
 
 @onready var hp = %HPLabel
@@ -7,11 +8,11 @@ extends VBoxContainer
 @onready var cunning = %CunningLabel
 @onready var trinkets = %TrinketsLabel
 
-var player_ui: CanvasLayer
+var player_ui: PlayerUI
 var player_id: int
 
 
-func initialize(ui: CanvasLayer, id: int) -> void:
+func initialize(ui: PlayerUI, id: int) -> void:
 	player_id = id
 	player_ui = ui
 	player_ui.connect("update_all_status_labels", _on_update_all_status_labels)

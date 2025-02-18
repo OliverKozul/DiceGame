@@ -1,25 +1,26 @@
 extends CanvasLayer
+class_name PlayerUI
 
 
 @onready var current_player_label = %CurrentPlayerLabel
-@onready var status_labels = %StatusLabels
-@onready var player_intention_labels = %PlayerIntentionLabels
-@onready var turn_info_labels = %TurnInfoLabels
-@onready var buttons = %Buttons
-@onready var combat_distribution = %CombatDistribution
-@onready var shop = %Shop
+@onready var status_labels: StatusLabels = %StatusLabels
+@onready var player_intention_labels: PlayerIntentionLabels = %PlayerIntentionLabels
+@onready var turn_info_labels: TurnInfoLabels = %TurnInfoLabels
+@onready var buttons: Buttons = %Buttons
+@onready var combat_distribution: CombatDistribution = %CombatDistribution
+@onready var shop: Shop = %Shop
 @onready var defeat_screen: ColorRect = %DefeatScreen
 @onready var victory_screen: ColorRect = %VictoryScreen
 
-@onready var roll_manager = %RollManager
-@onready var sync_manager = %SyncManager
-@onready var turn_manager = %TurnManager
-@onready var intention_manager = %IntentionManager
-@onready var action_manager = %ActionManager
-@onready var resolve_manager = %ResolveManager
-@onready var button_manager = %ButtonManager
-@onready var trinket_manager = %TrinketManager
-@onready var combat_manager = %CombatManager
+@onready var roll_manager: RollManager = %RollManager
+@onready var sync_manager: SyncManager = %SyncManager
+@onready var turn_manager: TurnManager = %TurnManager
+@onready var intention_manager: IntentionManager = %IntentionManager
+@onready var action_manager: ActionManager = %ActionManager
+@onready var resolve_manager: ResolveManager = %ResolveManager
+@onready var button_manager: ButtonManager = %ButtonManager
+@onready var trinket_manager: TrinketManager = %TrinketManager
+@onready var combat_manager: CombatManager = %CombatManager
 
 var rng = RandomNumberGenerator.new()
 
@@ -49,7 +50,7 @@ func initialize(player_id: int) -> void:
 		}
 		
 	status_labels.initialize(self, player_id)
-	turn_info_labels.initialize(self, player_id)
+	turn_info_labels.initialize(self)
 	buttons.initialize(self)
 	combat_distribution.initialize(self)
 	shop.initialize(self, player_id)

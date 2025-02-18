@@ -1,4 +1,5 @@
 extends Manager
+class_name TrinketManager
 
 
 var trinkets: Array[Trinket] = []

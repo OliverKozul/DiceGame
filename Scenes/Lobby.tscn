@@ -13,49 +13,52 @@ grow_vertical = 2
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 script = ExtResource("1_t77qt")
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PlayerListMargin" type="MarginContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="PlayerListVBox" type="VBoxContainer" parent="CanvasLayer/PlayerListMargin"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer/HBoxContainer"]
+[node name="PlayerListLabel" type="Label" parent="CanvasLayer/PlayerListMargin/PlayerListVBox"]
 layout_mode = 2
+text = "Player list:"
 
-[node name="HostGameButton" type="Button" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="MenuVBox" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 455.0
+offset_top = 242.0
+offset_right = 697.0
+offset_bottom = 406.0
+
+[node name="HostGameButton" type="Button" parent="CanvasLayer/MenuVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Host Game"
 
-[node name="JoinGameButton" type="Button" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="JoinGameButton" type="Button" parent="CanvasLayer/MenuVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Join Game"
 
-[node name="StartGameButton" type="Button" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="StartGameButton" type="Button" parent="CanvasLayer/MenuVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Start Game"
 
-[node name="ServerIPHBox" type="HBoxContainer" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="ServerIPHBox" type="HBoxContainer" parent="CanvasLayer/MenuVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 
-[node name="ServerIPLabel" type="Label" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer/ServerIPHBox"]
+[node name="ServerIPLabel" type="Label" parent="CanvasLayer/MenuVBox/ServerIPHBox"]
 layout_mode = 2
 text = "Enter Host IP: "
 
-[node name="ServerIPTextEdit" type="LineEdit" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer/ServerIPHBox"]
+[node name="ServerIPTextEdit" type="LineEdit" parent="CanvasLayer/MenuVBox/ServerIPHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
@@ -64,28 +67,28 @@ text = "127.0.0.1"
 placeholder_text = "127.0.0.1"
 alignment = 1
 
-[node name="PlayerNameHBox" type="HBoxContainer" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="PlayerNameHBox" type="HBoxContainer" parent="CanvasLayer/MenuVBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="PlayerNameLabel" type="Label" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer/PlayerNameHBox"]
+[node name="PlayerNameLabel" type="Label" parent="CanvasLayer/MenuVBox/PlayerNameHBox"]
 layout_mode = 2
 text = "Enter name: "
 horizontal_alignment = 1
 
-[node name="PlayerNameTextEdit" type="LineEdit" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer/PlayerNameHBox"]
+[node name="PlayerNameTextEdit" type="LineEdit" parent="CanvasLayer/MenuVBox/PlayerNameHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
 placeholder_text = "Anon"
 
-[node name="PlayerNameButton" type="Button" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer/PlayerNameHBox"]
+[node name="PlayerNameButton" type="Button" parent="CanvasLayer/MenuVBox/PlayerNameHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "OK"
 
-[node name="ConnectionStatusLabel" type="Label" parent="CanvasLayer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="ConnectionStatusLabel" type="Label" parent="CanvasLayer/MenuVBox"]
 unique_name_in_owner = true
 layout_mode = 2
 horizontal_alignment = 1
