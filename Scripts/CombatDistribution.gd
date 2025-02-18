@@ -75,7 +75,7 @@ func _on_submit_button_pressed():
 		for child in children:
 			child.queue_free()
 			
-		player_ui.turn_manager.advance_to_next_player()
+		player_ui.turn_manager.rpc_id(1, "advance_to_next_player")
 		
 func extract_targets(children: Array) -> Array:
 	var targets = []
@@ -96,7 +96,7 @@ func extract_targets(children: Array) -> Array:
 				if target not in ["Mob", "Boss"]:
 					target = Global.player_names.find_key(target)
 				
-				if combat_taken > 0:
+				if combat_taken > 0 or str(target) == "Mob":
 					targets.push_back([target, combat_taken, "damage"])
 			
 	return targets

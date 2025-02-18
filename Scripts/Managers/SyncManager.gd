@@ -20,6 +20,7 @@ func sync_roll_results(player_id: int, roll_results: Array, roll_text: String) -
 
 @rpc("any_peer", "call_local")
 func sync_turn(new_turn: int) -> void:
+	rpc("sync_current_player_index", 0)
 	var player_id = multiplayer.get_unique_id()
 	Global.player_info[player_id].combat = 0
 	Global.players_rolled.clear()
@@ -34,6 +35,9 @@ func sync_turn(new_turn: int) -> void:
 	player_ui.buttons.show_buttons("roll")
 	player_ui.buttons.buttons["attack_mobs"].text = "Attack Mobs" + " (" + str(Global.mob.hp) + " HP)"
 	player_ui.buttons.buttons["attack_boss"].text = "Attack Boss" + " (" + str(Global.boss.max_hp) + " HP)"
+	
+	for id in Global.player_order:
+		player_ui.turn_info_labels.roll_results[id].text = Global.player_names[id] + " rolled: N/A"
 	
 	player_ui.current_player_label.text = "Roll the dice!"
 	player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
@@ -53,6 +57,9 @@ func sync_player_order(new_player_order: Array) -> void:
 @rpc("any_peer", "call_local")
 func sync_current_player_index(new_index: int) -> void:
 	Global.current_player_index = new_index
+	#print("INSYNC")
+	#print(Global.player_names[multiplayer.get_unique_id()])
+	#print(Global.current_player_index)
 	
 @rpc("any_peer", "call_local")
 func sync_phase(new_phase: String) -> void:

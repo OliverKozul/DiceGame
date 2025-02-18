@@ -12,6 +12,7 @@ const PHASES = {
 @rpc("any_peer", "call_local")
 func transition_to_intention_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.intention)
+	player_ui.sync_manager.rpc("sync_current_player_index", 0)
 	determine_player_order()
 	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	player_ui.player_intention_labels.rpc("update_players")
@@ -24,7 +25,7 @@ func transition_to_action_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.action)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
 	
-	rpc("allow_current_player_play")
+	rpc_id(1, "allow_current_player_play")
 
 # Transition to Resolve Phase
 @rpc("any_peer", "call_local")
@@ -34,7 +35,7 @@ func transition_to_resolve_phase() -> void:
 	
 	Global.player_order.reverse()
 	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
-	rpc("allow_current_player_play")
+	rpc_id(1, "allow_current_player_play")
 
 # Check if All Players Have Performed an Action
 func check_all_players_played() -> bool:
@@ -71,16 +72,16 @@ func request_turn_sync() -> void:
 @rpc("any_peer", "call_local")
 func allow_current_player_play() -> void:
 	var current_player = Global.player_order[Global.current_player_index]
-	var player_id = multiplayer.get_unique_id()
 	
-	if player_id == current_player:
-		if Global.current_phase == PHASES.action:
-			show_phase_ui("action", "It's your turn!")
-		elif Global.current_phase == PHASES.resolve:
-			show_phase_ui("resolve", "It's your turn!")
-			player_ui.resolve_manager.rpc("resolve_current_player_turn", player_id)
-	else:
-		show_phase_ui("wait", "Waiting for player %s" % Global.player_names[current_player])
+	for player_id in Global.player_order:
+		if player_id == current_player:
+			if Global.current_phase == PHASES.action:
+				rpc_id(player_id, "show_phase_ui", "action", "It's your turn!")
+			elif Global.current_phase == PHASES.resolve:
+				rpc_id(player_id, "show_phase_ui", "resolve", "It's your turn!")
+				player_ui.resolve_manager.rpc("resolve_current_player_turn", player_id)
+		else:
+			rpc_id(player_id, "show_phase_ui", "wait", "Waiting for player %s" % Global.player_names[current_player])
 
 # Initiate Next Turn (Only Host Can Trigger)
 @rpc("any_peer", "call_local")
@@ -95,9 +96,8 @@ func initiate_next_turn() -> void:
 # Advance to Next Player
 @rpc("any_peer", "call_local")
 func advance_to_next_player() -> void:
-	Global.current_player_index += 1
-	player_ui.current_player_label.text = "Waiting for next turn."
-	player_ui.sync_manager.rpc("sync_current_player_index", Global.current_player_index)
+	#player_ui.current_player_label.text = "Waiting for next turn."
+	player_ui.sync_manager.rpc("sync_current_player_index", Global.current_player_index + 1)
 	
 	if check_all_players_played():
 		if Global.current_phase == PHASES.action:
@@ -107,7 +107,7 @@ func advance_to_next_player() -> void:
 			print("All players have been resolved. Transitioning to next turn.")
 			rpc_id(1, "initiate_next_turn")
 	else:
-		rpc("allow_current_player_play")
+		rpc_id(1, "allow_current_player_play")
 
 @rpc("any_peer", "call_local")
 func show_phase_ui(buttons: String, label_text: String) -> void:

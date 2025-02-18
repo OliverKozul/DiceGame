@@ -69,8 +69,8 @@ func _on_player_defeated(attacker_id: int, defeated_id: int, combat_amount: int)
 	player_ui.rpc("show_defeat_ui", defeated_id)
 	Global.players.erase(defeated_id)
 	Global.player_order.erase(defeated_id)
-	rpc("sync_players", Global.players)
-	rpc("sync_player_order", Global.player_order)
+	player_ui.sync_manager.rpc("sync_players", Global.players)
+	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	
 	if len(Global.players) == 1:
 		player_ui.rpc_id(Global.players[0], "show_victory_ui")

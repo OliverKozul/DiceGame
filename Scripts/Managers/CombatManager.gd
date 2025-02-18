@@ -28,7 +28,7 @@ func handle_mob_combat(player_id: int, target: Array) -> void:
 		
 		if Global.player_info[player_id].hp <= 0:
 			SignalBus._on_player_defeated.emit(-1, player_id, Global.mob.damage)
-			print(player_id, " defeated!")
+			print(Global.player_names[player_id], " defeated!")
 	
 func handle_boss_combat(player_id: int, target: Array) -> void:
 	print("You attacked a boss!")
@@ -62,7 +62,7 @@ func handle_player_combat(player_id: int,target: Array) -> void:
 	
 	if Global.player_info[target[0]].hp <= 0:
 		SignalBus._on_player_defeated.emit(player_id, target[0], target[1])
-		print(target[0], " defeated!")
+		print(Global.player_names[target[0]], " defeated!")
 
 @rpc("any_peer", "call_local")
 func deal_boss_damage() -> void:
@@ -71,4 +71,4 @@ func deal_boss_damage() -> void:
 		
 		if Global.player_info[player_id[0]].hp <= 0:
 			SignalBus._on_player_defeated.emit(-1, player_id, Global.boss.damage)
-			print(player_id, " defeated!")
+			print(Global.player_names[player_id], " defeated!")

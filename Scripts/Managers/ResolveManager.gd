@@ -19,7 +19,7 @@ func resolve_current_player_turn(player_id: int) -> void:
 			if Global.player_info[player_id].combat > 0 and len(Global.players) > 1:
 				player_ui.combat_distribution.show_combat_ui(Enums.Target.NONE)
 			else:
-				player_ui.turn_manager.advance_to_next_player()
+				player_ui.turn_manager.rpc_id(1, "advance_to_next_player")
 		Enums.Action.ATTACK:
 			player_ui.combat_distribution.show_combat_ui(action["target"])
 		Enums.Action.SKIP:
@@ -32,10 +32,10 @@ func resolve_current_player_turn(player_id: int) -> void:
 @rpc("any_peer", "call_local")
 func show_shop(player_id: int) -> void:
 	player_ui.shop.open()
-	print("Showing shop to player: ", player_id)
+	print("Showing shop to player: ", Global.player_names[player_id])
 
 @rpc("any_peer", "call_local")
 func perform_skip(player_id: int) -> void:
-	print("Player ", player_id, " is skipping")
-	player_ui.turn_manager.advance_to_next_player()
+	print("Player ", Global.player_names[player_id], " is skipping")
+	player_ui.turn_manager.rpc_id(1, "advance_to_next_player")
 	
