@@ -23,7 +23,7 @@ func add_trinket(player_id: int, trinket: Trinket) -> void:
 	if trinket.has_method("on_added"):
 		trinket.on_added(player_id, self)  # Allow trinkets to register for events
 	
-	Global.player_info[player_id]["trinkets"].append(trinket.name)
+	Global.player_info[player_id]["trinkets"].append({"name": trinket.name, "description": trinket.description})
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 
 func remove_trinket(player_id: int, trinket: Trinket) -> void:
@@ -32,7 +32,11 @@ func remove_trinket(player_id: int, trinket: Trinket) -> void:
 	if trinket.has_method("on_removed"):
 		trinket.on_removed(self)
 		
-	Global.player_info[player_id]["trinkets"].erase(trinket.name)
+	for player_trinket in Global.player_info[player_id]["trinkets"]:
+		if player_trinket.name == trinket.name:
+			Global.player_info[player_id]["trinkets"].erase(player_trinket)
+			break
+			
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 		
 func _on_combat_roll(player_id: int, combat_amount: int) -> void:

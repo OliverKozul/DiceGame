@@ -20,6 +20,9 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 script = ExtResource("1_fr88g")
 
+[node name="DicePanelBackground" type="Panel" parent="."]
+layout_mode = 2
+
 [node name="DicePanelMargin" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 4
@@ -63,6 +66,3 @@ text = "Values
 "
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="DicePanelBackground" type="Panel" parent="."]
-layout_mode = 2

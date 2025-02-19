@@ -57,9 +57,6 @@ func sync_player_order(new_player_order: Array) -> void:
 @rpc("any_peer", "call_local")
 func sync_current_player_index(new_index: int) -> void:
 	Global.current_player_index = new_index
-	#print("INSYNC")
-	#print(Global.player_names[multiplayer.get_unique_id()])
-	#print(Global.current_player_index)
 	
 @rpc("any_peer", "call_local")
 func sync_phase(new_phase: String) -> void:

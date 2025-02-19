@@ -1,2 +1,4 @@
--Improve trinket visibility
--Improve information available to players
+- Balance
+- More trinkets
+- Shop consumables
+- More mobs

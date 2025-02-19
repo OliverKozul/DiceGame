@@ -25,6 +25,8 @@ class_name PlayerUI
 @onready var combat_manager: CombatManager = %CombatManager
 
 var rng = RandomNumberGenerator.new()
+var player_info_uis: Dictionary = {}
+var player_info_ui_scene: PackedScene = preload("res://Scenes/PlayerInfoUI.tscn")
 
 signal update_all_status_labels
 
@@ -36,22 +38,24 @@ func _ready() -> void:
 
 	if multiplayer.is_server():
 		Global.current_turn = 1
-	else:
-		turn_manager.rpc_id(1, "request_turn_sync")
+		sync_manager.rpc("sync_turn", Global.current_turn)
+		player_intention_labels.rpc("update_players")
 
 func initialize(player_id: int) -> void:
-	if not Global.player_info.has(player_id):
-		Global.player_info[player_id] = {
-			"gold": 0,
-			"cunning": 0,
-			"combat": 0,
-			"hp": 1,
-			"trinkets": [],
-			"die_faces": [["⚔", "⚔", "⚔", "💰", "💰", "🧠"]],
-			"die_face_values": [{"⚔": 1, "💰": 1, "🧠": 1}]
-		}
+	for id in Global.player_order:
+		if not Global.player_info.has(id):
+			Global.player_info[id] = {
+				"gold": 0,
+				"cunning": 0,
+				"combat": 0,
+				"hp": 10,
+				"trinkets": [],
+				"die_faces": [["⚔", "⚔", "⚔", "💰", "💰", "🧠"]],
+				"die_face_values": [{"⚔": 1, "💰": 1, "🧠": 1}],
+			}
 		
 	status_labels.initialize(self, player_id)
+	player_intention_labels.initialize(self)
 	turn_info_labels.initialize(self)
 	buttons.initialize(self)
 	combat_distribution.initialize(self)
@@ -70,6 +74,16 @@ func initialize(player_id: int) -> void:
 	combat_manager.initialize(self)
 	
 	current_player_label.text = "Roll the dice!"
+		
+	create_player_info_ui()
+	
+func create_player_info_ui() -> void:
+	for player_id in Global.player_order:
+		var player_info_ui: PlayerInfoUI = player_info_ui_scene.instantiate()
+		player_info_ui.visible = false
+		add_child(player_info_ui)
+		player_info_ui.initialize(self, player_id)
+		player_info_uis[player_id] = player_info_ui
 	
 @rpc("any_peer", "call_local")
 func show_defeat_ui(player_id: int) -> void:

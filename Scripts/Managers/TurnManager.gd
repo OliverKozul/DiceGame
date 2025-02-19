@@ -61,12 +61,6 @@ func _compare_players(player_b_id: int, player_a_id: int) -> bool:
 		return gold_a > gold_b
 	
 	return player_a_id > player_b_id  # Random tie-breaker using rng
-	
-# Request Turn Sync (For Late Joiners)
-@rpc("any_peer", "call_local")
-func request_turn_sync() -> void:
-	if multiplayer.is_server():
-		player_ui.sync_manager.rpc_id(multiplayer.get_remote_sender_id(), "sync_turn", Global.current_turn)
 
 # Allow Current Player Action
 @rpc("any_peer", "call_local")

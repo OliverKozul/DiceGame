@@ -20,6 +20,9 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 script = ExtResource("1_qblkk")
 
+[node name="TrinketPanelBackground" type="Panel" parent="."]
+layout_mode = 2
+
 [node name="TrinketPanelMargin" type="MarginContainer" parent="."]
 layout_mode = 2
 theme_override_constants/margin_left = 4
@@ -52,6 +55,3 @@ text = "Description
 "
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="TrinketPanelBackground" type="Panel" parent="."]
-layout_mode = 2

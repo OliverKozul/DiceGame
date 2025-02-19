@@ -57,5 +57,6 @@ func get_die_face(type: String) -> String:
 	return ""
 
 func _on_exit_button_pressed() -> void:
+	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 	emit_signal("shop_closed")
 	hide()

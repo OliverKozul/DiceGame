@@ -59,15 +59,15 @@ func _on_submit_button_pressed():
 	var targets = extract_targets(children)
 			
 	var combat_total = 0
-	var has_negative = false
+	var invalid_inputs = false
 	
 	for target in targets:
 		if target[1] < 0:
-			has_negative = true
+			invalid_inputs = true
 			
 		combat_total += target[1]
 	
-	if (combat_total > Global.player_info[player_id].combat and combat_total != 0) or has_negative:
+	if (combat_total > Global.player_info[player_id].combat and combat_total != 0) or invalid_inputs:
 		player_ui.current_player_label.text = "Bad inputs, try again!"
 	else:
 		player_ui.combat_manager.handle_combat(player_id, targets)
@@ -83,20 +83,28 @@ func extract_targets(children: Array) -> Array:
 	for child in children:
 		if child is Target:
 			var target = Global.player_names.find_key(child.target_name.text)
-			var combat_taken = int(child.target_combat_taken.text)
+			var combat_taken = child.target_combat_taken.text
 			
-			if combat_taken > 0:
-				targets.push_front([target, combat_taken, "sabotage"])
+			if combat_taken.is_valid_int() or combat_taken == "":
+				combat_taken = int(combat_taken)
+			else:
+				combat_taken = -1
+			
+			targets.push_front([target, combat_taken, "sabotage"])
 		elif child is DropdownTarget:
 			var selected_items = child.target_list.get_selected_items()
 			if len(selected_items) != 0:
 				var target = child.target_list.get_item_text(selected_items[0])
-				var combat_taken = int(child.target_combat_taken.text)
+				var combat_taken = child.target_combat_taken.text
+				
+				if combat_taken.is_valid_int() or combat_taken == "":
+					combat_taken = int(combat_taken)
+				else:
+					combat_taken = -1
 				
 				if target not in ["Mob", "Boss"]:
 					target = Global.player_names.find_key(target)
 				
-				if combat_taken > 0 or str(target) == "Mob":
-					targets.push_back([target, combat_taken, "damage"])
+				targets.push_back([target, combat_taken, "damage"])
 			
 	return targets
