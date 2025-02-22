@@ -8,6 +8,8 @@ class_name PlayerUI
 @onready var turn_info_labels: TurnInfoLabels = %TurnInfoLabels
 @onready var buttons: Buttons = %Buttons
 @onready var combat_distribution: CombatDistribution = %CombatDistribution
+@onready var loot_distribution: LootDistribution = %LootDistribution
+@onready var bid_distribution: BidDistribution = %BidDistribution
 @onready var shop: Shop = %Shop
 @onready var trinkets_ui: TrinketsUI = %TrinketsUI
 @onready var dice_ui: DiceUI = %DiceUI
@@ -24,7 +26,6 @@ class_name PlayerUI
 @onready var trinket_manager: TrinketManager = %TrinketManager
 @onready var combat_manager: CombatManager = %CombatManager
 
-var rng = RandomNumberGenerator.new()
 var player_info_uis: Dictionary = {}
 var player_info_ui_scene: PackedScene = preload("res://Scenes/PlayerInfoUI.tscn")
 
@@ -33,7 +34,6 @@ signal update_all_status_labels
 
 func _ready() -> void:
 	var player_id = multiplayer.get_unique_id()
-	#rng.seed = 32  # Set the seed to 0
 	initialize(player_id)
 
 	if multiplayer.is_server():
@@ -51,6 +51,7 @@ func initialize(player_id: int) -> void:
 				"hp": 10,
 				"trinkets": [],
 				"die_faces": [["⚔", "⚔", "⚔", "💰", "💰", "🧠"]],
+				#"die_faces": [["⚔", "⚔", "⚔", "⚔", "⚔", "⚔"]],
 				"die_face_values": [{"⚔": 1, "💰": 1, "🧠": 1}],
 			}
 		
@@ -59,6 +60,8 @@ func initialize(player_id: int) -> void:
 	turn_info_labels.initialize(self)
 	buttons.initialize(self)
 	combat_distribution.initialize(self)
+	loot_distribution.initialize(self)
+	bid_distribution.initialize(self)
 	shop.initialize(self, player_id)
 	trinkets_ui.initialize(self, player_id)
 	dice_ui.initialize(self, player_id)

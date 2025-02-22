@@ -45,6 +45,7 @@ func _on_host_button_pressed() -> void:
 	rpc_id(player_id, "update_player_array_host", player_id)
 	lobby_text_label.text = "Start the game when ready."
 	player_list_label.show()
+	start_game_button.show()
 
 # Join a Game
 func _on_join_button_pressed() -> void:
@@ -57,7 +58,6 @@ func _on_join_button_pressed() -> void:
 	peer.create_client(ip, PORT)
 	multiplayer.multiplayer_peer = peer
 	status_label.text = "Joining server..."
-	print("Attempting to connect to ", ip)
 	
 func _on_player_name_button_pressed() -> void:
 	if player_name_text_edit.text in Global.player_names.values():
@@ -70,14 +70,15 @@ func _on_player_name_button_pressed() -> void:
 
 # Connection Success
 func _on_peer_connected(player_id: int) -> void:
-	print("Player ", player_id, " joined.")
-	rpc_id(1, "update_player_name_dict_host")
-	rpc_id(1, "update_player_array_host", player_id)
+	rpc_id(Global.host_id, "update_player_name_dict_host")
+	rpc_id(Global.host_id, "update_player_array_host", player_id)
 	rpc_id(player_id, "hide_ui")
 	player_list_label.show()
 	
 	if multiplayer.get_unique_id() != 1:
 		lobby_text_label.text = "Wait for the host to start the game."
+	else:
+		print("Player ", player_id, " joined.")
 
 func _on_peer_disconnected(player_id: int) -> void:
 	print("Player ", player_id, " left.")
@@ -85,7 +86,6 @@ func _on_peer_disconnected(player_id: int) -> void:
 func _on_connected_to_server() -> void:
 	status_label.text = "Connected to server!"
 	player_name_h_box.visible = true
-	print("Connected to server!")
 
 func _on_connection_failed() -> void:
 	status_label.text = "Connection failed."
@@ -114,6 +114,7 @@ func update_player_array_host(player_id: int):
 @rpc("any_peer", "call_local")
 func update_player_array(players_array: Array) -> void:
 	Global.players = players_array
+	Global.host_id = Global.players[0]
 	
 	for player_id in players_array:
 		if player_labels.get(player_id, null) == null:

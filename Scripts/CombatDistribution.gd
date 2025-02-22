@@ -75,7 +75,7 @@ func _on_submit_button_pressed():
 		for child in children:
 			child.queue_free()
 			
-		player_ui.turn_manager.rpc_id(1, "advance_to_next_player")
+		player_ui.turn_manager.rpc_id(Global.host_id, "advance_to_next_player")
 		
 func extract_targets(children: Array) -> Array:
 	var targets = []
@@ -90,9 +90,11 @@ func extract_targets(children: Array) -> Array:
 			else:
 				combat_taken = -1
 			
-			targets.push_front([target, combat_taken, "sabotage"])
+			if combat_taken != 0:
+				targets.push_front([target, combat_taken, "sabotage"])
 		elif child is DropdownTarget:
 			var selected_items = child.target_list.get_selected_items()
+			
 			if len(selected_items) != 0:
 				var target = child.target_list.get_item_text(selected_items[0])
 				var combat_taken = child.target_combat_taken.text

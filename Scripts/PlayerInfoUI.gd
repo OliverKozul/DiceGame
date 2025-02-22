@@ -4,7 +4,7 @@ class_name PlayerInfoUI
 
 var player_ui: PlayerUI
 var player_id: int
-var player_info_labels: Array = []
+var player_info_labels: Dictionary = {}
 @onready var player_info_v_box: VBoxContainer = %PlayerInfoVBox
 @onready var items_h_box: HBoxContainer = %ItemsHBox
 
@@ -31,21 +31,21 @@ func initialize(ui: PlayerUI, id: int) -> void:
 	exit_button.pressed.connect(_on_exit_button_pressed)
 
 func create_player_info_ui(id: int) -> void:
-	add_player_label("Name: ", Global.player_names[id])
-	add_player_label("❤️ HP: ", str(Global.player_info[id].hp))
-	add_player_label("💰 Gold: ", str(Global.player_info[id].gold))
-	add_player_label("⚔ Combat: ", str(Global.player_info[id].combat))
-	add_player_label("🧠 Cunning: ", str(Global.player_info[id].cunning))
+	add_player_label("name", "Name: ", Global.player_names[id])
+	add_player_label("hp", "❤️ HP: ", str(Global.player_info[id].hp))
+	add_player_label("gold", "💰 Gold: ", str(Global.player_info[id].gold))
+	add_player_label("combat", "⚔ Combat: ", str(Global.player_info[id].combat))
+	add_player_label("cunning", "🧠 Cunning: ", str(Global.player_info[id].cunning))
 	
 	player_info_v_box.move_child(items_h_box, player_info_v_box.get_child_count() - 1)
 
-func add_player_label(text: String, info: String) -> void:
+func add_player_label(type: String, text: String, info: String) -> void:
 	var label = Label.new()
 	label.text = text + info
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	player_info_v_box.add_child(label)
-	player_info_labels.append(label)
+	player_info_labels[type] = label
 	
 func create_die_ui() -> void:
 	var die = dice_panel.instantiate()
@@ -63,11 +63,11 @@ func create_trinket_ui() -> void:
 	trinket.description_label.text =  "Trinket Description"
 	
 func open() -> void:
-	player_info_labels[0].text = "Name: " + Global.player_names[player_id]
-	player_info_labels[1].text = "❤️ HP: " + str(Global.player_info[player_id].hp)
-	player_info_labels[2].text = "💰 Gold: " + str(Global.player_info[player_id].gold)
-	player_info_labels[3].text = "⚔ Combat: " + str(Global.player_info[player_id].combat)
-	player_info_labels[4].text = "🧠 Cunning: " + str(Global.player_info[player_id].cunning)
+	player_info_labels["name"].text = "Name: " + Global.player_names[player_id]
+	player_info_labels["hp"].text = "❤️ HP: " + str(Global.player_info[player_id].hp)
+	player_info_labels["gold"].text = "💰 Gold: " + str(Global.player_info[player_id].gold)
+	player_info_labels["combat"].text = "⚔ Combat: " + str(Global.player_info[player_id].combat)
+	player_info_labels["cunning"].text = "🧠 Cunning: " + str(Global.player_info[player_id].cunning)
 	
 	for i in len(Global.player_info[player_id].die_faces):
 		if i < len(dice):

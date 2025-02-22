@@ -35,4 +35,4 @@ func perform_action(player_id: int, action: Enums.Action, target: Enums.Target, 
 	if message != "":
 		player_ui.turn_info_labels.action.text = message
 	
-	player_ui.turn_manager.rpc_id(1, "advance_to_next_player")
+	player_ui.turn_manager.rpc_id(Global.host_id, "advance_to_next_player")

@@ -39,7 +39,7 @@ func roll_button_pressed(player_id: int) -> void:
 	Global.players_rolled[player_id] = true
 
 	if check_all_players_rolled():
-		player_ui.turn_manager.rpc_id(1, "transition_to_intention_phase")
+		player_ui.turn_manager.rpc_id(Global.host_id, "transition_to_intention_phase")
 		
 ### **Check if All Players Have Rolled**
 func check_all_players_rolled() -> bool:

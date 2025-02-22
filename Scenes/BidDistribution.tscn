@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://3gqr86ldbjo"]
+
+[ext_resource type="Script" path="res://Scripts/BidDistribution.gd" id="1_ii41r"]
+
+[node name="BidDistribution" type="MarginContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -6.5
+offset_top = -11.5
+offset_right = 6.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ii41r")
+
+[node name="BidDistributionVBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BidDistributionHBox" type="HBoxContainer" parent="BidDistributionVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="BidLabel" type="Label" parent="BidDistributionVBox/BidDistributionHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Bid For Item:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BidAmount" type="TextEdit" parent="BidDistributionVBox/BidDistributionHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SubmitButton" type="Button" parent="BidDistributionVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Submit"

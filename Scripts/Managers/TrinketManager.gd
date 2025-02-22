@@ -105,7 +105,7 @@ func _on_boss_defeated_rpc(player_id: int, combat_amount: int, killing_blow: boo
 		if trinket.has_method("_on_boss_defeated"):
 			combat_amount = trinket._on_boss_defeated(player_id, combat_amount, killing_blow)
 	
-	add_trinket(player_id, Global.boss.drops.pick_random())
+	#add_trinket(player_id, Global.boss.drops.pick_random())
 	
 func _on_player_sabotaged(attacker_id: int, sabotaged_id: int, combat_amount: int) -> void:
 	if multiplayer.get_unique_id() != attacker_id:

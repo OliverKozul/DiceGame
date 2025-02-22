@@ -66,6 +66,7 @@ text = "Join Game"
 
 [node name="StartGameButton" type="Button" parent="CanvasLayer/MenuVBox"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 text = "Start Game"
 

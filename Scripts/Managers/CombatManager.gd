@@ -17,8 +17,6 @@ func handle_combat(player_id: int, targets: Array) -> void:
 			handle_player_combat(player_id, target)
 
 func handle_mob_combat(player_id: int, target: Array) -> void:
-	print("You attacked a mob!")
-	print("Mob hp: ", Global.mob.hp)
 	SignalBus._on_mob_attacked.emit(player_id, target[1])
 	
 	if target[1] >= Global.mob.hp:
@@ -31,26 +29,28 @@ func handle_mob_combat(player_id: int, target: Array) -> void:
 			print(Global.player_names[player_id], " defeated!")
 	
 func handle_boss_combat(player_id: int, target: Array) -> void:
-	print("You attacked a boss!")
-	print("Boss hp: ", Global.boss.current_hp)
-	
 	if Global.boss.current_hp <= 0:
 		print("Boss already dead!")
 		return
 		
 	SignalBus._on_boss_attacked.emit(player_id, target[1])
 	Global.boss.current_hp -= target[1]
-	Global.boss_attackers.append([player_id, target[1]])
+	Global.boss_attackers[player_id] = target[1]
 	
 	player_ui.sync_manager.rpc("sync_boss_current_hp", Global.boss.current_hp)
 	player_ui.sync_manager.rpc("sync_boss_attackers", Global.boss_attackers)
 	
 	if Global.boss.current_hp <= 0:
-		for attackers in Global.boss_attackers:
-			if attackers[0] == player_id:
-				SignalBus._on_boss_defeated.emit(attackers[0], target[1], true)
+		for attacker in Global.boss_attackers.keys():
+			if attacker == player_id:
+				SignalBus._on_boss_defeated.emit(attacker, target[1], true)
 			else:
-				SignalBus._on_boss_defeated.emit(attackers[0], attackers[1], false)
+				SignalBus._on_boss_defeated.emit(attacker, Global.boss_attackers[attacker], false)
+				
+		for i in int((len(Global.boss_attackers.keys()) + 1) / 2):
+			Global.boss_drops.append(Global.boss.drops.pick_random())
+				
+	player_ui.sync_manager.rpc("sync_boss_drops", Global.boss_drops)
 
 func handle_player_combat(player_id: int,target: Array) -> void:
 	target[0] = int(target[0])
@@ -66,9 +66,9 @@ func handle_player_combat(player_id: int,target: Array) -> void:
 
 @rpc("any_peer", "call_local")
 func deal_boss_damage() -> void:
-	for player_id in Global.boss_attackers:
-		SignalBus._on_boss_attack.emit(player_id[0])
+	for attacker in Global.boss_attackers.keys():
+		SignalBus._on_boss_attack.emit(attacker)
 		
-		if Global.player_info[player_id[0]].hp <= 0:
-			SignalBus._on_player_defeated.emit(-1, player_id, Global.boss.damage)
-			print(Global.player_names[player_id], " defeated!")
+		if Global.player_info[attacker].hp <= 0:
+			SignalBus._on_player_defeated.emit(-1, attacker, Global.boss.damage)
+			print(Global.player_names[attacker], " defeated!")
