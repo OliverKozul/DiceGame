@@ -2,7 +2,7 @@ extends Manager
 class_name ResolveManager
 
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func resolve_current_player_turn(player_id: int) -> void:
 	Global.players_resolved[player_id] = true
 	player_ui.buttons.show_buttons("wait")
@@ -29,12 +29,12 @@ func resolve_current_player_turn(player_id: int) -> void:
 	
 	Global.players_acted[player_id] = false
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func show_shop(player_id: int) -> void:
 	player_ui.shop.open()
 	print("Showing shop to player: ", Global.player_names[player_id])
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func perform_skip(player_id: int) -> void:
 	print("Player ", Global.player_names[player_id], " is skipping")
 	player_ui.turn_manager.rpc_id(Global.host_id, "advance_to_next_player")

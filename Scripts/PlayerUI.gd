@@ -88,12 +88,13 @@ func create_player_info_ui() -> void:
 		player_info_ui.initialize(self, player_id)
 		player_info_uis[player_id] = player_info_ui
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func show_defeat_ui(player_id: int) -> void:
 	turn_info_labels.roll_results[player_id].text = Global.player_names[player_id] + " is dead."
+	
 	if player_id == multiplayer.get_unique_id():
 		defeat_screen.show()
 		
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func show_victory_ui() -> void:
 	victory_screen.show()

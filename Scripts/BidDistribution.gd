@@ -32,7 +32,7 @@ func _on_submit_button_pressed() -> void:
 	player_ui.turn_manager.rpc_id(Global.host_id, "advance_to_next_player")
 	hide()
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func allow_bid() -> void:
 	bid_label.text = "Bid for item: " + Global.boss_drops[Global.bid_item_indices[Global.current_bid_item]].name
 	show()

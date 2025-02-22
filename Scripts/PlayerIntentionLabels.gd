@@ -30,7 +30,7 @@ func _ready() -> void:
 		
 		player_intentions[Global.player_order[i]] = i
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func update_players() -> void:
 	for i in len(Global.player_order):
 		var player_id = Global.player_order[i]
@@ -50,7 +50,7 @@ func update_players() -> void:
 			
 		buttons[reverse_index].pressed.connect(player_ui.player_info_uis[player_id].open)
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func update_intention(player_id: int, intention: String) -> void:
 	labels[player_intentions[player_id]].text = str(Global.player_names[player_id])
 	

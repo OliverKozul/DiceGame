@@ -42,17 +42,17 @@ layout_mode = 2
 [node name="UpgradeAttackButton" type="Button" parent="MarginContainer/UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Upgrade Attack Faces (1 💰)"
+text = "Upgrade Attack Faces (2 💰)"
 
 [node name="UpgradeGoldButton" type="Button" parent="MarginContainer/UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Upgrade Gold Faces (1 💰)"
+text = "Upgrade Gold Faces (2 💰)"
 
 [node name="UpgradeCunningButton" type="Button" parent="MarginContainer/UpgradesMargin/UpgradesVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Upgrade Cunning Faces (1 💰)"
+text = "Upgrade Cunning Faces (2 💰)"
 
 [node name="ExitMargin" type="MarginContainer" parent="MarginContainer"]
 layout_mode = 2

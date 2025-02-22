@@ -33,8 +33,8 @@ func open() -> void:
 	show()
 
 func _on_upgrade_button_pressed(type: String) -> void:
-	if Global.player_info[player_id].gold > 0:
-		Global.player_info[player_id].gold -= 1
+	if Global.player_info[player_id].gold >= 2:
+		Global.player_info[player_id].gold -= 2
 		
 		for die in Global.player_info[player_id].die_face_values:
 			die[get_die_face(type)] += 1

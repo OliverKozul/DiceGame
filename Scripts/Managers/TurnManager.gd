@@ -11,7 +11,7 @@ const PHASES = {
 }
 
 # Initiate Next Turn (Only Host Can Trigger)
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func initiate_next_turn() -> void:
 	if Global.boss.current_hp > 0:
 		player_ui.combat_manager.rpc("deal_boss_damage")
@@ -22,7 +22,7 @@ func initiate_next_turn() -> void:
 	print("Turn ", Global.current_turn)
 
 # Transition to Intention Phase
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func transition_to_intention_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.intention)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
@@ -33,7 +33,7 @@ func transition_to_intention_phase() -> void:
 	rpc("create_and_animate_rect")
 
 # Transition to Action Phase
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func transition_to_action_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.action)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
@@ -41,7 +41,7 @@ func transition_to_action_phase() -> void:
 	rpc_id(Global.host_id, "allow_current_player_play")
 
 # Transition to Resolve Phase
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func transition_to_resolve_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.resolve)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
@@ -50,7 +50,7 @@ func transition_to_resolve_phase() -> void:
 	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	rpc_id(Global.host_id, "allow_current_player_play")
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func transition_to_loot_distribution_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.loot_distribution)
 	determine_player_order(Global.boss_attackers.keys())
@@ -60,7 +60,7 @@ func transition_to_loot_distribution_phase() -> void:
 	
 	rpc_id(Global.host_id, "allow_current_player_play")
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func transition_to_bidding_phase() -> void:
 	player_ui.sync_manager.rpc("sync_phase", PHASES.bid)
 	player_ui.sync_manager.rpc("sync_current_bid_item", 0)
@@ -96,7 +96,7 @@ func _compare_players(player_b_id: int, player_a_id: int) -> bool:
 	return player_a_id > player_b_id
 
 # Advance to Next Player
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func advance_to_next_player() -> void:
 	player_ui.sync_manager.rpc("sync_current_player_index", Global.current_player_index + 1)
 	
@@ -146,7 +146,7 @@ func advance_to_next_player() -> void:
 		rpc_id(Global.host_id, "allow_current_player_play")
 		
 # Allow Current Player Action
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func allow_current_player_play() -> void:
 	var current_player = Global.player_order[Global.current_player_index]
 	
@@ -169,12 +169,12 @@ func allow_current_player_play() -> void:
 		else:
 			rpc_id(player_id, "show_phase_ui", "wait", "Waiting for player %s" % Global.player_names[current_player])
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func show_phase_ui(buttons: String, label_text: String) -> void:
 	player_ui.buttons.show_buttons(buttons)
 	player_ui.current_player_label.text = label_text
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func create_and_animate_rect() -> void:
 	var rect = Utils.create_rect()
 	player_ui.add_child(rect)

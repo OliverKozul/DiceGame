@@ -2,7 +2,7 @@ extends Manager
 class_name SyncManager
 
 ### **Sync Roll Result for Everyone**
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_player_info(player_id: int, player_info: Dictionary) -> void:
 	Global.player_info[player_id] = player_info
 	
@@ -10,12 +10,12 @@ func sync_player_info(player_id: int, player_info: Dictionary) -> void:
 		player_ui.update_all_status_labels.emit()
 
 ### **Sync Roll Result for Everyone**
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_roll_results(player_id: int, roll_results: Array, roll_text: String) -> void:
 	Global.players_rolled[player_id] = true
 	player_ui.turn_info_labels.roll_results[player_id].text = roll_text
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_turn(new_turn: int) -> void:
 	rpc("sync_current_player_index", 0)
 	var player_id = multiplayer.get_unique_id()
@@ -51,31 +51,31 @@ func sync_turn(new_turn: int) -> void:
 	
 	rpc("sync_phase", "roll")
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_players(new_players: Array) -> void:
 	Global.players = new_players
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_player_order(new_player_order: Array) -> void:
 	Global.player_order = new_player_order
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_current_player_index(new_index: int) -> void:
 	Global.current_player_index = new_index
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_phase(new_phase: String) -> void:
 	Global.current_phase = new_phase
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_boss_current_hp(new_current_hp: int) -> void:
 	Global.boss.current_hp = new_current_hp
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_boss_attackers(new_boss_attackers: Dictionary) -> void:
 	Global.boss_attackers = new_boss_attackers
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_boss_drops(new_boss_drops: Array) -> void:
 	var new_array = []
 	
@@ -87,23 +87,23 @@ func sync_boss_drops(new_boss_drops: Array) -> void:
 			
 	Global.boss_drops = new_array
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_selected_item_indices(new_selected_item_indices: Dictionary) -> void:
 	Global.selected_item_indices = new_selected_item_indices
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_bid_item_indices(new_bid_item_indices: Array) -> void:
 	Global.bid_item_indices = new_bid_item_indices
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_current_bid_item(new_current_bid_item: int) -> void:
 	Global.current_bid_item = new_current_bid_item
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func sync_player_bids(new_player_bids: Dictionary) -> void:
 	Global.player_bids = new_player_bids
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func add_trinket_and_sync(new_trinket_index: int) -> void:
 	player_ui.turn_info_labels.action.text = "Won trinket: " + Global.boss_drops[new_trinket_index].name
 	player_ui.trinket_manager.add_trinket(multiplayer.get_unique_id(), Global.boss_drops[new_trinket_index])

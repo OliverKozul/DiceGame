@@ -38,6 +38,7 @@ func _ready() -> void:
 func _on_host_button_pressed() -> void:
 	var player_id = multiplayer.get_unique_id()
 	peer.create_server(PORT, 4)  # Max 4 players
+	peer.transfer_mode = MultiplayerPeer.TRANSFER_MODE_RELIABLE
 	multiplayer.multiplayer_peer = peer
 	status_label.text = "Hosting game..."
 	print("Server started on port ", PORT)
@@ -104,14 +105,14 @@ func _on_start_game_pressed() -> void:
 		if valid_names:
 			start_game.rpc()
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func update_player_array_host(player_id: int):
 	if not Global.players.has(player_id):
 		Global.players.append(player_id)
 		
 	rpc("update_player_array", Global.players)
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func update_player_array(players_array: Array) -> void:
 	Global.players = players_array
 	Global.host_id = Global.players[0]
@@ -128,20 +129,20 @@ func update_player_array(players_array: Array) -> void:
 			player_labels[player_id] = label
 			player_list_v_box.add_child(label)
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func update_player_name_dict_host() -> void:
 	rpc("update_player_name_dict", Global.player_names)
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func update_player_name_dict(player_name_array: Dictionary) -> void:
 	Global.player_names = player_name_array
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func update_player_name(player_id: int, player_name: String) -> void:
 	Global.player_names[player_id] = player_name
 	player_labels[player_id].text = player_name
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func start_game() -> void:
 	if not is_inside_tree():
 		return
@@ -156,7 +157,7 @@ func start_game() -> void:
 
 	get_tree().change_scene_to_file("res://Scenes/PlayerUI.tscn")
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func hide_ui() -> void:
 	host_game_button.visible = false
 	join_game_button.visible = false

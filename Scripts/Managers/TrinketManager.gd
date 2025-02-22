@@ -99,7 +99,7 @@ func _on_mob_defeated(player_id: int, combat_amount: int) -> void:
 func _on_boss_defeated(player_id: int, combat_amount: int, killing_blow: bool) -> void:
 	rpc_id(player_id, "_on_boss_defeated_rpc", player_id, combat_amount, killing_blow)
 	
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func _on_boss_defeated_rpc(player_id: int, combat_amount: int, killing_blow: bool) -> void:
 	for trinket in trinkets:
 		if trinket.has_method("_on_boss_defeated"):

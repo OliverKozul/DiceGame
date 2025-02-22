@@ -64,7 +64,7 @@ func handle_player_combat(player_id: int,target: Array) -> void:
 		SignalBus._on_player_defeated.emit(player_id, target[0], target[1])
 		print(Global.player_names[target[0]], " defeated!")
 
-@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local", "reliable")
 func deal_boss_damage() -> void:
 	for attacker in Global.boss_attackers.keys():
 		SignalBus._on_boss_attack.emit(attacker)
