@@ -21,6 +21,7 @@ func handle_mob_combat(player_id: int, target: Array) -> void:
 	
 	if target[1] >= Global.mob.hp:
 		SignalBus._on_mob_defeated.emit(player_id, target[1])
+		player_ui.sync_manager.rpc("sync_mob_kills", Global.mob_kills + 1)
 	else:
 		SignalBus._on_mob_attack.emit(player_id)
 		
@@ -41,6 +42,8 @@ func handle_boss_combat(player_id: int, target: Array) -> void:
 	player_ui.sync_manager.rpc("sync_boss_attackers", Global.boss_attackers)
 	
 	if Global.boss.current_hp <= 0:
+		player_ui.sync_manager.rpc("sync_boss_kills", Global.boss_kills + 1)
+		
 		for attacker in Global.boss_attackers.keys():
 			if attacker == player_id:
 				SignalBus._on_boss_defeated.emit(attacker, target[1], true)

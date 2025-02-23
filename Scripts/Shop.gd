@@ -13,6 +13,12 @@ class_name Shop
 var player_ui: PlayerUI
 var player_id: int
 
+var resource_upgrade_counts: Dictionary = {
+	"attack": 0, 
+	"gold": 0, 
+	"cunning": 0
+}
+
 signal shop_closed
 
 
@@ -30,11 +36,18 @@ func initialize(ui: PlayerUI, id: int) -> void:
 	
 func open() -> void:
 	gold_label.text = "💰 count: " + str(Global.player_info[player_id].gold)
+	
+	for type in upgrade_buttons.keys():
+		upgrade_buttons[type].text = "Upgrade " + type.capitalize() + " Faces (" + str(resource_upgrade_counts[type] + 1) + " 💰)"
+		
 	show()
 
 func _on_upgrade_button_pressed(type: String) -> void:
-	if Global.player_info[player_id].gold >= 2:
-		Global.player_info[player_id].gold -= 2
+	var upgrade_cost = resource_upgrade_counts[type] + 1
+	
+	if Global.player_info[player_id].gold >= upgrade_cost:
+		Global.player_info[player_id].gold -= upgrade_cost
+		resource_upgrade_counts[type] += 1
 		
 		for die in Global.player_info[player_id].die_face_values:
 			die[get_die_face(type)] += 1

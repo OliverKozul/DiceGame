@@ -73,8 +73,8 @@ func _on_player_defeated(attacker_id: int, defeated_id: int, combat_amount: int)
 	player_ui.rpc("show_defeat_ui", defeated_id)
 	Global.players.erase(defeated_id)
 	Global.player_order.erase(defeated_id)
-	player_ui.sync_manager.rpc("sync_players", Global.players)
 	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
+	player_ui.sync_manager.rpc("sync_players", Global.players, defeated_id)
 	
 	if len(Global.players) == 1:
 		player_ui.rpc_id(Global.players[0], "show_victory_ui")
@@ -87,8 +87,6 @@ func _on_player_defeated(attacker_id: int, defeated_id: int, combat_amount: int)
 			trinket._on_player_defeated(attacker_id, combat_amount)
 
 func _on_mob_defeated(player_id: int, combat_amount: int) -> void:
-	Global.mob_kills += 1
-	
 	if multiplayer.get_unique_id() != player_id:
 		return
 	
@@ -99,7 +97,6 @@ func _on_mob_defeated(player_id: int, combat_amount: int) -> void:
 	add_trinket(player_id, Global.mob.drops.pick_random())
 
 func _on_boss_defeated(player_id: int, combat_amount: int, killing_blow: bool) -> void:
-	Global.boss_kills += 1
 	rpc_id(player_id, "_on_boss_defeated_rpc", player_id, combat_amount, killing_blow)
 	
 @rpc("any_peer", "call_local", "reliable")

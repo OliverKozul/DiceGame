@@ -58,3 +58,11 @@ func update_intention(player_id: int, intention: String) -> void:
 		labels[player_intentions[player_id]].text += " (You) "
 		
 	labels[player_intentions[player_id]].text += ": " + intention
+
+func _on_player_defeated(defeated_id: int) -> void:
+	label_container.remove_child(label_container.get_child(label_container.get_child_count() - 1))
+	player_intentions.erase(defeated_id)
+	labels.pop_back()
+	buttons.pop_back()
+	
+	update_players()

@@ -61,8 +61,11 @@ func sync_turn(new_turn: int) -> void:
 	rpc("sync_phase", "roll")
 
 @rpc("any_peer", "call_local", "reliable")
-func sync_players(new_players: Array) -> void:
+func sync_players(new_players: Array, defeated_id: int = -1) -> void:
 	Global.players = new_players
+	
+	if defeated_id != -1:
+		player_ui.player_intention_labels._on_player_defeated(defeated_id)
 
 @rpc("any_peer", "call_local", "reliable")
 func sync_player_order(new_player_order: Array) -> void:
@@ -85,6 +88,10 @@ func sync_boss_attackers(new_boss_attackers: Dictionary) -> void:
 	Global.boss_attackers = new_boss_attackers
 	
 @rpc("any_peer", "call_local", "reliable")
+func sync_boss_kills(new_boss_kills: int) -> void:
+	Global.boss_kills = new_boss_kills
+	
+@rpc("any_peer", "call_local", "reliable")
 func sync_boss_drops(new_boss_drops: Array) -> void:
 	var new_array = []
 	
@@ -96,6 +103,10 @@ func sync_boss_drops(new_boss_drops: Array) -> void:
 			
 	Global.boss_drops = new_array
 	
+@rpc("any_peer", "call_local", "reliable")
+func sync_mob_kills(new_mob_kills: int) -> void:
+	Global.mob_kills = new_mob_kills
+
 @rpc("any_peer", "call_local", "reliable")
 func sync_selected_item_indices(new_selected_item_indices: Dictionary) -> void:
 	Global.selected_item_indices = new_selected_item_indices
