@@ -2,3 +2,7 @@
 - More trinkets
 - Shop consumables
 - More mobs
+
+- Bugs:
+	- Roll values
+	- Shop not upgrading

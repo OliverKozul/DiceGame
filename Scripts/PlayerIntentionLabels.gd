@@ -65,4 +65,8 @@ func _on_player_defeated(defeated_id: int) -> void:
 	labels.pop_back()
 	buttons.pop_back()
 	
+	for id in Global.player_order: 
+		if buttons[id].pressed.is_connected(player_ui.player_info_uis[defeated_id].open):
+			buttons[id].pressed.disconnect(player_ui.player_info_uis[defeated_id].open)
+	
 	update_players()

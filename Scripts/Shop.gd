@@ -48,6 +48,7 @@ func _on_upgrade_button_pressed(type: String) -> void:
 	if Global.player_info[player_id].gold >= upgrade_cost:
 		Global.player_info[player_id].gold -= upgrade_cost
 		resource_upgrade_counts[type] += 1
+		upgrade_buttons[type].text = "Upgrade " + type.capitalize() + " Faces (" + str(resource_upgrade_counts[type] + 1) + " 💰)"
 		
 		for die in Global.player_info[player_id].die_face_values:
 			die[get_die_face(type)] += 1
