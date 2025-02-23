@@ -17,6 +17,8 @@ var players_resolved: Dictionary = {}
 
 var boss_attackers: Dictionary = {}
 var boss_drops: Array = []
+var boss_kills: int = 0
+var mob_kills: int = 0
 
 var selected_item_indices: Dictionary = {}
 var bid_item_indices: Array = []

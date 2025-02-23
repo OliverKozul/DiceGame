@@ -87,6 +87,8 @@ func _on_player_defeated(attacker_id: int, defeated_id: int, combat_amount: int)
 			trinket._on_player_defeated(attacker_id, combat_amount)
 
 func _on_mob_defeated(player_id: int, combat_amount: int) -> void:
+	Global.mob_kills += 1
+	
 	if multiplayer.get_unique_id() != player_id:
 		return
 	
@@ -97,6 +99,7 @@ func _on_mob_defeated(player_id: int, combat_amount: int) -> void:
 	add_trinket(player_id, Global.mob.drops.pick_random())
 
 func _on_boss_defeated(player_id: int, combat_amount: int, killing_blow: bool) -> void:
+	Global.boss_kills += 1
 	rpc_id(player_id, "_on_boss_defeated_rpc", player_id, combat_amount, killing_blow)
 	
 @rpc("any_peer", "call_local", "reliable")
@@ -104,8 +107,6 @@ func _on_boss_defeated_rpc(player_id: int, combat_amount: int, killing_blow: boo
 	for trinket in trinkets:
 		if trinket.has_method("_on_boss_defeated"):
 			combat_amount = trinket._on_boss_defeated(player_id, combat_amount, killing_blow)
-	
-	#add_trinket(player_id, Global.boss.drops.pick_random())
 	
 func _on_player_sabotaged(attacker_id: int, sabotaged_id: int, combat_amount: int) -> void:
 	if multiplayer.get_unique_id() != attacker_id:

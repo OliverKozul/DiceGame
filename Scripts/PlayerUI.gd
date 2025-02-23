@@ -48,7 +48,7 @@ func initialize(player_id: int) -> void:
 				"gold": 0,
 				"cunning": 0,
 				"combat": 0,
-				"hp": 10,
+				"hp": 25,
 				"trinkets": [],
 				"die_faces": [["⚔", "⚔", "⚔", "💰", "💰", "🧠"]],
 				#"die_faces": [["⚔", "⚔", "⚔", "⚔", "⚔", "⚔"]],

@@ -42,16 +42,4 @@ func roll_button_pressed(player_id: int) -> void:
 	player_ui.current_player_label.text = "Wait for other players to roll."
 	player_ui.sync_manager.rpc("sync_roll_results", player_id, roll_results, roll_results_text)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
-		
-	Global.players_rolled[player_id] = true
-
-	if check_all_players_rolled():
-		player_ui.turn_manager.rpc_id(Global.host_id, "transition_to_intention_phase")
-		
-### **Check if All Players Have Rolled**
-func check_all_players_rolled() -> bool:
-	for id in Global.players:
-		if not Global.players_rolled.get(id, false):
-			return false
-
-	return true
+	

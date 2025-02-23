@@ -1,7 +1,7 @@
 extends Manager
 class_name SyncManager
 
-### **Sync Roll Result for Everyone**
+
 @rpc("any_peer", "call_local", "reliable")
 func sync_player_info(player_id: int, player_info: Dictionary) -> void:
 	Global.player_info[player_id] = player_info
@@ -9,11 +9,18 @@ func sync_player_info(player_id: int, player_info: Dictionary) -> void:
 	if multiplayer.get_unique_id() == player_id:
 		player_ui.update_all_status_labels.emit()
 
-### **Sync Roll Result for Everyone**
+
 @rpc("any_peer", "call_local", "reliable")
 func sync_roll_results(player_id: int, roll_results: Array, roll_text: String) -> void:
 	Global.players_rolled[player_id] = true
 	player_ui.turn_info_labels.roll_results[player_id].text = roll_text
+	
+	if multiplayer.get_unique_id() == Global.host_id:
+		for id in Global.players:
+			if not Global.players_rolled.get(id, false):
+				return
+				
+		player_ui.turn_manager.rpc_id(Global.host_id, "transition_to_intention_phase")
 
 @rpc("any_peer", "call_local", "reliable")
 func sync_turn(new_turn: int) -> void:
@@ -32,8 +39,10 @@ func sync_turn(new_turn: int) -> void:
 	Global.current_bid_item = 0
 	
 	Global.boss_attackers.clear()
-	Global.mob.hp = 1 + int(new_turn / 3)
-	Global.boss.max_hp = len(Global.players) + int(new_turn / 2)
+	Global.mob.hp = 1 + Global.mob_kills + int(new_turn / 10)
+	#Global.mob.hp = 1 + int(new_turn / 3)
+	#Global.boss.max_hp = len(Global.players) + int(new_turn / 2)
+	Global.boss.max_hp = len(Global.players) + Global.boss_kills + int(new_turn / 5)
 	Global.boss_drops = []
 	Global.boss.current_hp = Global.boss.max_hp
 	
