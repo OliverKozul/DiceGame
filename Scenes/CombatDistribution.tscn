@@ -15,3 +15,4 @@ script = ExtResource("1_gxn4w")
 
 [node name="CombatDistributionVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 8

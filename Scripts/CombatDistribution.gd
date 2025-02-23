@@ -2,12 +2,12 @@ extends MarginContainer
 class_name CombatDistribution
 
 
-@onready var combat_distribution_vbox = $CombatDistributionVBox
+@onready var combat_distribution_vbox: VBoxContainer = $CombatDistributionVBox
 const TARGET = preload("res://Scenes/Target.tscn")
 const DROPDOWN_TARGET = preload("res://Scenes/DropdownTarget.tscn")
 
-var player_ui: PlayerUI
-var dropdown_target_ui: DropdownTarget
+var player_ui: PlayerUI = null
+var dropdown_target_ui: DropdownTarget = null
 
 
 func initialize(ui: PlayerUI) -> void:
@@ -19,6 +19,7 @@ func show_combat_ui(target: Enums.Target) -> void:
 	if target != Enums.Target.NONE:
 		dropdown_target_ui = DROPDOWN_TARGET.instantiate()
 		var attack_label = Label.new()
+		attack_label.label_settings = Global.default_label_settings
 		attack_label.text = "Attack your enemies! (" + str(Global.player_info[player_id].combat) + "⚔)"
 		attack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		attack_label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -26,6 +27,7 @@ func show_combat_ui(target: Enums.Target) -> void:
 		combat_distribution_vbox.add_child(dropdown_target_ui)
 		
 	var sabotage_label = Label.new()
+	sabotage_label.label_settings = Global.default_label_settings
 	sabotage_label.text = "Sabotage your enemies!"
 	sabotage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sabotage_label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -57,6 +59,7 @@ func show_combat_ui(target: Enums.Target) -> void:
 		dropdown_target_ui.target_list.select(0)
 	
 	var submit_button = Button.new()
+	submit_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	submit_button.text = "Submit"
 	submit_button.pressed.connect(_on_submit_button_pressed)
 	combat_distribution_vbox.add_child(submit_button)

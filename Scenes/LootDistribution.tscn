@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bsdhlcjtqfh1n"]
+[gd_scene load_steps=3 format=3 uid="uid://bsdhlcjtqfh1n"]
 
 [ext_resource type="Script" path="res://Scripts/LootDistribution.gd" id="1_x6vl5"]
+[ext_resource type="LabelSettings" uid="uid://78a6686hj3xv" path="res://Assets/LabelSettings/Default.tres" id="2_fh0gv"]
 
 [node name="DropdownLoot" type="MarginContainer"]
 anchors_preset = 8
@@ -29,18 +30,20 @@ alignment = 1
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Select Your Item: "
+label_settings = ExtResource("2_fh0gv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="LootList" type="ItemList" parent="DropdownLootVBox/DropdownLootHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 75)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="ItemDescriptionLabel" type="Label" parent="DropdownLootVBox/DropdownLootHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Item Description"
+label_settings = ExtResource("2_fh0gv")
 horizontal_alignment = 1
 vertical_alignment = 1
 

@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://cu6tmmpapw87t"]
+[gd_scene load_steps=6 format=3 uid="uid://cu6tmmpapw87t"]
 
 [ext_resource type="Script" path="res://Scripts/StatusLabels.gd" id="1_8k87j"]
+[ext_resource type="LabelSettings" uid="uid://dshs4ncy6p6xv" path="res://Assets/LabelSettings/HPLabel.tres" id="2_6fwt1"]
+[ext_resource type="LabelSettings" uid="uid://j7am6wyytvmo" path="res://Assets/LabelSettings/GoldLabel.tres" id="3_8t43c"]
+[ext_resource type="LabelSettings" uid="uid://haxvqwbcdke0" path="res://Assets/LabelSettings/CombatLabel.tres" id="4_usrca"]
+[ext_resource type="LabelSettings" uid="uid://ih27jjhxwqyi" path="res://Assets/LabelSettings/CunningLabel.tres" id="5_4cv8o"]
 
 [node name="StatusLabels" type="MarginContainer"]
 anchors_preset = 1
@@ -21,47 +25,20 @@ layout_mode = 2
 [node name="HPLabel" type="Label" parent="StatusLabelsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+label_settings = ExtResource("2_6fwt1")
 metadata/_edit_use_anchors_ = true
 
 [node name="GoldLabel" type="Label" parent="StatusLabelsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+label_settings = ExtResource("3_8t43c")
 
 [node name="CombatLabel" type="Label" parent="StatusLabelsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+label_settings = ExtResource("4_usrca")
 
 [node name="CunningLabel" type="Label" parent="StatusLabelsVBox"]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="TrinketsHBox" type="HBoxContainer" parent="StatusLabelsVBox"]
-layout_mode = 2
-size_flags_horizontal = 8
-
-[node name="TrinketsLabel" type="Label" parent="StatusLabelsVBox/TrinketsHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="TrinketsButton" type="Button" parent="StatusLabelsVBox/TrinketsHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-text = "Show"
-
-[node name="DiceHBox" type="HBoxContainer" parent="StatusLabelsVBox"]
-layout_mode = 2
-size_flags_horizontal = 8
-
-[node name="DiceLabel" type="Label" parent="StatusLabelsVBox/DiceHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 0
-metadata/_edit_use_anchors_ = true
-
-[node name="DiceButton" type="Button" parent="StatusLabelsVBox/DiceHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-text = "Show"
+label_settings = ExtResource("5_4cv8o")

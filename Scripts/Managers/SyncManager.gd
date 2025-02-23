@@ -19,7 +19,7 @@ func sync_roll_results(player_id: int, roll_results: Array, roll_text: String) -
 		for id in Global.players:
 			if not Global.players_rolled.get(id, false):
 				return
-				
+		
 		player_ui.turn_manager.rpc_id(Global.host_id, "transition_to_intention_phase")
 
 @rpc("any_peer", "call_local", "reliable")
@@ -47,15 +47,15 @@ func sync_turn(new_turn: int) -> void:
 	Global.boss.current_hp = Global.boss.max_hp
 	
 	player_ui.buttons.show_buttons("roll")
-	player_ui.buttons.buttons["attack_mobs"].text = "Attack Mobs" + " (" + str(Global.mob.hp) + " HP)"
-	player_ui.buttons.buttons["attack_boss"].text = "Attack Boss" + " (" + str(Global.boss.max_hp) + " HP)"
+	player_ui.buttons.buttons["attack_mobs"].text = "Attack Mobs (%d HP)" % Global.mob.hp
+	player_ui.buttons.buttons["attack_boss"].text = "Attack Boss (%d HP)" % Global.boss.max_hp
 	player_ui.loot_distribution.reset()
 	
 	for id in Global.player_order:
 		player_ui.turn_info_labels.roll_results[id].text = Global.player_names[id] + " rolled: N/A"
 	
 	player_ui.current_player_label.text = "Roll the dice!"
-	player_ui.status_labels.combat.text = "⚔ count: " + str(Global.player_info[player_id].combat)
+	player_ui.status_labels.combat.text = "⚔ Combat: " + str(Global.player_info[player_id].combat)
 	player_ui.turn_info_labels.turn.text = "Current turn: " + str(Global.current_turn)
 	
 	rpc("sync_phase", "roll")

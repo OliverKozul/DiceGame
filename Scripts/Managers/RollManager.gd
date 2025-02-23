@@ -10,36 +10,32 @@ func roll_button_pressed(player_id: int) -> void:
 		return
 		
 	var roll_results = []
-	var roll_results_text = Global.player_names[player_id] + " rolled: ["
+	var roll_texts = []
 	var die_count = len(Global.player_info[player_id].die_faces)
+	var mapping = {
+		"💰": {"attr": "gold", "signal": SignalBus._on_gold_roll},
+		"🧠": {"attr": "cunning", "signal": SignalBus._on_cunning_roll},
+		"⚔": {"attr": "combat", "signal": SignalBus._on_combat_roll}
+	}
 	
-	for i in die_count:
-		var roll_result = Global.player_info[player_id].die_faces[i][randi() % Global.player_info[player_id].die_faces[i].size()]
-		var resource = 0
+	for i in range(die_count):
+		var die_faces = Global.player_info[player_id].die_faces[i]
+		var roll_result = die_faces[randi() % die_faces.size()]
 		
-		match roll_result:
-			"💰":
-				var resource_before = Global.player_info[player_id].gold
-				SignalBus._on_gold_roll.emit(player_id, Global.player_info[player_id].die_face_values[i][roll_result])
-				resource = Global.player_info[player_id].gold - resource_before
-			"🧠":
-				var resource_before = Global.player_info[player_id].cunning
-				SignalBus._on_cunning_roll.emit(player_id, Global.player_info[player_id].die_face_values[i][roll_result])
-				resource = Global.player_info[player_id].cunning - resource_before
-			"⚔":
-				var resource_before = Global.player_info[player_id].combat
-				SignalBus._on_combat_roll.emit(player_id, Global.player_info[player_id].die_face_values[i][roll_result])
-				resource = Global.player_info[player_id].combat - resource_before
-				
-		roll_results_text += str(resource) + " " + roll_result
-		
-		if i != die_count - 1:
-			roll_results_text += ", "
-		
+		if not mapping.has(roll_result):
+			continue
+			
 		roll_results.append(roll_result)
 		
-	roll_results_text += "]"
+		var attr = mapping[roll_result].attr
+		var signal_func = mapping[roll_result].signal
+		var resource_before = Global.player_info[player_id][attr]
+		signal_func.emit(player_id, Global.player_info[player_id].die_face_values[i][roll_result])
+		var resource = Global.player_info[player_id][attr] - resource_before
+		
+		roll_texts.append(str(resource) + " " + roll_result)
+		
+	var roll_results_text = Global.player_names[player_id] + " rolled: [" + ", ".join(roll_texts) + "]"
 	player_ui.current_player_label.text = "Wait for other players to roll."
 	player_ui.sync_manager.rpc("sync_roll_results", player_id, roll_results, roll_results_text)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
-	

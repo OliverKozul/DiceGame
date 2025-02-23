@@ -2,7 +2,7 @@ extends CanvasLayer
 class_name PlayerUI
 
 
-@onready var current_player_label = %CurrentPlayerLabel
+@onready var current_player_label: Label = %CurrentPlayerLabel
 @onready var status_labels: StatusLabels = %StatusLabels
 @onready var player_intention_labels: PlayerIntentionLabels = %PlayerIntentionLabels
 @onready var turn_info_labels: TurnInfoLabels = %TurnInfoLabels

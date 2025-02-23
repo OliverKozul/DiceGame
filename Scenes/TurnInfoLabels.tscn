@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cf1efqc0qo8fi"]
+[gd_scene load_steps=3 format=3 uid="uid://cf1efqc0qo8fi"]
 
 [ext_resource type="Script" path="res://Scripts/TurnInfoLabels.gd" id="1_16e86"]
+[ext_resource type="LabelSettings" uid="uid://78a6686hj3xv" path="res://Assets/LabelSettings/Default.tres" id="2_nmqjr"]
 
 [node name="TurnInfoLabels" type="MarginContainer"]
 anchors_preset = 4
@@ -22,6 +23,7 @@ layout_mode = 2
 [node name="TurnLabel" type="Label" parent="LabelVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+label_settings = ExtResource("2_nmqjr")
 metadata/_edit_use_anchors_ = true
 
 [node name="RollResultsVBox" type="VBoxContainer" parent="LabelVBox"]
@@ -31,4 +33,5 @@ layout_mode = 2
 [node name="ActionLabel" type="Label" parent="LabelVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+label_settings = ExtResource("2_nmqjr")
 metadata/_edit_use_anchors_ = true

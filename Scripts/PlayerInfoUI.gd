@@ -41,6 +41,7 @@ func create_player_info_ui(id: int) -> void:
 
 func add_player_label(type: String, text: String, info: String) -> void:
 	var label = Label.new()
+	label.label_settings = Global.default_label_settings
 	label.text = text + info
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER

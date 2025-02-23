@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dxc0t67il66w8"]
+[gd_scene load_steps=3 format=3 uid="uid://dxc0t67il66w8"]
 
 [ext_resource type="Script" path="res://Scripts/Shop.gd" id="1_r4a8o"]
+[ext_resource type="LabelSettings" uid="uid://j7am6wyytvmo" path="res://Assets/LabelSettings/GoldLabel.tres" id="2_1ynsr"]
 
 [node name="Shop" type="Panel"]
 z_index = 2
@@ -90,3 +91,4 @@ size_flags_vertical = 0
 [node name="GoldLabel" type="Label" parent="MarginContainer/GoldMargin/GoldVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+label_settings = ExtResource("2_1ynsr")

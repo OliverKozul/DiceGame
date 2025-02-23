@@ -27,3 +27,4 @@ var current_bid_item: int = 0
 
 @onready var mob: Mob = load("res://Resources/Enemies/RatKing.tres")
 @onready var boss: Boss = load("res://Resources/Enemies/RedDragon.tres")
+@onready var default_label_settings = preload("res://Assets/LabelSettings/Default.tres")

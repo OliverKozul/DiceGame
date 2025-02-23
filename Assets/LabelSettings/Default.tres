@@ -1,0 +1,7 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://78a6686hj3xv"]
+
+[ext_resource type="FontFile" uid="uid://m7rkltioj1s6" path="res://Assets/Fonts/Lora-VariableFont_wght.ttf" id="1_clxpv"]
+
+[resource]
+font = ExtResource("1_clxpv")
+font_size = 20

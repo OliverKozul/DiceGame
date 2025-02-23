@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://3gqr86ldbjo"]
+[gd_scene load_steps=3 format=3 uid="uid://3gqr86ldbjo"]
 
 [ext_resource type="Script" path="res://Scripts/BidDistribution.gd" id="1_ii41r"]
+[ext_resource type="LabelSettings" uid="uid://78a6686hj3xv" path="res://Assets/LabelSettings/Default.tres" id="2_uo27p"]
 
 [node name="BidDistribution" type="MarginContainer"]
 anchors_preset = 8
@@ -30,15 +31,17 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Bid For Item:"
+label_settings = ExtResource("2_uo27p")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BidAmount" type="TextEdit" parent="BidDistributionVBox/BidDistributionHBox"]
+[node name="BidAmount" type="LineEdit" parent="BidDistributionVBox/BidDistributionHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+alignment = 1
 
 [node name="SubmitButton" type="Button" parent="BidDistributionVBox"]
 unique_name_in_owner = true

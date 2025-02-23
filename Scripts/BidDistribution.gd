@@ -3,7 +3,7 @@ extends MarginContainer
 
 
 @onready var bid_label: Label = %BidLabel
-@onready var bid_amount: TextEdit = %BidAmount
+@onready var bid_amount: LineEdit = %BidAmount
 @onready var submit_button: Button = %SubmitButton
 
 var player_ui: PlayerUI

@@ -1,16 +1,16 @@
 extends CanvasLayer
 
 
-@onready var status_label = %ConnectionStatusLabel
+@onready var status_label: Label = %ConnectionStatusLabel
 @onready var lobby_text_label: Label = %LobbyTextLabel
 @onready var player_list_label: Label = %PlayerListLabel
 
-@onready var ip_input = %ServerIPTextEdit
+@onready var ip_input: LineEdit = %ServerIPTextEdit
 @onready var player_name_text_edit: LineEdit = %PlayerNameTextEdit
 
-@onready var host_game_button = %HostGameButton
-@onready var join_game_button = %JoinGameButton
-@onready var start_game_button = %StartGameButton
+@onready var host_game_button: Button = %HostGameButton
+@onready var join_game_button: Button = %JoinGameButton
+@onready var start_game_button: Button = %StartGameButton
 @onready var player_name_button: Button = %PlayerNameButton
 
 @onready var player_name_h_box: HBoxContainer = %PlayerNameHBox
@@ -18,7 +18,7 @@ extends CanvasLayer
 @onready var player_list_v_box: VBoxContainer = $PlayerListMargin/PlayerListVBox
 
 const PORT: int = 7777
-var peer = ENetMultiplayerPeer.new()
+var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 var game_started: bool = false
 var player_labels: Dictionary = {}
 
@@ -120,6 +120,7 @@ func update_player_array(players_array: Array) -> void:
 	for player_id in players_array:
 		if player_labels.get(player_id, null) == null:
 			var label = Label.new()
+			label.label_settings = Global.default_label_settings
 		
 			if Global.player_names.get(player_id, "") == "":
 				label.text = str(player_id)

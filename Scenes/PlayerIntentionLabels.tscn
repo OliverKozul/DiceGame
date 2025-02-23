@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c65duq8gmsvb8"]
+[gd_scene load_steps=3 format=3 uid="uid://c65duq8gmsvb8"]
 
 [ext_resource type="Script" path="res://Scripts/PlayerIntentionLabels.gd" id="1_wvygl"]
+[ext_resource type="LabelSettings" uid="uid://78a6686hj3xv" path="res://Assets/LabelSettings/Default.tres" id="2_a4auf"]
 
 [node name="PlayerIntentionLabels" type="MarginContainer"]
 theme_override_constants/margin_left = 16
@@ -16,7 +17,8 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-text = "Player order (descending cunning):"
+text = "Player order:"
+label_settings = ExtResource("2_a4auf")
 
 [node name="PlayerInfoVBox" type="VBoxContainer" parent="VBox"]
 unique_name_in_owner = true

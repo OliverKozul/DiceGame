@@ -17,6 +17,7 @@ func _ready() -> void:
 		var hbox = HBoxContainer.new()
 		var label = Label.new()
 		var button = Button.new()
+		label.label_settings = Global.default_label_settings
 		button.text = "Show"
 		hbox.add_theme_constant_override("separation", 8)
 		

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqw7hwgei7l50"]
+[gd_scene load_steps=3 format=3 uid="uid://cqw7hwgei7l50"]
 
 [ext_resource type="Script" path="res://Scripts/Lobby.gd" id="1_t77qt"]
+[ext_resource type="LabelSettings" uid="uid://78a6686hj3xv" path="res://Assets/LabelSettings/Default.tres" id="2_t1nx0"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -29,6 +30,7 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "Player list:"
+label_settings = ExtResource("2_t1nx0")
 
 [node name="LobbyTextMargin" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = 5
@@ -38,15 +40,16 @@ offset_left = -60.0
 offset_right = 60.0
 offset_bottom = 55.0
 grow_horizontal = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
 
 [node name="LobbyTextLabel" type="Label" parent="CanvasLayer/LobbyTextMargin"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Dice Game!"
+label_settings = ExtResource("2_t1nx0")
 
 [node name="MenuVBox" type="VBoxContainer" parent="CanvasLayer"]
 anchors_preset = 8
@@ -85,6 +88,7 @@ alignment = 1
 [node name="ServerIPLabel" type="Label" parent="CanvasLayer/MenuVBox/ServerIPHBox"]
 layout_mode = 2
 text = "Enter Host IP: "
+label_settings = ExtResource("2_t1nx0")
 
 [node name="ServerIPTextEdit" type="LineEdit" parent="CanvasLayer/MenuVBox/ServerIPHBox"]
 unique_name_in_owner = true
@@ -103,6 +107,7 @@ layout_mode = 2
 [node name="PlayerNameLabel" type="Label" parent="CanvasLayer/MenuVBox/PlayerNameHBox"]
 layout_mode = 2
 text = "Enter name: "
+label_settings = ExtResource("2_t1nx0")
 horizontal_alignment = 1
 
 [node name="PlayerNameTextEdit" type="LineEdit" parent="CanvasLayer/MenuVBox/PlayerNameHBox"]
@@ -119,4 +124,5 @@ text = "OK"
 [node name="ConnectionStatusLabel" type="Label" parent="CanvasLayer/MenuVBox"]
 unique_name_in_owner = true
 layout_mode = 2
+label_settings = ExtResource("2_t1nx0")
 horizontal_alignment = 1

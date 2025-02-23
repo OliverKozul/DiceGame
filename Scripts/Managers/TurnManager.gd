@@ -98,7 +98,9 @@ func _compare_players(player_b_id: int, player_a_id: int) -> bool:
 # Advance to Next Player
 @rpc("any_peer", "call_local", "reliable")
 func advance_to_next_player() -> void:
-	player_ui.sync_manager.rpc("sync_current_player_index", Global.current_player_index + 1)
+	# Increment current player index first.
+	Global.current_player_index += 1
+	player_ui.sync_manager.rpc("sync_current_player_index", Global.current_player_index)
 	
 	if check_all_players_played():
 		match Global.current_phase:
@@ -189,13 +191,15 @@ func _on_tween_completed(rect: TextureRect) -> void:
 		rpc_id(Global.host_id, "transition_to_action_phase")
 		
 func give_auction_winner_trinket() -> void:
-	var max_bid_id = Global.player_bids.keys()[0]
-	
-	for player_id in Global.player_bids:
-		if Global.player_bids[player_id] > Global.player_bids[max_bid_id]:
+	var max_bid_id = null
+	for player_id in Global.player_bids.keys():
+		if max_bid_id == null or Global.player_bids[player_id] > Global.player_bids[max_bid_id]:
 			max_bid_id = player_id
 		elif Global.player_bids[player_id] == Global.player_bids[max_bid_id]:
 			if Global.player_info[player_id].cunning > Global.player_info[max_bid_id].cunning:
 				max_bid_id = player_id
 				
-	player_ui.sync_manager.rpc_id(max_bid_id, "add_trinket_and_sync", Global.bid_item_indices[Global.current_bid_item])
+	if max_bid_id != null:
+		Global.player_info[max_bid_id].gold -= Global.player_bids[max_bid_id]
+		player_ui.sync_manager.rpc("sync_player_info", max_bid_id, Global.player_info[max_bid_id])
+		player_ui.sync_manager.rpc_id(max_bid_id, "add_trinket_and_sync", Global.bid_item_indices[Global.current_bid_item])

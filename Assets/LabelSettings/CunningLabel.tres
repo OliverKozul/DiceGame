@@ -1,0 +1,10 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://ih27jjhxwqyi"]
+
+[ext_resource type="FontFile" uid="uid://m7rkltioj1s6" path="res://Assets/Fonts/Lora-VariableFont_wght.ttf" id="1_iafv3"]
+
+[resource]
+font = ExtResource("1_iafv3")
+font_size = 24
+font_color = Color(0.611956, 0.000290902, 0.616362, 1)
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)

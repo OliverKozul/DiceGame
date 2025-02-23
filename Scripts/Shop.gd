@@ -33,12 +33,15 @@ func _ready() -> void:
 func initialize(ui: PlayerUI, id: int) -> void:
 	player_ui = ui
 	player_id = id
+
+func update_button_label(type: String) -> void:
+	upgrade_buttons[type].text = "Upgrade " + type.capitalize() + " Faces (" + str(resource_upgrade_counts[type] + 1) + " 💰)"
 	
 func open() -> void:
-	gold_label.text = "💰 count: " + str(Global.player_info[player_id].gold)
+	gold_label.text = "💰 Gold: " + str(Global.player_info[player_id].gold)
 	
 	for type in upgrade_buttons.keys():
-		upgrade_buttons[type].text = "Upgrade " + type.capitalize() + " Faces (" + str(resource_upgrade_counts[type] + 1) + " 💰)"
+		update_button_label(type)
 		
 	show()
 
@@ -48,13 +51,13 @@ func _on_upgrade_button_pressed(type: String) -> void:
 	if Global.player_info[player_id].gold >= upgrade_cost:
 		Global.player_info[player_id].gold -= upgrade_cost
 		resource_upgrade_counts[type] += 1
-		upgrade_buttons[type].text = "Upgrade " + type.capitalize() + " Faces (" + str(resource_upgrade_counts[type] + 1) + " 💰)"
+		update_button_label(type)
 		
 		for die in Global.player_info[player_id].die_face_values:
 			die[get_die_face(type)] += 1
 			
 		print(type.capitalize() + " dice upgraded!")
-		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
+		player_ui.status_labels.gold.text = "💰 Gold: " + str(Global.player_info[player_id].gold)
 		gold_label.text = player_ui.status_labels.gold.text
 		player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 	else:

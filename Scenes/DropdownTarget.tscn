@@ -18,6 +18,7 @@ script = ExtResource("1_gjg74")
 
 [node name="DropdownTargetHBox" type="HBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="TargetLabel" type="Label" parent="DropdownTargetHBox"]
@@ -32,7 +33,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 
-[node name="TargetCombatTaken" type="TextEdit" parent="DropdownTargetHBox"]
+[node name="TargetCombatTaken" type="LineEdit" parent="DropdownTargetHBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
+alignment = 1
