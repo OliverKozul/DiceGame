@@ -25,5 +25,5 @@ var bid_item_indices: Array = []
 var player_bids: Dictionary = {}
 var current_bid_item: int = 0
 
-@onready var mob = load("res://Resources/Enemies/RatKing.tres")
-@onready var boss = load("res://Resources/Enemies/RedDragon.tres")
+@onready var mob: Mob = load("res://Resources/Enemies/RatKing.tres")
+@onready var boss: Boss = load("res://Resources/Enemies/RedDragon.tres")

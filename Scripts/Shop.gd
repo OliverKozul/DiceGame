@@ -56,6 +56,7 @@ func _on_upgrade_button_pressed(type: String) -> void:
 		print(type.capitalize() + " dice upgraded!")
 		player_ui.status_labels.gold.text = "💰 count: " + str(Global.player_info[player_id].gold)
 		gold_label.text = player_ui.status_labels.gold.text
+		player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 	else:
 		print("Not enough gold to upgrade " + type + " dice.")
 

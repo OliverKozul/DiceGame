@@ -19,7 +19,7 @@ func show_combat_ui(target: Enums.Target) -> void:
 	if target != Enums.Target.NONE:
 		dropdown_target_ui = DROPDOWN_TARGET.instantiate()
 		var attack_label = Label.new()
-		attack_label.text = "Attack your enemies!"
+		attack_label.text = "Attack your enemies! (" + str(Global.player_info[player_id].combat) + "⚔)"
 		attack_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		attack_label.vertical_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		combat_distribution_vbox.add_child(attack_label)
@@ -34,16 +34,24 @@ func show_combat_ui(target: Enums.Target) -> void:
 	for id in Global.players:
 		if id != player_id:
 			if target == Enums.Target.PLAYER:
-				dropdown_target_ui.target_list.add_item(Global.player_names[id])
+				var player_text_hp = Global.player_names[id] + " (" + str(Global.player_info[id].hp) + "❤️ HP)"
+				dropdown_target_ui.target_list.add_item(player_text_hp)
 				
+			var player_text_combat = Global.player_names[id] + " (" + str(Global.player_info[id].combat) + "⚔)"
 			var target_ui = TARGET.instantiate()
 			combat_distribution_vbox.add_child(target_ui)
-			target_ui.target_name.text = Global.player_names[id]
+			target_ui.target_name.text = player_text_combat
 			
 	if target == Enums.Target.MOB:
-		dropdown_target_ui.target_list.add_item("Mob")
+		var mob_text = "Mob (" + str(Global.mob.hp) + "❤️ HP)"
+		dropdown_target_ui.target_list.add_item(mob_text)
 	elif target == Enums.Target.BOSS:
-		dropdown_target_ui.target_list.add_item("Boss")
+		var boss_text = "Boss (" + str(Global.boss.current_hp) + "❤️ HP)"
+		
+		if Global.boss.current_hp <= 0:
+			boss_text = "Boss (Dead)"
+			
+		dropdown_target_ui.target_list.add_item(boss_text)
 	
 	if dropdown_target_ui != null and dropdown_target_ui.target_list.item_count == 1:
 		dropdown_target_ui.target_list.select(0)
@@ -82,7 +90,7 @@ func extract_targets(children: Array) -> Array:
 	
 	for child in children:
 		if child is Target:
-			var target = Global.player_names.find_key(child.target_name.text)
+			var target = Global.player_names.find_key(child.target_name.text.split(" ")[0])
 			var combat_taken = child.target_combat_taken.text
 			
 			if combat_taken.is_valid_int() or combat_taken == "":
@@ -95,8 +103,8 @@ func extract_targets(children: Array) -> Array:
 		elif child is DropdownTarget:
 			var selected_items = child.target_list.get_selected_items()
 			
-			if len(selected_items) != 0:
-				var target = child.target_list.get_item_text(selected_items[0])
+			if len(selected_items) > 0:
+				var target = child.target_list.get_item_text(selected_items[0]).split(" ")[0]
 				var combat_taken = child.target_combat_taken.text
 				
 				if combat_taken.is_valid_int() or combat_taken == "":

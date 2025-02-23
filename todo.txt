@@ -6,3 +6,4 @@
 - Bugs:
 	- Roll values
 	- Shop not upgrading
+	- Loot distribution and bidding not showing up
