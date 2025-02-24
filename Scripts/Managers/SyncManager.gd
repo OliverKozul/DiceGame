@@ -76,9 +76,6 @@ func sync_current_player_index(new_index: int) -> void:
 	
 @rpc("any_peer", "call_local", "reliable")
 func sync_phase(new_phase: String) -> void:
-	if Global.current_phase != new_phase:
-		SignalBus.phase_dict[new_phase].emit()
-		
 	Global.current_phase = new_phase
 	
 @rpc("any_peer", "call_local", "reliable")

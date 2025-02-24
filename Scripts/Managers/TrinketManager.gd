@@ -42,15 +42,18 @@ func remove_trinket(player_id: int, trinket: Trinket) -> void:
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 		
 func _on_intention_phase() -> void:
-	var player_id = multiplayer.get_unique_id()
-	
+	for player_id in Global.player_order:
+		rpc_id(player_id, "_on_intention_phase_rpc", player_id)
+
+@rpc("any_peer", "call_local", "reliable")
+func _on_intention_phase_rpc(player_id: int) -> void:
 	for trinket in trinkets:
 		if trinket.has_method("_on_intention_phase"):
 			trinket._on_intention_phase(player_id)
 			
-			for id in Global.players:
-				player_ui.sync_manager.rpc("sync_player_info", id, Global.player_info[id])
-		
+	for id in Global.player_order:
+		player_ui.sync_manager.rpc("sync_player_info", id, Global.player_info[id])
+				
 func _on_combat_roll(player_id: int, combat_amount: int) -> void:
 	if multiplayer.get_unique_id() != player_id:
 		return

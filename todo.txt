@@ -4,6 +4,5 @@
 - More mobs
 
 - Bugs:
-	- Roll values
-	- Shop not upgrading
-	- Loot distribution and bidding not showing up
+	- Signal ordering for intention phase
+	- Intention labels badly ordered

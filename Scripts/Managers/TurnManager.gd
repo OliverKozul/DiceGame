@@ -29,6 +29,7 @@ func transition_to_intention_phase() -> void:
 	determine_player_order(Global.players)
 	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	player_ui.player_intention_labels.rpc("update_players")
+	SignalBus._on_intention_phase.emit()
 	rpc("show_phase_ui", "intention", "Declare your intention!")
 	rpc("create_and_animate_rect")
 

@@ -26,7 +26,7 @@ func handle_button_pressed(action: String) -> void:
 	if Global.current_phase == "intention":
 		player_ui.intention_manager.rpc(action, player_id)
 	elif Global.current_phase == "action" and not Global.players_acted.get(player_id, false):
-		#player_ui.intention_manager.rpc(action, player_id)
+		player_ui.intention_manager.rpc(action, player_id)
 		player_ui.action_manager.rpc(action, player_id)
 	else:
 		if Global.players_acted.get(player_id, false):
