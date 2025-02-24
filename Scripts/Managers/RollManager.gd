@@ -37,5 +37,5 @@ func roll_button_pressed(player_id: int) -> void:
 		
 	var roll_results_text = Global.player_names[player_id] + " rolled: [" + ", ".join(roll_texts) + "]"
 	player_ui.current_player_label.text = "Wait for other players to roll."
-	player_ui.sync_manager.rpc("sync_roll_results", player_id, roll_results, roll_results_text)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
+	player_ui.sync_manager.rpc("sync_roll_results", player_id, roll_results, roll_results_text)

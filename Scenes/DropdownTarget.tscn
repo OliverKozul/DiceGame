@@ -30,11 +30,13 @@ vertical_alignment = 1
 
 [node name="TargetList" type="ItemList" parent="DropdownTargetHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 50)
+custom_minimum_size = Vector2(250, 50)
 layout_mode = 2
 
 [node name="TargetCombatTaken" type="LineEdit" parent="DropdownTargetHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 alignment = 1

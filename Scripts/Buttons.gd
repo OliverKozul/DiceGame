@@ -24,7 +24,7 @@ func initialize(ui: PlayerUI) -> void:
 	buttons["shop"].pressed.connect(player_ui.button_manager._on_shop_button_pressed)
 	buttons["skip"].pressed.connect(player_ui.button_manager._on_skip_button_pressed)
 	
-	buttons["attack_mobs"].text += (" (" + str(Global.mob.hp) + " HP)")
+	buttons["attack_mobs"].text += (" (" + str(Global.mobs[0].hp) + " HP)")
 	buttons["attack_boss"].text += (" (" + str(Global.boss.max_hp) + " HP)")
 	
 	show_buttons("roll")

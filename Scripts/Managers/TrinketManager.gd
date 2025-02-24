@@ -6,11 +6,13 @@ var trinkets: Array[Trinket] = []
 
 
 func _ready() -> void:
+	SignalBus.connect("_on_intention_phase", _on_intention_phase)
 	SignalBus.connect("_on_combat_roll", _on_combat_roll)
 	SignalBus.connect("_on_gold_roll", _on_gold_roll)
 	SignalBus.connect("_on_cunning_roll", _on_cunning_roll)
 	SignalBus.connect("_on_mob_defeated", _on_mob_defeated)
 	SignalBus.connect("_on_boss_defeated", _on_boss_defeated)
+	SignalBus.connect("_on_any_attacked", _on_any_attacked)
 	SignalBus.connect("_on_player_attacked", _on_player_attacked)
 	SignalBus.connect("_on_player_defeated", _on_player_defeated)
 	SignalBus.connect("_on_player_sabotaged", _on_player_sabotaged)
@@ -21,7 +23,7 @@ func add_trinket(player_id: int, trinket: Trinket) -> void:
 	trinkets.append(trinket)
 	
 	if trinket.has_method("on_added"):
-		trinket.on_added(player_id, self)  # Allow trinkets to register for events
+		trinket.on_added(player_id, self)
 	
 	Global.player_info[player_id]["trinkets"].append({"name": trinket.name, "description": trinket.description})
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
@@ -38,6 +40,16 @@ func remove_trinket(player_id: int, trinket: Trinket) -> void:
 			break
 			
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
+		
+func _on_intention_phase() -> void:
+	var player_id = multiplayer.get_unique_id()
+	
+	for trinket in trinkets:
+		if trinket.has_method("_on_intention_phase"):
+			trinket._on_intention_phase(player_id)
+			
+			for id in Global.players:
+				player_ui.sync_manager.rpc("sync_player_info", id, Global.player_info[id])
 		
 func _on_combat_roll(player_id: int, combat_amount: int) -> void:
 	if multiplayer.get_unique_id() != player_id:
@@ -86,15 +98,15 @@ func _on_player_defeated(attacker_id: int, defeated_id: int, combat_amount: int)
 		if trinket.has_method("_on_player_defeated"):
 			trinket._on_player_defeated(attacker_id, combat_amount)
 
-func _on_mob_defeated(player_id: int, combat_amount: int) -> void:
+func _on_mob_defeated(player_id: int, combat_amount: int, mob_id: int) -> void:
 	if multiplayer.get_unique_id() != player_id:
 		return
 	
 	for trinket in trinkets:
 		if trinket.has_method("_on_mob_defeated"):
-			trinket._on_mob_defeated(player_id, combat_amount)
+			trinket._on_mob_defeated(mob_id, player_id, combat_amount)
 	
-	add_trinket(player_id, Global.mob.drops.pick_random())
+	add_trinket(player_id, Global.mobs[-mob_id].drops.pick_random())
 
 func _on_boss_defeated(player_id: int, combat_amount: int, killing_blow: bool) -> void:
 	rpc_id(player_id, "_on_boss_defeated_rpc", player_id, combat_amount, killing_blow)
@@ -104,6 +116,17 @@ func _on_boss_defeated_rpc(player_id: int, combat_amount: int, killing_blow: boo
 	for trinket in trinkets:
 		if trinket.has_method("_on_boss_defeated"):
 			combat_amount = trinket._on_boss_defeated(player_id, combat_amount, killing_blow)
+	
+func _on_any_attacked(player_id: int, combat_amount: int) -> void:
+	if multiplayer.get_unique_id() != player_id:
+		return
+	
+	for trinket in trinkets:
+		if trinket.has_method("_on_any_attacked"):
+			trinket._on_any_attacked(player_id, combat_amount)
+			
+	for id in Global.players:
+		player_ui.sync_manager.rpc("sync_player_info", id, Global.player_info[id])
 	
 func _on_player_sabotaged(attacker_id: int, sabotaged_id: int, combat_amount: int) -> void:
 	if multiplayer.get_unique_id() != attacker_id:
@@ -138,7 +161,7 @@ func _on_boss_attack(player_id: int) -> void:
 	Global.player_info[player_id].hp = max(Global.player_info[player_id].hp - Global.boss.damage, 0)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
 	
-func _on_mob_attack(player_id: int) -> void:
+func _on_mob_attack(player_id: int, mob_id: int) -> void:
 	if multiplayer.get_unique_id() != player_id:
 		return
 	
@@ -146,5 +169,5 @@ func _on_mob_attack(player_id: int) -> void:
 		if trinket.has_method("_on_mob_attack"):
 			trinket._on_mob_attack(player_id)
 	
-	Global.player_info[player_id].hp = max(Global.player_info[player_id].hp - Global.mob.damage, 0)
+	Global.player_info[player_id].hp = max(Global.player_info[player_id].hp - Global.mobs[-mob_id].damage, 0)
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])

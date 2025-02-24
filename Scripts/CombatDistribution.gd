@@ -45,13 +45,16 @@ func show_combat_ui(target: Enums.Target) -> void:
 			target_ui.target_name.text = player_text_combat
 			
 	if target == Enums.Target.MOB:
-		var mob_text = "Mob (" + str(Global.mob.hp) + "❤️ HP)"
-		dropdown_target_ui.target_list.add_item(mob_text)
+		dropdown_target_ui.target_list.custom_minimum_size = Vector2(250, len(Global.mobs) * 30)
+		
+		for mob in Global.mobs:
+			var mob_text = mob.name + " (" + str(mob.hp) + "❤️ HP)"
+			dropdown_target_ui.target_list.add_item(mob_text)
 	elif target == Enums.Target.BOSS:
-		var boss_text = "Boss (" + str(Global.boss.current_hp) + "❤️ HP)"
+		var boss_text = Global.boss.name + " (" + str(Global.boss.current_hp) + "❤️ HP)"
 		
 		if Global.boss.current_hp <= 0:
-			boss_text = "Boss (Dead)"
+			boss_text = Global.boss.name + " (Dead)"
 			
 		dropdown_target_ui.target_list.add_item(boss_text)
 	
@@ -73,10 +76,10 @@ func _on_submit_button_pressed():
 	var invalid_inputs = false
 	
 	for target in targets:
-		if target[1] < 0:
+		if target["combat_taken"] < 0:
 			invalid_inputs = true
 			
-		combat_total += target[1]
+		combat_total += target["combat_taken"]
 	
 	if (combat_total > Global.player_info[player_id].combat and combat_total != 0) or invalid_inputs:
 		player_ui.current_player_label.text = "Bad inputs, try again!"
@@ -93,7 +96,7 @@ func extract_targets(children: Array) -> Array:
 	
 	for child in children:
 		if child is Target:
-			var target = Global.player_names.find_key(child.target_name.text.split(" ")[0])
+			var target = Global.player_names.find_key(child.target_name.text.split("(")[0].rstrip(" "))
 			var combat_taken = child.target_combat_taken.text
 			
 			if combat_taken.is_valid_int() or combat_taken == "":
@@ -102,12 +105,12 @@ func extract_targets(children: Array) -> Array:
 				combat_taken = -1
 			
 			if combat_taken != 0:
-				targets.push_front([target, combat_taken, "sabotage"])
+				targets.push_front({"target": target, "combat_taken": combat_taken, "type": "sabotage"})
 		elif child is DropdownTarget:
 			var selected_items = child.target_list.get_selected_items()
 			
 			if len(selected_items) > 0:
-				var target = child.target_list.get_item_text(selected_items[0]).split(" ")[0]
+				var target = child.target_list.get_item_text(selected_items[0]).split("(")[0].rstrip(" ")
 				var combat_taken = child.target_combat_taken.text
 				
 				if combat_taken.is_valid_int() or combat_taken == "":
@@ -115,9 +118,11 @@ func extract_targets(children: Array) -> Array:
 				else:
 					combat_taken = -1
 				
-				if target not in ["Mob", "Boss"]:
+				if Global.player_names.find_key(target) != null:
 					target = Global.player_names.find_key(target)
+				elif Global.enemy_ids.has(target):
+					target = Global.enemy_ids[target]
 				
-				targets.push_back([target, combat_taken, "damage"])
+				targets.push_back({"target": target, "combat_taken": combat_taken, "type": "damage"})
 			
 	return targets

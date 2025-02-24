@@ -63,7 +63,7 @@ func _on_join_button_pressed() -> void:
 func _on_player_name_button_pressed() -> void:
 	if player_name_text_edit.text in Global.player_names.values():
 		status_label.text = "Name already taken."
-	elif player_name_text_edit.text in ["Mob", "Boss"]:
+	elif player_name_text_edit.text in ["Mob", "Boss", ""] or player_name_text_edit.text.contains(" "):
 		status_label.text = "Name invalid."
 	else:
 		status_label.text = "Set name to: " + player_name_text_edit.text

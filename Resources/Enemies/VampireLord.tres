@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Mob" load_steps=4 format=3 uid="uid://cxg30lyitfekb"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/Trinket.gd" id="1_lqr8v"]
+[ext_resource type="Script" path="res://Scripts/Resources/Mob.gd" id="2_3cw50"]
+[ext_resource type="Resource" uid="uid://iguncxnvcdv1" path="res://Resources/Trinkets/GobletOfBlood.tres" id="2_yq44e"]
+
+[resource]
+script = ExtResource("2_3cw50")
+name = "Vampire Lord"
+hp = 1
+damage = 1
+description = "Likes blood."
+drops = Array[ExtResource("1_lqr8v")]([ExtResource("2_yq44e")])

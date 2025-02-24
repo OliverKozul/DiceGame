@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Mob" load_steps=4 format=3 uid="uid://db6gnjgvt2fm3"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/Trinket.gd" id="1_8748b"]
+[ext_resource type="Script" path="res://Scripts/Resources/Mob.gd" id="2_2w56g"]
+[ext_resource type="Resource" uid="uid://c6px03v0dgg1f" path="res://Resources/Trinkets/CoinMagnet.tres" id="2_g5214"]
+
+[resource]
+script = ExtResource("2_2w56g")
+name = "Goblin Thief"
+hp = 1
+damage = 1
+description = "He likes to steal."
+drops = Array[ExtResource("1_8748b")]([ExtResource("2_g5214")])

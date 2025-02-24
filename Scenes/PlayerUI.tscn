@@ -50,9 +50,7 @@ offset_bottom = 40.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
 [node name="CurrentPlayerLabel" type="Label" parent="PlayerUI/CurrentPlayerMargin"]
@@ -83,15 +81,6 @@ unique_name_in_owner = true
 [node name="LootDistribution" parent="PlayerUI" instance=ExtResource("7_htuwc")]
 unique_name_in_owner = true
 visible = false
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 365.0
-offset_top = 279.5
-offset_right = 787.0
-offset_bottom = 368.5
 
 [node name="BidDistribution" parent="PlayerUI" instance=ExtResource("8_hofqv")]
 unique_name_in_owner = true

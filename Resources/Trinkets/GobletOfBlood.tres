@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://iguncxnvcdv1"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/GobletOfBlood.gd" id="1_ve752"]
+
+[resource]
+script = ExtResource("1_ve752")
+name = "Goblet Of Blood"
+description = "Collect blood of the weak."

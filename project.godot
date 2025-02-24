@@ -27,6 +27,11 @@ Enums="*res://Scripts/Globals/Enums.gd"
 gdscript/warnings/unused_signal=0
 gdscript/warnings/integer_division=0
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+
 [gui]
 
 theme/default_font_multichannel_signed_distance_field=true

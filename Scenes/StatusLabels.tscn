@@ -7,12 +7,14 @@
 [ext_resource type="LabelSettings" uid="uid://ih27jjhxwqyi" path="res://Assets/LabelSettings/CunningLabel.tres" id="5_4cv8o"]
 
 [node name="StatusLabels" type="MarginContainer"]
+custom_minimum_size = Vector2(200, 0)
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -55.0
 offset_bottom = 139.0
 grow_horizontal = 0
+size_flags_horizontal = 0
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
@@ -21,6 +23,7 @@ script = ExtResource("1_8k87j")
 
 [node name="StatusLabelsVBox" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="HPLabel" type="Label" parent="StatusLabelsVBox"]
 unique_name_in_owner = true

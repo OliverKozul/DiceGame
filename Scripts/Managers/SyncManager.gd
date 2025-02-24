@@ -9,7 +9,6 @@ func sync_player_info(player_id: int, player_info: Dictionary) -> void:
 	if multiplayer.get_unique_id() == player_id:
 		player_ui.update_all_status_labels.emit()
 
-
 @rpc("any_peer", "call_local", "reliable")
 func sync_roll_results(player_id: int, roll_results: Array, roll_text: String) -> void:
 	Global.players_rolled[player_id] = true
@@ -38,16 +37,16 @@ func sync_turn(new_turn: int) -> void:
 	Global.player_bids.clear()
 	Global.current_bid_item = 0
 	
+	for mob in Global.mobs:
+		mob.hp = 1 + Global.mob_kills + int(new_turn / 10)
+		
 	Global.boss_attackers.clear()
-	Global.mob.hp = 1 + Global.mob_kills + int(new_turn / 10)
-	#Global.mob.hp = 1 + int(new_turn / 3)
-	#Global.boss.max_hp = len(Global.players) + int(new_turn / 2)
 	Global.boss.max_hp = len(Global.players) + Global.boss_kills + int(new_turn / 5)
-	Global.boss_drops = []
 	Global.boss.current_hp = Global.boss.max_hp
+	Global.boss_drops = []
 	
 	player_ui.buttons.show_buttons("roll")
-	player_ui.buttons.buttons["attack_mobs"].text = "Attack Mobs (%d HP)" % Global.mob.hp
+	player_ui.buttons.buttons["attack_mobs"].text = "Attack Mobs (%d HP)" % Global.mobs[0].hp
 	player_ui.buttons.buttons["attack_boss"].text = "Attack Boss (%d HP)" % Global.boss.max_hp
 	player_ui.loot_distribution.reset()
 	
@@ -77,6 +76,9 @@ func sync_current_player_index(new_index: int) -> void:
 	
 @rpc("any_peer", "call_local", "reliable")
 func sync_phase(new_phase: String) -> void:
+	if Global.current_phase != new_phase:
+		SignalBus.phase_dict[new_phase].emit()
+		
 	Global.current_phase = new_phase
 	
 @rpc("any_peer", "call_local", "reliable")

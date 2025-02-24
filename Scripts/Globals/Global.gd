@@ -16,6 +16,12 @@ var players_acted: Dictionary = {}
 var players_resolved: Dictionary = {}
 
 var boss_attackers: Dictionary = {}
+var enemy_ids: Dictionary = {
+	"Red Dragon": -999,
+	"Rat King": 0,
+	"Goblin Thief": -1,
+	"Vampire Lord": -2,
+}
 var boss_drops: Array = []
 var boss_kills: int = 0
 var mob_kills: int = 0
@@ -25,6 +31,9 @@ var bid_item_indices: Array = []
 var player_bids: Dictionary = {}
 var current_bid_item: int = 0
 
-@onready var mob: Mob = load("res://Resources/Enemies/RatKing.tres")
-@onready var boss: Boss = load("res://Resources/Enemies/RedDragon.tres")
+@onready var mobs: Array[Mob] = [
+	preload("res://Resources/Enemies/RatKing.tres"), 
+	preload("res://Resources/Enemies/GoblinThief.tres"), 
+	preload("res://Resources/Enemies/VampireLord.tres")]
+@onready var boss: Boss = preload("res://Resources/Enemies/RedDragon.tres")
 @onready var default_label_settings = preload("res://Assets/LabelSettings/Default.tres")
