@@ -57,7 +57,6 @@ func transition_to_loot_distribution_phase() -> void:
 	determine_player_order(Global.boss_attackers.keys())
 	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	player_ui.sync_manager.rpc("sync_current_player_index", 0)
-	player_ui.loot_distribution.rpc("load_items")
 	
 	rpc_id(Global.host_id, "allow_current_player_play")
 	

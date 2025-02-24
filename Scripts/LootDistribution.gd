@@ -13,17 +13,15 @@ func initialize(ui: PlayerUI) -> void:
 	player_ui = ui
 	submit_button.pressed.connect(_on_submit_button_pressed)
 	loot_list.item_clicked.connect(_on_item_clicked)
-	
-@rpc("any_peer", "call_local", "reliable")
-func load_items() -> void:
-	for item in Global.boss_drops:
-		loot_list.add_item(item.name)
 
 func reset() -> void:
 	loot_list.clear()
 	
 @rpc("any_peer", "call_local", "reliable")
 func allow_item_choice() -> void:
+	for item in Global.boss_drops:
+		loot_list.add_item(item.name)
+		
 	loot_list.select(0)
 	item_description_label.text = Global.boss_drops[0].description
 	show()

@@ -53,9 +53,10 @@ func handle_boss_combat(player_id: int, target: Dictionary) -> void:
 				SignalBus._on_boss_defeated.emit(attacker, Global.boss_attackers[attacker], false)
 				
 		for i in int((len(Global.boss_attackers.keys()) + 1) / 2):
-			Global.boss_drops.append(Global.boss.drops.pick_random())
+			var index = randi_range(0, len(Global.boss.drops) - 1)
+			Global.boss_drop_indices.append(index)
 				
-	player_ui.sync_manager.rpc("sync_boss_drops", Global.boss_drops)
+	player_ui.sync_manager.rpc("sync_boss_drops", Global.boss_drop_indices)
 
 func handle_player_combat(player_id: int, target: Dictionary) -> void:
 	if target["type"] == "sabotage":

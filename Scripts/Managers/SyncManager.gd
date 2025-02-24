@@ -44,6 +44,7 @@ func sync_turn(new_turn: int) -> void:
 	Global.boss.max_hp = len(Global.players) + Global.boss_kills + int(new_turn / 5)
 	Global.boss.current_hp = Global.boss.max_hp
 	Global.boss_drops = []
+	Global.boss_drop_indices = []
 	
 	player_ui.buttons.show_buttons("roll")
 	player_ui.buttons.buttons["attack_mobs"].text = "Attack Mobs (%d HP)" % Global.mobs[0].hp
@@ -91,16 +92,11 @@ func sync_boss_kills(new_boss_kills: int) -> void:
 	Global.boss_kills = new_boss_kills
 	
 @rpc("any_peer", "call_local", "reliable")
-func sync_boss_drops(new_boss_drops: Array) -> void:
-	var new_array = []
+func sync_boss_drops(new_boss_drop_indices: Array) -> void:
+	Global.boss_drop_indices = new_boss_drop_indices
 	
-	for drop in new_boss_drops:
-		if drop is not Resource:
-			new_array.append(instance_from_id(drop.object_id).duplicate())
-		else:
-			new_array.append(drop)
-			
-	Global.boss_drops = new_array
+	for index in Global.boss_drop_indices:
+		Global.boss_drops.append(Global.boss.drops[index].duplicate())
 	
 @rpc("any_peer", "call_local", "reliable")
 func sync_mob_kills(new_mob_kills: int) -> void:

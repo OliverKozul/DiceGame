@@ -23,6 +23,7 @@ var enemy_ids: Dictionary = {
 	"Vampire Lord": -2,
 }
 var boss_drops: Array = []
+var boss_drop_indices: Array = []
 var boss_kills: int = 0
 var mob_kills: int = 0
 

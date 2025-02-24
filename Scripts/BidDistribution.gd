@@ -14,13 +14,14 @@ func initialize(ui: PlayerUI) -> void:
 	submit_button.pressed.connect(_on_submit_button_pressed)
 	
 func _on_submit_button_pressed() -> void:
-	if not bid_amount.text.is_valid_int():
+	bid_amount.text = ""
+	
+	if not bid_amount.text.is_valid_int() and not bid_amount.text == "":
 		player_ui.current_player_label.text = "Bad inputs, try again!"
 		return
 		
 	var bid_amount_int = int(bid_amount.text)
 	var player_id = multiplayer.get_unique_id()
-	bid_amount.text = ""
 	
 	if bid_amount_int > Global.player_info[player_id].gold:
 		player_ui.current_player_label.text = "You don't that much gold!"
