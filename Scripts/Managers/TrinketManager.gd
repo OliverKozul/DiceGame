@@ -6,7 +6,6 @@ var trinkets: Array[Trinket] = []
 
 
 func _ready() -> void:
-	SignalBus.connect("_on_intention_phase", _on_intention_phase)
 	SignalBus.connect("_on_combat_roll", _on_combat_roll)
 	SignalBus.connect("_on_gold_roll", _on_gold_roll)
 	SignalBus.connect("_on_cunning_roll", _on_cunning_roll)
@@ -40,19 +39,6 @@ func remove_trinket(player_id: int, trinket: Trinket) -> void:
 			break
 			
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
-		
-func _on_intention_phase() -> void:
-	for player_id in Global.player_order:
-		rpc_id(player_id, "_on_intention_phase_rpc", player_id)
-
-@rpc("any_peer", "call_local", "reliable")
-func _on_intention_phase_rpc(player_id: int) -> void:
-	for trinket in trinkets:
-		if trinket.has_method("_on_intention_phase"):
-			trinket._on_intention_phase(player_id)
-			
-	for id in Global.player_order:
-		player_ui.sync_manager.rpc("sync_player_info", id, Global.player_info[id])
 				
 func _on_combat_roll(player_id: int, combat_amount: int) -> void:
 	if multiplayer.get_unique_id() != player_id:
@@ -141,6 +127,7 @@ func _on_player_sabotaged(attacker_id: int, sabotaged_id: int, combat_amount: in
 			
 	Global.player_info[sabotaged_id].combat = max(Global.player_info[sabotaged_id].combat - combat_amount, 0)
 	player_ui.sync_manager.rpc("sync_player_info", sabotaged_id, Global.player_info[sabotaged_id])
+	player_ui.sync_manager.rpc("sync_player_info", attacker_id, Global.player_info[attacker_id])
 
 func _on_player_attacked(attacker_id: int, defender_id: int, combat_amount: int):
 	if multiplayer.get_unique_id() != attacker_id:

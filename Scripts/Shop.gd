@@ -12,6 +12,7 @@ class_name Shop
 
 var player_ui: PlayerUI
 var player_id: int
+var can_sabotage: bool = false
 
 var resource_upgrade_counts: Dictionary = {
 	"attack": 0, 
@@ -37,8 +38,9 @@ func initialize(ui: PlayerUI, id: int) -> void:
 func update_button_label(type: String) -> void:
 	upgrade_buttons[type].text = "Upgrade " + type.capitalize() + " Faces (" + str(resource_upgrade_counts[type] + 1) + " 💰)"
 	
-func open() -> void:
+func open(has_combat: bool) -> void:
 	gold_label.text = "💰 Gold: " + str(Global.player_info[player_id].gold)
+	can_sabotage = has_combat
 	
 	for type in upgrade_buttons.keys():
 		update_button_label(type)
@@ -76,5 +78,9 @@ func get_die_face(type: String) -> String:
 
 func _on_exit_button_pressed() -> void:
 	player_ui.sync_manager.rpc("sync_player_info", player_id, Global.player_info[player_id])
+	
+	if not can_sabotage:
+		player_ui.turn_manager.rpc_id(Global.host_id, "advance_to_next_player")
+		
 	emit_signal("shop_closed")
 	hide()

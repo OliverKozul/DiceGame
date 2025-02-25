@@ -1,7 +1,7 @@
 extends Manager
 class_name TurnManager
 
-# Constants for phases
+
 const PHASES = {
 	"intention": "intention",
 	"action": "action",
@@ -10,7 +10,7 @@ const PHASES = {
 	"bid": "bid"
 }
 
-# Initiate Next Turn (Only Host Can Trigger)
+# Initiate Next Turn
 @rpc("any_peer", "call_local", "reliable")
 func initiate_next_turn() -> void:
 	if Global.boss.current_hp > 0:
@@ -18,6 +18,7 @@ func initiate_next_turn() -> void:
 		
 	Global.current_turn += 1
 	player_ui.sync_manager.rpc("sync_turn", Global.current_turn)
+	player_ui.sync_manager.rpc("sync_player_order", Global.player_order)
 	player_ui.player_intention_labels.rpc("update_players")
 	print("Turn ", Global.current_turn)
 
@@ -192,6 +193,7 @@ func _on_tween_completed(rect: TextureRect) -> void:
 		
 func give_auction_winner_trinket() -> void:
 	var max_bid_id = null
+	
 	for player_id in Global.player_bids.keys():
 		if max_bid_id == null or Global.player_bids[player_id] > Global.player_bids[max_bid_id]:
 			max_bid_id = player_id

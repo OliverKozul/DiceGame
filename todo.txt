@@ -4,5 +4,4 @@
 - More mobs
 
 - Bugs:
-	- Signal ordering for intention phase
 	- Intention labels badly ordered

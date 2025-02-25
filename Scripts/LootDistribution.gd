@@ -23,6 +23,7 @@ func allow_item_choice() -> void:
 		loot_list.add_item(item.name)
 		
 	loot_list.select(0)
+	loot_list.custom_minimum_size = Vector2(150, loot_list.item_count * 30)
 	item_description_label.text = Global.boss_drops[0].description
 	show()
 		

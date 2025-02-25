@@ -14,12 +14,11 @@ func resolve_current_player_turn(player_id: int) -> void:
 	
 	match action["action"]:
 		Enums.Action.SHOP:
-			show_shop(player_id)
-			
 			if Global.player_info[player_id].combat > 0 and len(Global.players) > 1:
 				player_ui.combat_distribution.show_combat_ui(Enums.Target.NONE)
+				show_shop(player_id, true)
 			else:
-				player_ui.turn_manager.rpc_id(Global.host_id, "advance_to_next_player")
+				show_shop(player_id, false)
 		Enums.Action.ATTACK:
 			player_ui.combat_distribution.show_combat_ui(action["target"])
 		Enums.Action.SKIP:
@@ -30,8 +29,8 @@ func resolve_current_player_turn(player_id: int) -> void:
 	Global.players_acted[player_id] = false
 
 @rpc("any_peer", "call_local", "reliable")
-func show_shop(player_id: int) -> void:
-	player_ui.shop.open()
+func show_shop(player_id: int, has_combat: bool) -> void:
+	player_ui.shop.open(has_combat)
 	print("Showing shop to player: ", Global.player_names[player_id])
 
 @rpc("any_peer", "call_local", "reliable")

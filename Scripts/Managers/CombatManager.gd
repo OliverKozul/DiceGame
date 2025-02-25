@@ -75,5 +75,5 @@ func deal_boss_damage() -> void:
 		SignalBus._on_boss_attack.emit(attacker)
 		
 		if Global.player_info[attacker].hp <= 0:
-			SignalBus._on_player_defeated.emit(-1, attacker, Global.boss.damage)
+			SignalBus._on_player_defeated.emit(Global.enemy_ids[Global.enemy_ids.keys()[0]], attacker, Global.boss.damage)
 			print(Global.player_names[attacker], " defeated!")
