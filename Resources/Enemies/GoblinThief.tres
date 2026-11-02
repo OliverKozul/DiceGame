@@ -11,6 +11,6 @@ display_name = "Goblin Thief"
 description = "He likes to steal."
 tier = 1
 copies = 3
-hp = 3
+hp = 4
 damage = 1
 rewards = Array[ExtResource("2_trinket")]([ExtResource("3_reward")])

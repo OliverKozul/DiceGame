@@ -137,7 +137,15 @@ func _spread_out() -> void:
 	if tween:
 		await tween.finished
 		for body in targets:
-			body.global_position = targets[body]
+			await _place(body, Transform3D(body.global_basis, targets[body]))
+
+
+## Sets a frozen die's final transform, and again after the next physics step, which can
+## otherwise write back the transform from the previous animation frame.
+func _place(body: RigidBody3D, where: Transform3D) -> void:
+	body.global_transform = where
+	await get_tree().physics_frame
+	body.global_transform = where
 
 
 func _crowded(spot: Vector3, placed: Array[Vector3]) -> bool:
@@ -221,7 +229,7 @@ func _settle_on(body: RigidBody3D, target: int) -> void:
 	tween.tween_method(func(t: float) -> void:
 		body.global_transform = start.interpolate_with(squared, t), 0.0, 1.0, 0.12)
 	await tween.finished
-	body.global_transform = squared
+	await _place(body, squared)
 	Audio.play(&"die_hit", -10.0)
 
 
@@ -230,15 +238,23 @@ func _square_up(from: Transform3D, target: int) -> Transform3D:
 	var current_normal := (from.basis * NORMALS[target]).normalized()
 	var fix := Basis(Quaternion(current_normal, Vector3.UP)) if current_normal.dot(Vector3.UP) < 0.9999 else Basis.IDENTITY
 	var basis := (fix * from.basis).orthonormalized()
-	# Turn the die to face the camera squarely, give or take a few degrees, so faces read well.
-	var yaw := atan2(-basis.x.z, basis.x.x)
-	var square_yaw := roundf(yaw / (PI / 2.0)) * (PI / 2.0) + _rng.randf_range(-0.12, 0.12)
-	basis = (Basis(Vector3.UP, square_yaw - yaw) * basis).orthonormalized()
+	# Turn the die so the top face reads upright from the camera, give or take a few degrees.
+	# Turning about the vertical by t adds t to atan2(x, z); "away from the camera" is -Z, angle PI.
+	var reading_up := basis * _face_up(target)
+	var turn := PI - atan2(reading_up.x, reading_up.z) + _rng.randf_range(-0.1, 0.1)
+	basis = (Basis(Vector3.UP, turn) * basis).orthonormalized()
 	var origin := from.origin
 	origin.y = 0.5
 	origin.x = clampf(origin.x, -TRAY_HALF.x + 0.6, TRAY_HALF.x - 0.6)
 	origin.z = clampf(origin.z, -TRAY_HALF.y + 0.6, TRAY_HALF.y - 0.6)
 	return Transform3D(basis, origin)
+
+
+## The die-local direction that is "up" for the symbol printed on face `index`.
+func _face_up(index: int) -> Vector3:
+	var normal := NORMALS[index]
+	var hint := Vector3.BACK if absf(normal.y) > 0.5 else Vector3.UP
+	return (hint - normal * hint.dot(normal)).normalized()
 
 
 ## Rolls the die 90 degrees over its bottom edge towards `direction`.

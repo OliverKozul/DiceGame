@@ -3,7 +3,7 @@ extends RefCounted
 ## Static registry of all game content and tuning numbers. Ids, not resources, travel over
 ## the network; both host and clients look them up here.
 
-const STARTING_HP := 20
+const STARTING_HP := 14
 const MAX_TURNS := 15
 const MIN_SEATS := 3
 const MAX_SEATS := 6

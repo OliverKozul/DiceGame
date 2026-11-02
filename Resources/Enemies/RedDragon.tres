@@ -7,5 +7,6 @@ script = ExtResource("1_script")
 id = &"red_dragon"
 display_name = "Red Dragon"
 description = "A fierce dragon."
-hp_per_player = 2
+base_hp = 2
+hp_per_player = 1
 damage = 3

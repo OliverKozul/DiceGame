@@ -161,18 +161,25 @@ static func _options(view: GameState, p: PlayerState) -> Array:
 		boss_value = 2.2
 	options.append([PlayerState.Action.ATTACK_BOSS, 0, boss_value])
 
+	# Knock out whoever can be knocked out; otherwise go after a leader who is pulling away.
 	var leader := 0
+	var leader_score := -1
+	for other in view.players:
+		if other.id != p.id and other.is_active() and view.final_score(other) > leader_score:
+			leader_score = view.final_score(other)
+			leader = other.id
+	var my_score := view.final_score(p)
 	for other in view.players:
 		if other.id == p.id or not other.is_active():
 			continue
-		var value := 0.8 + combat * 0.3
+		var value := 0.6 + combat * 0.3
 		if combat == 0:
 			value = 0.05
 		elif other.hp <= combat:
-			value = 4.0
-		if leader == 0 or view.final_score(other) > view.final_score(view.player(leader)):
-			leader = other.id
-		options.append([PlayerState.Action.ATTACK_PLAYER, other.id, value + (0.3 if other.id == leader else 0.0)])
+			value = 4.5
+		elif other.id == leader and leader_score >= my_score + 2 and combat >= 2:
+			value = 2.0 + combat * 0.35
+		options.append([PlayerState.Action.ATTACK_PLAYER, other.id, value])
 
 	options.append([PlayerState.Action.SHOP, 0, 1.5 + 0.2 * p.gold if p.gold >= 2 else 0.1])
 	options.append([PlayerState.Action.REST, 0, 3.0 if p.hp <= LOW_HP else 0.3])

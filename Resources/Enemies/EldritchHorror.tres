@@ -7,5 +7,6 @@ script = ExtResource("1_script")
 id = &"eldritch_horror"
 display_name = "Eldritch Horror"
 description = "It should not be."
-hp_per_player = 3
+base_hp = 4
+hp_per_player = 2
 damage = 4

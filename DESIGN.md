@@ -18,7 +18,7 @@ faces, tokens, cards and a screen. Timers, hidden automation and real-time trick
 ## Resources
 | Resource | From | Kept between turns? | Used for |
 |---|---|---|---|
-| ❤ HP | start 20 *(tune)* | yes | knocked out at 0 |
+| ❤ HP | start 14 *(tune)* | yes | knocked out at 0 |
 | ⚔ Combat | dice | **no**, lost at end of turn | attack, guard, sabotage |
 | 🧠 Cunning | dice | **no**, lost at end of turn | turn order, extra rerolls |
 | 💰 Gold | dice | yes | market, loot bids |
@@ -107,7 +107,7 @@ Example faces by tier *(tune)*:
 - **Mobs.** Three mob slots, filled from a mob deck that gets stronger over the game. Each mob card shows HP,
   damage and a trinket reward. A single player kills a mob alone. Several players may each kill the same mob in one turn
   if each of them meets its HP on their own.
-- **Boss.** One boss at a time, from an escalating boss deck: 2, 3, then 4 HP per player *(tune)*. The HP resets at the end of
+- **Boss.** One boss at a time, from an escalating boss deck: 2 + 1, 4 + 2, then 6 + 3 HP per player *(tune)*. The HP resets at the end of
   every turn, so it has to be killed in a single turn by players who choose to work together.
 - **Boss loot.** One item is drawn for every two attackers, rounded up, with no repeats.
   1. Every attacker secretly and simultaneously picks one item.
@@ -150,7 +150,17 @@ Attacks and sabotage can target any player who is not knocked out.
 - **Bots.** Play solo against 2–5 bots, fill online lobbies with bots, and a bot takes over the seat of a player who disconnects.
   Bots only see what a player at the table would see.
 - **AFK timeout** (online only, generous). An idle player automatically declares and plans **Rest**.
-- **Event log**, automatic arithmetic.
+- **Event log** (the Chronicle), automatic arithmetic, animations that can be sped up or skipped,
+  first-game tips and an illustrated rules book.
+
+## Tuning log
+Changed after bot playtests (`tests/balance_report.gd`, 200–300 games):
+- **Starting HP 20 → 14.** Attacks average about 1.5 damage, so at 20 HP knockouts almost never happened.
+- **Boss HP is now base + per player** (Red Dragon 2 + 1 per player, Eldritch Horror 4 + 2, Ancient Wyrm 6 + 3) instead of
+  2/3/4 per player. A kill needs about three committed players, not the whole table; bots now slay a boss in about half of
+  their games instead of a quarter.
+- **Goblin Thief HP 3 → 4**, so the first mob deck is less of a free buffet.
+- Bots now go after a leader who is pulling away, so solo games have real betrayal.
 
 ## Decisions log
 - There is no early-end trigger. The game always lasts the full number of turns.
