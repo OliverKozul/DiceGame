@@ -41,9 +41,10 @@ static func for_kind(kind: Face.Kind) -> String:
 	return "blank"
 
 
-## BBCode for text from the game: escapes brackets, then turns {icon} tokens into images.
-static func rich(text: String, size: int = 20) -> String:
-	var escaped := text.replace("[", "[lb]")
+## BBCode for game text: turns {icon} tokens into images. Text that may contain player
+## names is escaped first; pass escape = false only for our own BBCode.
+static func rich(text: String, size: int = 20, escape: bool = true) -> String:
+	var escaped := text.replace("[", "[lb]") if escape else text
 	var out := ""
 	var last := 0
 	for match_result in _token.search_all(escaped):

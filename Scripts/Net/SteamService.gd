@@ -31,9 +31,18 @@ func _ready() -> void:
 		return
 	_steam = Engine.get_singleton("Steam")
 	var result: Dictionary = _steam.call("steamInitEx", APP_ID, false)
-	if int(result.get("status", -1)) != 0:
-		status = "Steam unavailable: %s" % result.get("verbal", "is Steam running?")
-		return
+	match int(result.get("status", -1)):
+		0:
+			pass
+		2:
+			status = "Steam isn't running. Start Steam to host or join friends' tables."
+			return
+		3:
+			status = "Steam needs an update before you can play online."
+			return
+		_:
+			status = "Steam is unavailable: %s" % result.get("verbal", "unknown error")
+			return
 	available = true
 	status = "Signed in to Steam as %s." % persona_name()
 	_steam.connect("lobby_created", _on_lobby_created)

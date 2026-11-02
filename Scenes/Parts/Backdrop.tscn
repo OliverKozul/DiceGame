@@ -1,0 +1,69 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/wood.gdshader" id="1_wood"]
+[ext_resource type="Shader" path="res://Assets/Shaders/candle_glow.gdshader" id="2_glow"]
+[ext_resource type="Shader" path="res://Assets/Shaders/vignette.gdshader" id="3_vignette"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wood"]
+shader = ExtResource("1_wood")
+resource_local_to_scene = true
+shader_parameter/base_color = Color(0.23, 0.14, 0.08, 1)
+shader_parameter/light_color = Color(0.36, 0.22, 0.12, 1)
+shader_parameter/dark_color = Color(0.1, 0.06, 0.03, 1)
+shader_parameter/plank_width = 170.0
+shader_parameter/horizontal = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glow"]
+shader = ExtResource("2_glow")
+shader_parameter/glow_color = Color(1, 0.62, 0.28, 1)
+shader_parameter/glow_a = Vector2(0.06, 0.04)
+shader_parameter/glow_b = Vector2(0.94, 0.04)
+shader_parameter/radius = 0.55
+shader_parameter/strength = 0.16
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
+shader = ExtResource("3_vignette")
+shader_parameter/strength = 0.85
+shader_parameter/inner = 0.38
+
+[node name="Backdrop" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Wood" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_wood")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Glow" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_glow")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Vignette" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_vignette")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

@@ -1,0 +1,95 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/flame.gdshader" id="1_flame"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wax"]
+bg_color = Color(0.91, 0.86, 0.74, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_holder"]
+bg_color = Color(0.55, 0.4, 0.18, 1)
+border_width_bottom = 3
+border_color = Color(0.3, 0.2, 0.08, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flame"]
+shader = ExtResource("1_flame")
+resource_local_to_scene = true
+shader_parameter/seed = 0.0
+
+[node name="Candle" type="Control"]
+custom_minimum_size = Vector2(60, 220)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 60.0
+offset_bottom = 220.0
+mouse_filter = 2
+
+[node name="Wax" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -150.0
+offset_right = -16.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wax")
+
+[node name="Wick" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 29.0
+offset_top = -158.0
+offset_right = -29.0
+offset_bottom = -150.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.12, 0.08, 0.05, 1)
+
+[node name="Holder" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = -16.0
+offset_right = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_holder")
+
+[node name="Flame" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_flame")
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = -224.0
+offset_right = -2.0
+offset_bottom = -146.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2

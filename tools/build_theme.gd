@@ -219,7 +219,8 @@ func _panels(theme: Theme) -> void:
 	theme.set_stylebox("panel", "ActiveSeatPanel", active)
 
 	_variation(theme, "PaperPanel", "PanelContainer")
-	var paper := _box(PAPER, PAPER_EDGE, 0, 4, Vector4(16, 14, 16, 14))
+	# No content margin: the parchment texture fills the whole panel; content brings its own margin.
+	var paper := _box(PAPER, PAPER_EDGE, 0, 4, Vector4(0, 0, 0, 0))
 	paper.shadow_color = Color(0, 0, 0, 0.5)
 	paper.shadow_size = 10
 	paper.shadow_offset = Vector2(0, 6)

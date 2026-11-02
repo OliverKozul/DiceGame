@@ -7,7 +7,7 @@ const PATH := "user://settings.cfg"
 const DEFAULTS: Dictionary = {
 	"display": {"fullscreen": false, "vsync": true, "ui_scale": 1.0},
 	"audio": {"master": 0.8, "music": 0.55, "sfx": 0.8, "ambience": 0.6},
-	"gameplay": {"animation_speed": 1.0, "reduced_motion": false, "confirm_lock": true, "high_contrast": false},
+	"gameplay": {"animation_speed": 1.0, "reduced_motion": false, "confirm_lock": true, "high_contrast": false, "tips": true},
 }
 const UI_SCALES: Array[float] = [0.85, 1.0, 1.15, 1.3, 1.5]
 const ANIMATION_SPEEDS: Array[float] = [0.75, 1.0, 1.5, 2.0]
@@ -40,6 +40,23 @@ func reset_to_defaults() -> void:
 	_config = ConfigFile.new()
 	_config.save(PATH)
 	apply()
+	changed.emit()
+
+
+## First-game tips: shown once each while tips are switched on.
+func should_show_tip(id: String) -> bool:
+	return bool(get_value("gameplay", "tips")) and not _config.get_value("tips_seen", id, false)
+
+
+func mark_tip_seen(id: String) -> void:
+	_config.set_value("tips_seen", id, true)
+	_config.save(PATH)
+
+
+func reset_tips() -> void:
+	if _config.has_section("tips_seen"):
+		_config.erase_section("tips_seen")
+	_config.save(PATH)
 	changed.emit()
 
 

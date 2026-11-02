@@ -12,6 +12,7 @@ extends Node
 ##   --leave-at-turn=N         quit abruptly when turn N starts (tests disconnects)
 ##   --quit-on-end             print a RESULT line and quit when the game ends
 ##   --screenshots=DIR         save a screenshot whenever the phase changes (windowed only)
+##   --menu-shots=DIR          screenshot every menu page and overlay, then quit (windowed only)
 
 var options: Dictionary = {}
 var _started := false
@@ -37,6 +38,9 @@ func _ready() -> void:
 
 
 func _start() -> void:
+	if options.has("menu-shots"):
+		_menu_shots(options["menu-shots"])
+		return
 	var player_name: String = options.get("name", "Tester")
 	match options.get("autohost", ""):
 		"offline":
@@ -92,6 +96,29 @@ func _on_view_changed(view: GameState) -> void:
 	if options.has("quit-on-end"):
 		# The host lingers so the final view reaches every client before it disconnects.
 		get_tree().create_timer(2.0 if Network.is_host() else 0.5).timeout.connect(func() -> void: Transition.quit_game())
+
+
+func _menu_shots(dir: String) -> void:
+	DirAccess.make_dir_recursive_absolute(dir)
+	await get_tree().create_timer(1.2).timeout
+	var menu := get_tree().current_scene
+	var steps: Array = [
+		["main", func() -> void: pass],
+		["solo", func() -> void: menu.call("_show_page", menu.get_node("%SoloPage"))],
+		["online", func() -> void: menu.call("_show_page", menu.get_node("%OnlinePage"))],
+		["credits", func() -> void: menu.call("_show_page", menu.get_node("%CreditsPage"))],
+		["settings", func() -> void: menu.get("_settings").call("open")],
+		["rules", func() -> void:
+			menu.get("_settings").call("close")
+			menu.get("_rules").call("open")],
+		["rules_faces", func() -> void: menu.get("_rules").call("_show", 9)],
+	]
+	for step: Array in steps:
+		(step[1] as Callable).call()
+		await get_tree().create_timer(0.6).timeout
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png(dir.path_join("menu_%s.png" % step[0]))
+	Transition.quit_game()
 
 
 func _screenshot(view: GameState) -> void:
