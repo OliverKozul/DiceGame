@@ -1,8 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://fkovavv5x2k0"]
+[gd_resource type="Resource" script_class="Trinket" format=3 uid="uid://fkovavv5x2k0"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/SharpTooth.gd" id="1_cv27y"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/SharpTooth.gd" id="1_script"]
 
 [resource]
-script = ExtResource("1_cv27y")
-name = "Sharp Tooth"
-description = "Your combat roll is increased by 1."
+script = ExtResource("1_script")
+id = &"sharp_tooth"
+display_name = "Sharp Tooth"
+description = "+1 ⚔ for every combat face you roll."

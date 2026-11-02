@@ -11,21 +11,9 @@ config_version=5
 [application]
 
 config/name="DiceGame"
-run/main_scene="res://Scenes/Lobby.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/version="0.2.0"
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://Assets/icon.svg"
-
-[autoload]
-
-Global="*res://Scripts/Globals/Global.gd"
-SignalBus="*res://Scripts/Globals/SignalBus.gd"
-Utils="*res://Scripts/Globals/Utils.gd"
-Enums="*res://Scripts/Globals/Enums.gd"
-
-[debug]
-
-gdscript/warnings/unused_signal=0
-gdscript/warnings/integer_division=0
 
 [display]
 

@@ -1,8 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://iguncxnvcdv1"]
+[gd_resource type="Resource" script_class="Trinket" format=3 uid="uid://iguncxnvcdv1"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/GobletOfBlood.gd" id="1_ve752"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/GobletOfBlood.gd" id="1_script"]
 
 [resource]
-script = ExtResource("1_ve752")
-name = "Goblet Of Blood"
-description = "Collect blood of the weak."
+script = ExtResource("1_script")
+id = &"goblet_of_blood"
+display_name = "Goblet Of Blood"
+description = "When your attack deals damage, heal 1 ❤, plus 1 for every 5 damage."

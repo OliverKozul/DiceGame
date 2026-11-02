@@ -1,8 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://d1i7voohps6o1"]
+[gd_resource type="Resource" script_class="Trinket" format=3 uid="uid://d1i7voohps6o1"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/ThirdEye.gd" id="1_udrfn"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/ThirdEye.gd" id="1_script"]
 
 [resource]
-script = ExtResource("1_udrfn")
-name = "Third Eye"
-description = "You open your third eye."
+script = ExtResource("1_script")
+id = &"third_eye"
+display_name = "Third Eye"
+description = "Every cunning face you roll gives 3 more 🧠 and heals 1 ❤."
