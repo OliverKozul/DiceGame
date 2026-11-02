@@ -4,8 +4,8 @@ A dice-building game of honest promises and well-timed betrayal for 3–6 player
 It is built digitally first, but **every rule must work as a physical board game**: dice with swappable
 faces, tokens, cards and a screen. Timers, hidden automation and real-time tricks are not part of the rules.
 
-> Status: draft for review. Numbers marked *(tune)* are placeholders to be balanced in playtests.
-> README.md describes what is implemented today; this file describes where the game is going.
+> Status: agreed v1, implemented. Numbers marked *(tune)* are placeholders to be balanced in playtests.
+> README.md describes what is implemented today; ROADMAP.md lists what is still open.
 
 ## Pillars
 1. **Deceit with a price.** Everyone announces what they will do. Keeping your word earns renown; breaking
@@ -107,7 +107,7 @@ Example faces by tier *(tune)*:
 - **Mobs.** Three mob slots, filled from a mob deck that gets stronger over the game. Each mob card shows HP,
   damage and a trinket reward. A single player kills a mob alone. Several players may each kill the same mob in one turn
   if each of them meets its HP on their own.
-- **Boss.** One boss at a time, from an escalating boss deck. Its HP is printed per player count. The HP resets at the end of
+- **Boss.** One boss at a time, from an escalating boss deck: 2, 3, then 4 HP per player *(tune)*. The HP resets at the end of
   every turn, so it has to be killed in a single turn by players who choose to work together.
 - **Boss loot.** One item is drawn for every two attackers, rounded up, with no repeats.
   1. Every attacker secretly and simultaneously picks one item.
