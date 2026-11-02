@@ -2,7 +2,22 @@
 
 [ext_resource type="Script" path="res://Scripts/UI/GameScreen.gd" id="1_screen"]
 [ext_resource type="Script" path="res://Scripts/UI/ActionPanel.gd" id="2_action"]
-[ext_resource type="FontFile" path="res://Assets/Fonts/CloisterBlack.ttf" id="3_title"]
+[ext_resource type="PackedScene" path="res://Scenes/Parts/Backdrop.tscn" id="3_backdrop"]
+[ext_resource type="Script" path="res://Scripts/UI/Parchment.gd" id="4_parchment"]
+[ext_resource type="Script" path="res://Scripts/UI/DiceTray.gd" id="5_tray"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ribbon"]
+content_margin_left = 60.0
+content_margin_top = 6.0
+content_margin_right = 60.0
+content_margin_bottom = 10.0
+bg_color = Color(0.48, 0.13, 0.09, 0.96)
+border_width_top = 3
+border_width_bottom = 3
+border_color = Color(0.85, 0.65, 0.3, 1)
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 18
+shadow_offset = Vector2(0, 8)
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -13,47 +28,36 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_screen")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Backdrop" parent="." instance=ExtResource("3_backdrop")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.0627451, 0.0823529, 0.109804, 1)
 
 [node name="Margin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 10
 
 [node name="Columns" type="HBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
 
-[node name="Left" type="PanelContainer" parent="Margin/Columns"]
-custom_minimum_size = Vector2(330, 0)
+[node name="Left" type="VBoxContainer" parent="Margin/Columns"]
+custom_minimum_size = Vector2(318, 0)
 layout_mode = 2
 
-[node name="LeftMargin" type="MarginContainer" parent="Margin/Columns/Left"]
+[node name="SeatsScroll" type="ScrollContainer" parent="Margin/Columns/Left"]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
-
-[node name="Scroll" type="ScrollContainer" parent="Margin/Columns/Left/LeftMargin"]
-layout_mode = 2
+size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="PlayerRows" type="VBoxContainer" parent="Margin/Columns/Left/LeftMargin/Scroll"]
+[node name="Seats" type="VBoxContainer" parent="Margin/Columns/Left/SeatsScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -70,96 +74,125 @@ layout_mode = 2
 [node name="HeaderText" type="VBoxContainer" parent="Margin/Columns/Center/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 0
 
 [node name="PhaseLabel" type="Label" parent="Margin/Columns/Center/Header/HeaderText"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Waiting for players…"
+theme_type_variation = &"Heading"
+text = "The table is being set…"
 
 [node name="HintLabel" type="Label" parent="Margin/Columns/Center/Header/HeaderText"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.70, 0.72, 0.76, 1)
+theme_type_variation = &"Dim"
 autowrap_mode = 3
 
-[node name="LeaveButton" type="Button" parent="Margin/Columns/Center/Header"]
+[node name="MenuButton" type="Button" parent="Margin/Columns/Center/Header"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 40)
 layout_mode = 2
 size_flags_vertical = 0
-text = "Leave"
+text = "Menu"
 
-[node name="ActionFrame" type="PanelContainer" parent="Margin/Columns/Center"]
+[node name="ActionCard" type="PanelContainer" parent="Margin/Columns/Center"]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("4_parchment")
+edge_burn = 0.35
 
-[node name="ActionMargin" type="MarginContainer" parent="Margin/Columns/Center/ActionFrame"]
+[node name="ActionMargin" type="MarginContainer" parent="Margin/Columns/Center/ActionCard"]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
 
-[node name="ActionScroll" type="ScrollContainer" parent="Margin/Columns/Center/ActionFrame/ActionMargin"]
+[node name="ActionScroll" type="ScrollContainer" parent="Margin/Columns/Center/ActionCard/ActionMargin"]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="ActionPanel" type="VBoxContainer" parent="Margin/Columns/Center/ActionFrame/ActionMargin/ActionScroll"]
+[node name="ActionPanel" type="VBoxContainer" parent="Margin/Columns/Center/ActionCard/ActionMargin/ActionScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 script = ExtResource("2_action")
 
-[node name="LogFrame" type="PanelContainer" parent="Margin/Columns/Center"]
-custom_minimum_size = Vector2(0, 160)
+[node name="TrayFrame" type="PanelContainer" parent="Margin/Columns/Center"]
+custom_minimum_size = Vector2(0, 196)
 layout_mode = 2
+theme_type_variation = &"FeltPanel"
 
-[node name="LogMargin" type="MarginContainer" parent="Margin/Columns/Center/LogFrame"]
-layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 6
-
-[node name="LogText" type="RichTextLabel" parent="Margin/Columns/Center/LogFrame/LogMargin"]
+[node name="DiceTray" type="SubViewportContainer" parent="Margin/Columns/Center/TrayFrame"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 15
-scroll_following = true
+stretch = true
+script = ExtResource("5_tray")
 
 [node name="Right" type="VBoxContainer" parent="Margin/Columns"]
-custom_minimum_size = Vector2(330, 0)
+custom_minimum_size = Vector2(318, 0)
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="StatsFrame" type="PanelContainer" parent="Margin/Columns/Right"]
-layout_mode = 2
-
-[node name="StatsMargin" type="MarginContainer" parent="Margin/Columns/Right/StatsFrame"]
-layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 6
-
-[node name="StatsLabel" type="RichTextLabel" parent="Margin/Columns/Right/StatsFrame/StatsMargin"]
+[node name="BossCard" type="PanelContainer" parent="Margin/Columns/Right"]
 unique_name_in_owner = true
 layout_mode = 2
+script = ExtResource("4_parchment")
+edge_burn = 0.35
+
+[node name="BossMargin" type="MarginContainer" parent="Margin/Columns/Right/BossCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="BossBox" type="VBoxContainer" parent="Margin/Columns/Right/BossCard/BossMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="BossCaps" type="Label" parent="Margin/Columns/Right/BossCard/BossMargin/BossBox"]
+layout_mode = 2
+theme_type_variation = &"InkDim"
+text = "THE BOSS"
+
+[node name="BossName" type="Label" parent="Margin/Columns/Right/BossCard/BossMargin/BossBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"InkHeading"
+text = "Red Dragon"
+
+[node name="BossBar" type="ProgressBar" parent="Margin/Columns/Right/BossCard/BossMargin/BossBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+show_percentage = false
+
+[node name="BossInfo" type="RichTextLabel" parent="Margin/Columns/Right/BossCard/BossMargin/BossBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"InkRich"
+theme_override_font_sizes/normal_font_size = 15
+theme_override_font_sizes/bold_font_size = 15
 bbcode_enabled = true
 fit_content = true
 
-[node name="EnemyFrame" type="PanelContainer" parent="Margin/Columns/Right"]
+[node name="MobsCard" type="PanelContainer" parent="Margin/Columns/Right"]
+unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"WoodPanel"
 
-[node name="EnemyMargin" type="MarginContainer" parent="Margin/Columns/Right/EnemyFrame"]
+[node name="MobsBox" type="VBoxContainer" parent="Margin/Columns/Right/MobsCard"]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 6
+theme_override_constants/separation = 4
 
-[node name="EnemyLabel" type="RichTextLabel" parent="Margin/Columns/Right/EnemyFrame/EnemyMargin"]
+[node name="MobsCaps" type="Label" parent="Margin/Columns/Right/MobsCard/MobsBox"]
+layout_mode = 2
+theme_type_variation = &"Caps"
+text = "MOBS"
+
+[node name="MobsText" type="RichTextLabel" parent="Margin/Columns/Right/MobsCard/MobsBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 15
@@ -167,134 +200,142 @@ theme_override_font_sizes/bold_font_size = 15
 bbcode_enabled = true
 fit_content = true
 
-[node name="MarketFrame" type="PanelContainer" parent="Margin/Columns/Right"]
+[node name="MarketCard" type="PanelContainer" parent="Margin/Columns/Right"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"WoodPanel"
+
+[node name="MarketBox" type="VBoxContainer" parent="Margin/Columns/Right/MarketCard"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MarketCaps" type="Label" parent="Margin/Columns/Right/MarketCard/MarketBox"]
+layout_mode = 2
+theme_type_variation = &"Caps"
+text = "THE MARKET"
+
+[node name="MarketTiles" type="HFlowContainer" parent="Margin/Columns/Right/MarketCard/MarketBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+
+[node name="MarketNote" type="Label" parent="Margin/Columns/Right/MarketCard/MarketBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Dim"
+autowrap_mode = 3
+
+[node name="ChronicleCard" type="PanelContainer" parent="Margin/Columns/Right"]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("4_parchment")
+edge_burn = 0.35
 
-[node name="MarketMargin" type="MarginContainer" parent="Margin/Columns/Right/MarketFrame"]
+[node name="ChronicleMargin" type="MarginContainer" parent="Margin/Columns/Right/ChronicleCard"]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
-[node name="MarketLabel" type="RichTextLabel" parent="Margin/Columns/Right/MarketFrame/MarketMargin"]
+[node name="ChronicleBox" type="VBoxContainer" parent="Margin/Columns/Right/ChronicleCard/ChronicleMargin"]
+layout_mode = 2
+
+[node name="ChronicleTitle" type="Label" parent="Margin/Columns/Right/ChronicleCard/ChronicleMargin/ChronicleBox"]
+layout_mode = 2
+theme_type_variation = &"InkHeading"
+theme_override_font_sizes/font_size = 24
+text = "The Chronicle"
+
+[node name="ChronicleText" type="RichTextLabel" parent="Margin/Columns/Right/ChronicleCard/ChronicleMargin/ChronicleBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 15
-theme_override_font_sizes/bold_font_size = 15
+size_flags_vertical = 3
+theme_type_variation = &"InkRich"
+theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/bold_font_size = 14
 bbcode_enabled = true
-fit_content = true
+scroll_following = true
 
-[node name="InfoPopup" type="PanelContainer" parent="."]
+[node name="Banner" type="CenterContainer" parent="."]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(560, 440)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -220.0
-offset_right = 280.0
-offset_bottom = 220.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="InfoMargin" type="MarginContainer" parent="InfoPopup"]
+[node name="BannerRibbon" type="PanelContainer" parent="Banner"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ribbon")
+
+[node name="BannerLabel" type="Label" parent="Banner/BannerRibbon"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_font_sizes/font_size = 56
+text = "Turn 1"
+horizontal_alignment = 1
+
+[node name="TipNote" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -210.0
+offset_top = -360.0
+offset_right = 210.0
+offset_bottom = -224.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("4_parchment")
+edge_burn = 0.3
+
+[node name="TipMargin" type="MarginContainer" parent="TipNote"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
 
-[node name="InfoVBox" type="VBoxContainer" parent="InfoPopup/InfoMargin"]
+[node name="TipBox" type="VBoxContainer" parent="TipNote/TipMargin"]
 layout_mode = 2
+theme_override_constants/separation = 8
 
-[node name="InfoTitle" type="Label" parent="InfoPopup/InfoMargin/InfoVBox"]
+[node name="TipText" type="RichTextLabel" parent="TipNote/TipMargin/TipBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
-
-[node name="InfoBody" type="RichTextLabel" parent="InfoPopup/InfoMargin/InfoVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-bbcode_enabled = true
-
-[node name="InfoCloseButton" type="Button" parent="InfoPopup/InfoMargin/InfoVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Close"
-
-[node name="EndScreen" type="ColorRect" parent="."]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.75)
-
-[node name="EndCenter" type="CenterContainer" parent="EndScreen"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="EndPanel" type="PanelContainer" parent="EndScreen/EndCenter"]
-custom_minimum_size = Vector2(480, 0)
-layout_mode = 2
-
-[node name="EndMargin" type="MarginContainer" parent="EndScreen/EndCenter/EndPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
-
-[node name="EndVBox" type="VBoxContainer" parent="EndScreen/EndCenter/EndPanel/EndMargin"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="EndTitle" type="Label" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_fonts/font = ExtResource("3_title")
-theme_override_font_sizes/font_size = 44
-horizontal_alignment = 1
-
-[node name="EndBody" type="RichTextLabel" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox"]
-unique_name_in_owner = true
-layout_mode = 2
+theme_type_variation = &"InkRich"
+theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/bold_font_size = 16
 bbcode_enabled = true
 fit_content = true
 
-[node name="EndButtons" type="HBoxContainer" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox"]
+[node name="TipButtons" type="HBoxContainer" parent="TipNote/TipMargin/TipBox"]
 layout_mode = 2
-alignment = 1
+alignment = 2
+theme_override_constants/separation = 8
 
-[node name="ReturnButton" type="Button" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox/EndButtons"]
+[node name="TipOffButton" type="Button" parent="TipNote/TipMargin/TipBox/TipButtons"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Back to lobby"
+text = "No more tips"
 
-[node name="ViewTableButton" type="Button" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox/EndButtons"]
+[node name="TipOkButton" type="Button" parent="TipNote/TipMargin/TipBox/TipButtons"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "View table"
-
-[node name="EndLeaveButton" type="Button" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox/EndButtons"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Leave"
+text = "Got it"
 
 [node name="Toast" type="Label" parent="."]
 unique_name_in_owner = true
@@ -306,14 +347,14 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -300.0
-offset_top = -64.0
+offset_top = -250.0
 offset_right = 300.0
-offset_bottom = -24.0
+offset_bottom = -214.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
+theme_override_constants/outline_size = 8
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -322,8 +363,3 @@ autowrap_mode = 3
 unique_name_in_owner = true
 wait_time = 4.0
 one_shot = true
-
-[node name="LeaveDialog" type="ConfirmationDialog" parent="."]
-unique_name_in_owner = true
-title = "Leave the game?"
-dialog_text = "A bot will take over your seat. If you are the host, the game ends for everyone."

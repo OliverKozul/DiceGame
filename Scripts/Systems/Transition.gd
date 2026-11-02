@@ -3,6 +3,8 @@ extends CanvasLayer
 
 const SHADER := preload("res://Assets/Shaders/transition.gdshader")
 const DURATION := 0.45
+## Longest animation timer that may still be pending when the game quits.
+const QUIT_GRACE := 0.6
 const SCENE_MUSIC: Dictionary = {
 	"res://Scenes/Menu.tscn": &"menu",
 	"res://Scenes/Game.tscn": &"game",
@@ -12,6 +14,7 @@ var _cover := ColorRect.new()
 var _material := ShaderMaterial.new()
 var _busy := false
 var _queued := ""
+var _quitting := false
 
 
 func _ready() -> void:
@@ -40,6 +43,7 @@ func change_scene(path: String) -> void:
 		tween.tween_method(_set_progress, 0.0, 1.0, duration).set_trans(Tween.TRANS_SINE)
 		await tween.finished
 	_set_progress(1.0)
+	await _wind_down_current_scene()
 	Audio.play_music(SCENE_MUSIC.get(path, &""))
 	get_tree().change_scene_to_file(path)
 	await get_tree().process_frame
@@ -57,15 +61,29 @@ func change_scene(path: String) -> void:
 		change_scene(next)
 
 
-## The one way out of the game: leaves any session, stops audio, then quits a couple of
-## frames later so nothing is still playing when the engine shuts down.
+## The one way out of the game: leaves any session, frees the current scene (stopping its
+## animations), lets in-flight timers run out, silences audio and only then quits, so the
+## engine shuts down with nothing still running.
 func quit_game(exit_code: int = 0) -> void:
+	if _quitting:
+		return
+	_quitting = true
 	if Network.in_room():
-		Network.leave()
+		Network._close()
+	await _wind_down_current_scene()
+	get_tree().unload_current_scene()
 	Audio.stop_all()
-	await get_tree().process_frame
+	await get_tree().create_timer(QUIT_GRACE).timeout
 	await get_tree().process_frame
 	get_tree().quit(exit_code)
+
+
+## Lets a scene finish its animations before it is freed (see GameScreen.wind_down), so no
+## coroutine is left waiting on something that no longer exists.
+func _wind_down_current_scene() -> void:
+	var scene := get_tree().current_scene
+	if scene and scene.has_method("wind_down"):
+		await scene.call("wind_down")
 
 
 func _notification(what: int) -> void:

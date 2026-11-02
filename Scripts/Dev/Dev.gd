@@ -7,12 +7,14 @@ extends Node
 ##   --expect=N                host starts once N humans (including itself) are in the room
 ##   --seed=N --turns=N        game seed and length
 ##   --autoplay                the bot brain plays the local seat
-##   --bot-delay=SECONDS       pause between bot moves (default 0.6)
+##   --bot-delay=SECONDS       pause between bot moves (default 0.6; 0 also skips animations)
+##   --instant                 skip all animations
 ##   --afk=SECONDS             idle timeout for remote players (0 disables)
 ##   --leave-at-turn=N         quit abruptly when turn N starts (tests disconnects)
 ##   --quit-on-end             print a RESULT line and quit when the game ends
 ##   --screenshots=DIR         save a screenshot whenever the phase changes (windowed only)
 ##   --menu-shots=DIR          screenshot every menu page and overlay, then quit (windowed only)
+##   --shot-interval=SECONDS   with --screenshots, also save a screenshot this often
 
 var options: Dictionary = {}
 var _started := false
@@ -29,11 +31,20 @@ func _ready() -> void:
 		return
 	if options.has("bot-delay"):
 		Session.bot_delay = float(options["bot-delay"])
+	# Fast automated runs skip animations entirely.
+	if options.has("instant") or (options.has("bot-delay") and Session.bot_delay <= 0.0):
+		Settings.instant_animations = true
 	if options.has("afk"):
 		Session.afk_timeout = float(options["afk"])
 	Session.autoplay = options.has("autoplay")
 	Network.roster_changed.connect(_on_roster_changed)
 	Session.view_changed.connect(_on_view_changed)
+	if options.has("screenshots") and options.has("shot-interval"):
+		var timer := Timer.new()
+		timer.wait_time = float(options["shot-interval"])
+		timer.timeout.connect(_interval_shot)
+		add_child(timer)
+		timer.start()
 	_start.call_deferred()
 
 
@@ -119,6 +130,19 @@ func _menu_shots(dir: String) -> void:
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png(dir.path_join("menu_%s.png" % step[0]))
 	Transition.quit_game()
+
+
+var _interval_count := 0
+
+
+func _interval_shot() -> void:
+	if DisplayServer.get_name() == "headless" or not get_tree().current_scene is GameScreen:
+		return
+	_interval_count += 1
+	await RenderingServer.frame_post_draw
+	var dir: String = options["screenshots"]
+	DirAccess.make_dir_recursive_absolute(dir)
+	get_viewport().get_texture().get_image().save_png(dir.path_join("i%03d.png" % _interval_count))
 
 
 func _screenshot(view: GameState) -> void:

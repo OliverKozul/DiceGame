@@ -1,93 +1,190 @@
+class_name GameScreen
 extends Control
-## The table. Renders the latest view from Session; all input goes through the action panel.
+## The tavern table. Each update from the host is queued; its events are played by the
+## Presenter and only then is the new view drawn, so players can follow what happened.
 
-const DIM := "#aab0b8"
-const GOOD := "#8fd18f"
-const BAD := "#e08a7a"
-const HIGHLIGHT := "#ffd27a"
+const PHASE_TITLES: Dictionary = {
+	GameState.Phase.SETUP: "The table is being set",
+	GameState.Phase.ROLL: "The Roll",
+	GameState.Phase.DECLARE: "Declarations",
+	GameState.Phase.PLAN: "Secret Plans",
+	GameState.Phase.RESOLVE: "The Reveal",
+	GameState.Phase.LOOT: "Spoils",
+	GameState.Phase.BID: "Sealed Bids",
+	GameState.Phase.GAME_OVER: "The Final Count",
+}
+const TIPS: Dictionary = {
+	"roll": "Click dice in the tray to choose which to reroll. The first reroll each turn is free; each further one costs 1 {cunning}, and {cunning} decides who acts first.",
+	"declare": "Say what you will do. Everyone sees it. Keep your word in your secret plan to earn {renown}, or break it to catch them out.",
+	"plan": "Now choose what you really do, and split your {combat} into attack, {guard} guard and {sabotage} sabotage. Sabotage hits a player's attack if they act after you.",
+	"resolve": "Plans play out from the most cunning player down. The Chronicle on the right records every hit, theft and broken promise.",
+	"shop": "Click a face in the market on the right, then click the face on your dice it should replace.",
+	"loot": "Pick one item in secret. If someone else wants it too, you will bid for it.",
+	"bid": "Bid {gold} and {renown}. The highest total wins and pays; ties go to the more cunning player.",
+}
 
-var _view: GameState
-var _info_player := 0
+var shown: GameState
+var me := 0
+
+var _queue: Array[Array] = []
+var _playing := false
+var _skip := false
+var _speed := 1.0
+var _cards: Dictionary[int, SeatCard] = {}
+var _presenter: Presenter
+var _pause := PauseMenu.new()
+var _end := EndOverlay.new()
+var _confirm := ConfirmOverlay.new()
+var _confirm_action := Callable()
 var _end_shown := false
+var _market_selected := -1
+var _tip_id := ""
+var _tray_faces: Array[PackedInt32Array] = []
+var _tray_showing := PackedInt32Array()
+var _dice_rolling := false
+var _boss_shown_hp := -1
 
+@onready var margin: Control = %Margin
+@onready var boss_card: Control = %BossCard
+@onready var mobs_card: Control = %MobsCard
+@onready var tray: DiceTray = %DiceTray
+@onready var _seats: VBoxContainer = %Seats
 @onready var _phase_label: Label = %PhaseLabel
 @onready var _hint_label: Label = %HintLabel
-@onready var _player_rows: VBoxContainer = %PlayerRows
-@onready var _stats_label: RichTextLabel = %StatsLabel
-@onready var _enemy_label: RichTextLabel = %EnemyLabel
-@onready var _market_label: RichTextLabel = %MarketLabel
-@onready var _log_text: RichTextLabel = %LogText
 @onready var _action_panel: ActionPanel = %ActionPanel
-@onready var _info_popup: Control = %InfoPopup
-@onready var _info_title: Label = %InfoTitle
-@onready var _info_body: RichTextLabel = %InfoBody
-@onready var _end_screen: Control = %EndScreen
-@onready var _end_title: Label = %EndTitle
-@onready var _end_body: RichTextLabel = %EndBody
-@onready var _return_button: Button = %ReturnButton
+@onready var _boss_name: Label = %BossName
+@onready var _boss_bar: ProgressBar = %BossBar
+@onready var _boss_info: RichTextLabel = %BossInfo
+@onready var _mobs_text: RichTextLabel = %MobsText
+@onready var _market_tiles: HFlowContainer = %MarketTiles
+@onready var _market_note: Label = %MarketNote
+@onready var _chronicle: RichTextLabel = %ChronicleText
+@onready var _banner: Control = %Banner
+@onready var _banner_ribbon: Control = %BannerRibbon
+@onready var _banner_label: Label = %BannerLabel
+@onready var _tip_note: Control = %TipNote
+@onready var _tip_text: RichTextLabel = %TipText
 @onready var _toast: Label = %Toast
 @onready var _toast_timer: Timer = %ToastTimer
-@onready var _leave_dialog: ConfirmationDialog = %LeaveDialog
 
 
 func _ready() -> void:
-	Session.view_changed.connect(_render)
-	Session.request_failed.connect(_show_toast)
-	%LeaveButton.pressed.connect(_leave_dialog.popup_centered)
-	_leave_dialog.confirmed.connect(func() -> void: Network.leave())
-	%InfoCloseButton.pressed.connect(_close_info)
-	_return_button.pressed.connect(Network.return_to_lobby)
-	%ViewTableButton.pressed.connect(_end_screen.hide)
-	%EndLeaveButton.pressed.connect(func() -> void: Network.leave())
+	_presenter = Presenter.new(self)
+	add_child(_pause)
+	add_child(_end)
+	add_child(_confirm)
+	_confirm.confirmed.connect(func() -> void:
+		if _confirm_action.is_valid():
+			_confirm_action.call())
+	Session.update_received.connect(_on_update)
+	Session.request_failed.connect(show_toast)
+	%MenuButton.pressed.connect(_pause.open)
+	%TipOkButton.pressed.connect(_dismiss_tip)
+	%TipOffButton.pressed.connect(func() -> void:
+		Settings.set_value("gameplay", "tips", false)
+		_dismiss_tip())
 	_toast_timer.timeout.connect(_toast.hide)
+	_action_panel.setup(self)
 	if Session.view:
-		_render(Session.view)
+		_on_update(Session.view, [])
 	Session.scene_ready()
 
 
-## BBCode-safe text.
-static func esc(text: String) -> String:
-	return text.replace("[", "[lb]")
+## Space, Enter or a click on the table skips the animations that are playing.
+func _unhandled_input(event: InputEvent) -> void:
+	if not _playing:
+		return
+	var click := event as InputEventMouseButton
+	if event.is_action_pressed("ui_accept") or (click and click.pressed and click.button_index == MOUSE_BUTTON_LEFT):
+		_skip = true
 
 
-func _render(view: GameState) -> void:
-	_view = view
-	var me := Session.local_id()
+# --- Queue -----------------------------------------------------------------------
+
+func _on_update(view: GameState, events: Array) -> void:
+	_queue.append([view, events])
+	if not _playing:
+		_drain()
+
+
+func _drain() -> void:
+	_playing = true
+	Session.presentation_busy = true
+	while not _queue.is_empty():
+		var item: Array = _queue.pop_front()
+		var view: GameState = item[0]
+		me = Session.local_id()
+		# Fall behind and the animations speed up; fall far behind and they are skipped.
+		_speed = 1.0 if _queue.size() < 2 else (2.5 if _queue.size() < 5 else 0.0)
+		if shown == null:
+			render(view)
+		await _presenter.play(item[1], view)
+		if not is_inside_tree():
+			return
+		render(view)
+	_skip = false
+	_playing = false
+	Session.presentation_finished()
+
+
+## Called before the table is freed: skips what is left to animate and waits (briefly) for
+## the presenter and the dice to finish, so nothing is left awaiting a freed node.
+func wind_down() -> void:
+	_queue.clear()
+	_skip = true
+	tray.cancel()
+	var deadline := Time.get_ticks_msec() + 2000
+	while (_playing or tray.busy) and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+
+
+## How long an animation should take right now (0 = instantly).
+func duration(base: float) -> float:
+	if _skip or _speed <= 0.0:
+		return 0.0
+	return base * Settings.animation_scale() / _speed
+
+
+# --- Drawing ---------------------------------------------------------------------
+
+func render(view: GameState) -> void:
+	shown = view
+	me = Session.local_id()
 	_render_header(view)
-	_render_players(view, me)
-	_render_stats(view, me)
-	_render_enemies(view)
+	_render_seats(view)
+	_render_boss(view)
+	_render_mobs(view)
 	_render_market(view)
-	_log_text.text = "\n".join(view.log_lines)
+	_render_chronicle(view)
+	_sync_tray(view)
 	_action_panel.render(view, me)
-	if _info_player != 0:
-		_open_info(_info_player)
+	_update_tip(view)
 	if view.phase == GameState.Phase.GAME_OVER and not _end_shown:
 		_end_shown = true
-		_show_end(view, me)
+		_end.show_results(view, me)
 
 
 func _render_header(view: GameState) -> void:
-	_phase_label.text = "Turn %d of %d · %s" % [view.turn, view.max_turns, GameState.PHASE_NAMES[view.phase]]
+	_phase_label.text = "Turn %d of %d · %s" % [view.turn, view.max_turns, PHASE_TITLES[view.phase]]
 	var hint := ""
 	match view.phase:
 		GameState.Phase.ROLL:
-			hint = "Reroll any dice once for free; each further reroll costs 1 🧠. Then keep your dice."
+			hint = "Everyone rolls at once. One free reroll, then each costs 1 cunning."
 		GameState.Phase.DECLARE:
-			hint = "Everyone announces an intention, lowest initiative first. Keeping your word earns ⭐."
+			hint = "Intentions are spoken aloud, least cunning first."
 		GameState.Phase.PLAN:
-			hint = "Lock your real plan in secret: action, target and how to split your ⚔."
+			hint = "Everyone locks a secret plan."
 		GameState.Phase.RESOLVE:
-			hint = "Plans resolve automatically, highest initiative first."
+			hint = "Plans play out, most cunning first."
 		GameState.Phase.LOOT:
-			hint = "Boss slayers pick loot in secret. Items picked by several players go to sealed bids."
+			hint = "The boss slayers pick their spoils in secret."
 		GameState.Phase.BID:
-			hint = "Sealed bids for contested loot. Pay with 💰 and ⭐."
+			hint = "Contested spoils go to sealed bids."
 		GameState.Phase.GAME_OVER:
-			hint = "Final score = 🏆 + unspent ⭐."
+			hint = "Trophies plus unspent renown decide the winner."
 	var waiting := view.waiting_on()
 	if not waiting.is_empty() and view.phase != GameState.Phase.GAME_OVER:
-		hint += "  Waiting for: %s." % view.names_of(waiting)
+		hint += "  Waiting for %s." % view.names_of(waiting)
 	_hint_label.text = hint
 
 
@@ -99,82 +196,45 @@ func _seat_order(view: GameState) -> Array[int]:
 	return order
 
 
-func _render_players(view: GameState, me: int) -> void:
-	for child in _player_rows.get_children():
-		child.queue_free()
+func _render_seats(view: GameState) -> void:
+	var order := _seat_order(view)
 	var waiting := view.waiting_on()
-	for id in _seat_order(view):
-		var p := view.player(id)
-		var row := HBoxContainer.new()
-		var text := RichTextLabel.new()
-		text.bbcode_enabled = true
-		text.fit_content = true
-		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		text.text = _player_text(view, p, me, waiting.has(id))
-		row.add_child(text)
-		var info := Button.new()
-		info.text = "Info"
-		info.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-		info.pressed.connect(_open_info.bind(id))
-		row.add_child(info)
-		_player_rows.add_child(row)
-		_player_rows.add_child(HSeparator.new())
+	for id in order:
+		if not _cards.has(id):
+			var card := SeatCard.new()
+			card.gui_input.connect(_on_seat_input.bind(id))
+			_seats.add_child(card)
+			_cards[id] = card
+	for i in order.size():
+		var card := _cards[order[i]]
+		_seats.move_child(card, i)
+		card.refresh(view, view.player(order[i]), me, waiting.has(order[i]))
 
 
-func _player_text(view: GameState, p: PlayerState, me: int, waiting: bool) -> String:
-	var rank := view.initiative.find(p.id)
-	var title := "[b]%s%s[/b]" % ["#%d " % (rank + 1) if rank >= 0 else "", esc(p.name)]
-	if waiting:
-		title = "[color=%s]%s ⏳[/color]" % [HIGHLIGHT, title]
-	var tags := PackedStringArray()
-	if p.id == me:
-		tags.append("you")
-	if p.is_bot:
-		tags.append("bot" if p.connected else "left, bot plays")
-	if not tags.is_empty():
-		title += " [color=%s](%s)[/color]" % [DIM, ", ".join(tags)]
-	var lines := PackedStringArray([title])
-	lines.append("❤ %d/%d   🏆 %d   ⭐ %d   💰 %d" % [p.hp, p.max_hp, p.score, p.renown, p.gold])
-	if p.knocked_out:
-		lines.append("[color=%s]Knocked out, back after turn %d[/color]" % [BAD, p.out_until_turn])
-		return "\n".join(lines)
-	if view.phase == GameState.Phase.ROLL:
-		var faces := PackedStringArray()
-		for face in p.showing_faces():
-			faces.append(Face.label(face))
-		lines.append("[color=%s]Rolled [%s]%s[/color]" % [DIM, " ".join(faces), " ✔" if p.roll_done else ""])
-		return "\n".join(lines)
-	lines.append("⚔ %d   🧠 %d%s" % [p.combat, p.cunning, "   🛡 %d" % p.guard_bonus if p.guard_bonus > 0 else ""])
-	if p.declared:
-		lines.append("Says: %s" % esc(view.describe_choice(p.intention_action, p.intention_target)))
-	if view.plans_public() and p.plan_locked:
-		var mark := "[color=%s]kept word[/color]" % GOOD if p.kept_word else "[color=%s]lied[/color]" % BAD
-		lines.append("Did: %s · %s" % [esc(view.describe_plan(p)), mark])
-	elif p.plan_locked:
-		lines.append("[color=%s]Plan locked[/color]" % DIM)
-	return "\n".join(lines)
-
-
-func _render_stats(view: GameState, me: int) -> void:
-	var p := view.player(me)
-	if p == null:
-		_stats_label.text = ""
-		return
-	_stats_label.text = "[b]%s[/b]\n❤ %d/%d   💰 %d   ⭐ %d   🏆 %d\n⚔ %d   🧠 %d   🛡 %d   Dice: %d   Trinkets: %d" % [
-		esc(p.name), p.hp, p.max_hp, p.gold, p.renown, p.score, p.combat, p.cunning, p.guard_bonus,
-		p.dice.size(), p.trinkets.size()]
-
-
-func _render_enemies(view: GameState) -> void:
-	var lines := PackedStringArray()
+func _render_boss(view: GameState) -> void:
 	var boss := view.boss()
-	if boss:
-		var state := "[color=%s]slain[/color]" % GOOD if not view.boss_alive() else "❤ %d/%d" % [view.boss_hp, view.boss_max_hp]
-		lines.append("[b]Boss: %s[/b]  %s" % [boss.display_name, state])
-		lines.append("[color=%s]Strikes each attacker for %d if it survives the turn.[/color]" % [DIM, boss.damage])
+	if boss == null:
+		return
+	_boss_name.text = boss.display_name
+	_boss_bar.max_value = view.boss_max_hp
+	if _boss_shown_hp != view.boss_hp:
+		_boss_bar.value = view.boss_hp
+		_boss_shown_hp = view.boss_hp
+	var lines := PackedStringArray()
+	if view.boss_alive():
+		lines.append("%s %d of %d  ·  strikes each attacker for [b]%d[/b] if it survives the turn" % [Icons.bb("heal", 16), view.boss_hp, view.boss_max_hp, boss.damage])
+	else:
+		lines.append("[b]Slain this turn.[/b]")
+	if not view.boss_damage.is_empty():
+		var hits := PackedStringArray()
 		for id in view.boss_damage:
-			lines.append("  %s dealt %d" % [esc(view.player(id).name), view.boss_damage[id]])
-	lines.append("[b]Mobs[/b]")
+			hits.append("%s %d" % [Icons.rich(view.player(id).name), view.boss_damage[id]])
+		lines.append("Wounded by " + ", ".join(hits))
+	_boss_info.text = "\n".join(lines)
+
+
+func _render_mobs(view: GameState) -> void:
+	var lines := PackedStringArray()
 	for slot in view.mobs:
 		var mob := Content.mob(slot.id)
 		if mob == null:
@@ -182,68 +242,234 @@ func _render_enemies(view: GameState) -> void:
 		var rewards := PackedStringArray()
 		for reward in mob.rewards:
 			rewards.append(reward.display_name)
-		var line := "%s  ❤ %d · hits %d → %s" % [mob.display_name, mob.hp, mob.damage, " / ".join(rewards)]
+		var line := "[b]%s[/b]  %s%d  hits %d\n[color=#cdb48c]%s %s[/color]" % [mob.display_name, Icons.bb("heal", 15), mob.hp, mob.damage, Icons.bb("trinket", 15), " / ".join(rewards)]
 		if slot.killed:
-			line = "[s]%s[/s] [color=%s]slain[/color]" % [line, GOOD]
+			line = "[s]%s[/s]  [color=#8fd18f]slain[/color]" % mob.display_name
 		lines.append(line)
-	_enemy_label.text = "\n".join(lines)
+	_mobs_text.text = "\n".join(lines)
 
 
 func _render_market(view: GameState) -> void:
-	var lines := PackedStringArray(["[b]Market[/b] [color=%s](replace a face on one of your dice)[/color]" % DIM])
-	for face in view.market:
-		if face != 0:
-			lines.append("%s  for %d · %s" % [Face.label(face), Content.face_price(face), Face.describe(face)])
-	lines.append("New die  for %d%s" % [Content.DIE_PRICE, "" if view.market_die else " (sold out)"])
-	lines.append("[color=%s]Refresh the row for %d.[/color]" % [DIM, Content.REFRESH_PRICE])
-	_market_label.text = "\n".join(lines)
+	for child in _market_tiles.get_children():
+		child.queue_free()
+	var shopping := view.phase == GameState.Phase.RESOLVE and view.shopping == me
+	var p := view.player(me)
+	if not shopping:
+		_market_selected = -1
+	for slot in view.market.size():
+		var face := view.market[slot]
+		if face == 0:
+			continue
+		var price := Content.face_price(face)
+		var tile := Button.new()
+		tile.toggle_mode = true
+		tile.icon = Icons.texture(Icons.for_kind(Face.kind_of(face)))
+		tile.expand_icon = false
+		tile.add_theme_constant_override("icon_max_width", 26)
+		tile.text = "%s · %dg" % ["x2" if Face.kind_of(face) == Face.Kind.DOUBLE else str(Face.value_of(face)), price]
+		tile.tooltip_text = "%s for %d" % [Face.describe(face), price]
+		tile.custom_minimum_size = Vector2(92, 40)
+		tile.button_pressed = slot == _market_selected
+		# Outside your shopping turn the tiles stay readable, they just do not respond.
+		tile.disabled = shopping and (p == null or price > p.gold + p.renown)
+		if not shopping:
+			tile.mouse_filter = Control.MOUSE_FILTER_PASS
+			tile.focus_mode = Control.FOCUS_NONE
+			tile.toggle_mode = false
+		tile.pressed.connect(_select_market.bind(slot))
+		_market_tiles.add_child(tile)
+	if shopping:
+		_market_note.text = "Your turn to shop: pick a face, then the face it replaces."
+	else:
+		_market_note.text = "A new die costs %d. Shoppers buy in initiative order." % Content.DIE_PRICE
 
 
-func _open_info(id: int) -> void:
-	var p := _view.player(id) if _view else null
+func _render_chronicle(view: GameState) -> void:
+	var lines := PackedStringArray()
+	for line in view.log_lines:
+		lines.append(_chronicle_line(view, line))
+	_chronicle.text = "\n".join(lines)
+
+
+## A log line with icons and each player's name in their seat colour.
+func _chronicle_line(view: GameState, line: String) -> String:
+	var players: Array[PlayerState] = view.players.duplicate()
+	players.sort_custom(func(a: PlayerState, b: PlayerState) -> bool: return a.name.length() > b.name.length())
+	var text := line
+	for i in players.size():
+		text = text.replace(players[i].name, "\u0001%d\u0002" % i)
+	text = Icons.rich(text, 15)
+	for i in players.size():
+		var p := players[i]
+		text = text.replace("\u0001%d\u0002" % i, "[color=#%s][b]%s[/b][/color]" % [SeatStyle.color(p.seat).darkened(0.35).to_html(false), Icons.rich(p.name)])
+	if line.begins_with("── Turn"):
+		text = "\n[b]%s[/b]" % text
+	return text
+
+
+func _sync_tray(view: GameState) -> void:
+	var p := view.player(me)
+	if p == null or _dice_rolling:
+		return
+	if p.dice != _tray_faces or (p.showing != _tray_showing and view.phase == GameState.Phase.ROLL):
+		tray.set_dice(p.dice, p.showing)
+		_tray_faces = p.dice.duplicate()
+		_tray_showing = p.showing
+
+
+# --- Called by the presenter and the action panel -------------------------------
+
+func seat_card(pid: int) -> SeatCard:
+	return _cards.get(pid)
+
+
+func seat_cards() -> Array[SeatCard]:
+	var cards: Array[SeatCard] = []
+	cards.assign(_cards.values())
+	return cards
+
+
+func throw_my_dice(indices: PackedInt32Array, view: GameState) -> void:
+	var p := view.player(me)
 	if p == null:
 		return
-	_info_player = id
-	_info_title.text = p.name
-	var lines := PackedStringArray()
-	lines.append("❤ %d/%d   💰 %d   ⭐ %d   🏆 %d" % [p.hp, p.max_hp, p.gold, p.renown, p.score])
-	lines.append("")
-	lines.append("[b]Dice[/b]")
-	for i in p.dice.size():
-		var faces := PackedStringArray()
-		for face in p.dice[i]:
-			faces.append(Face.label(face))
-		lines.append("Die %d:  %s" % [i + 1, "  ".join(faces)])
-	lines.append("")
-	lines.append("[b]Trinkets[/b]")
-	if p.trinkets.is_empty():
-		lines.append("[color=%s]None yet.[/color]" % DIM)
-	for trinket_id in p.trinkets:
-		var trinket := Content.trinket(trinket_id)
-		lines.append("%s: [color=%s]%s[/color]" % [trinket.display_name, DIM, trinket.description])
-	_info_body.text = "\n".join(lines)
-	_info_popup.show()
+	_dice_rolling = true
+	_tray_faces = p.dice.duplicate()
+	_tray_showing = p.showing
+	if duration(1.0) <= 0.0:
+		tray.set_dice(p.dice, p.showing)
+	else:
+		await tray.throw(indices, p.dice, p.showing)
+	_dice_rolling = false
 
 
-func _close_info() -> void:
-	_info_player = 0
-	_info_popup.hide()
+func wait_for_dice() -> void:
+	while _dice_rolling:
+		if duration(1.0) <= 0.0:
+			tray.set_dice(_tray_faces, _tray_showing)
+			_dice_rolling = false
+			return
+		await get_tree().process_frame
 
 
-func _show_end(view: GameState, me: int) -> void:
-	var winner := view.player(view.standings[0])
-	_end_title.text = "You win!" if winner.id == me else "%s wins!" % winner.name
-	var lines := PackedStringArray()
-	for i in view.standings.size():
-		var p := view.player(view.standings[i])
-		lines.append("%d. %s — %d  [color=%s](🏆 %d + ⭐ %d)[/color]" % [
-			i + 1, esc(p.name), view.final_score(p), DIM, p.score, p.renown])
-	_end_body.text = "\n".join(lines)
-	_return_button.visible = Network.is_host()
-	_end_screen.show()
+func banner(text: String, seconds: float) -> void:
+	if seconds <= 0.0:
+		return
+	_banner_label.text = text
+	_banner.show()
+	_banner.modulate.a = 0.0
+	await get_tree().process_frame
+	_banner_ribbon.pivot_offset = _banner_ribbon.size / 2.0
+	_banner_ribbon.scale = Vector2(1.25, 1.25)
+	Audio.play(&"page", -2.0)
+	var tween := create_tween()
+	tween.set_parallel()
+	tween.tween_property(_banner, "modulate:a", 1.0, seconds * 0.2)
+	tween.tween_property(_banner_ribbon, "scale", Vector2.ONE, seconds * 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_interval(seconds * 0.5)
+	tween.chain().tween_property(_banner, "modulate:a", 0.0, seconds * 0.25)
+	await tween.finished
+	_banner.hide()
 
 
-func _show_toast(message: String) -> void:
+func animate_boss_hp(hp: int, seconds: float) -> void:
+	_boss_shown_hp = hp
+	if seconds <= 0.0:
+		_boss_bar.value = hp
+		return
+	var tween := create_tween()
+	tween.tween_property(_boss_bar, "value", float(hp), seconds).set_ease(Tween.EASE_OUT)
+	await tween.finished
+
+
+func shake_node(node: Control, strength: float) -> void:
+	if Settings.reduced_motion() or duration(1.0) <= 0.0:
+		return
+	var origin := node.position
+	var tween := create_tween()
+	for i in 6:
+		var offset := Vector2(strength if i % 2 == 0 else -strength, strength * 0.4 if i % 3 == 0 else 0.0)
+		tween.tween_property(node, "position", origin + offset * (1.0 - i / 6.0), 0.04)
+	tween.tween_property(node, "position", origin, 0.04)
+
+
+func flash(node: Control) -> void:
+	if Settings.reduced_motion() or duration(1.0) <= 0.0:
+		return
+	var tween := create_tween()
+	tween.tween_property(node, "self_modulate", Color(1.4, 1.25, 0.9), 0.1)
+	tween.tween_property(node, "self_modulate", Color.WHITE, 0.4)
+
+
+func market_selection() -> int:
+	return _market_selected
+
+
+func clear_market_selection() -> void:
+	_market_selected = -1
+	if shown:
+		_render_market(shown)
+
+
+func confirm(title: String, message: String, button: String, action: Callable) -> void:
+	_confirm_action = action
+	_confirm.ask(title, message, button)
+
+
+func show_toast(message: String) -> void:
 	_toast.text = message
 	_toast.show()
 	_toast_timer.start()
+	Audio.play(&"creak", -6.0)
+
+
+func _select_market(slot: int) -> void:
+	if shown == null or shown.shopping != me:
+		return
+	_market_selected = -1 if _market_selected == slot else slot
+	_render_market.call_deferred(shown)
+	_action_panel.render.call_deferred(shown, me)
+
+
+func _on_seat_input(event: InputEvent, pid: int) -> void:
+	var click := event as InputEventMouseButton
+	if click and click.pressed and click.button_index == MOUSE_BUTTON_LEFT and shown:
+		_action_panel.show_player_info(shown, pid)
+
+
+# --- Tips ------------------------------------------------------------------------
+
+func _update_tip(view: GameState) -> void:
+	if view.phase == GameState.Phase.GAME_OVER:
+		_tip_note.hide()
+		return
+	var id := _tip_for(view)
+	if id.is_empty() or id == _tip_id or not Settings.should_show_tip(id):
+		return
+	_tip_id = id
+	_tip_text.text = Icons.rich(TIPS[id], 18, false)
+	_tip_note.show()
+
+
+func _tip_for(view: GameState) -> String:
+	var mine := view.is_waiting_on(me)
+	match view.phase:
+		GameState.Phase.ROLL:
+			return "roll" if mine else ""
+		GameState.Phase.DECLARE:
+			return "declare" if mine else ""
+		GameState.Phase.PLAN:
+			return "plan" if mine else ""
+		GameState.Phase.RESOLVE:
+			return "shop" if mine else "resolve"
+		GameState.Phase.LOOT:
+			return "loot" if mine else ""
+		GameState.Phase.BID:
+			return "bid" if mine else ""
+	return ""
+
+
+func _dismiss_tip() -> void:
+	if not _tip_id.is_empty():
+		Settings.mark_tip_seen(_tip_id)
+	_tip_note.hide()

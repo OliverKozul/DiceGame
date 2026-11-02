@@ -218,7 +218,7 @@ func _op_declare(pid: int, action: int, target: int) -> String:
 	p.intention_action = action as PlayerState.Action
 	p.intention_target = target
 	state.cursor += 1
-	emit_event(&"declare", {"pid": pid, "action": action, "target": target})
+	emit_event(&"declare", {"pid": pid, "action": action, "target": target, "text": state.describe_choice(action, target)})
 	log_event("%s declares: %s." % [p.name, state.describe_choice(action, target)])
 	return ""
 
@@ -488,7 +488,7 @@ func _reveal() -> void:
 		else:
 			text += " — broke their word."
 		log_event(text)
-		emit_event(&"reveal", {"pid": id, "kept": p.kept_word, "renown": gained})
+		emit_event(&"reveal", {"pid": id, "kept": p.kept_word, "renown": gained, "text": state.describe_plan(p)})
 	state.phase = GameState.Phase.RESOLVE
 	state.cursor = 0
 

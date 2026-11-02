@@ -1,10 +1,9 @@
 class_name ActionPanel
 extends VBoxContainer
-## The controls for whatever the local player has to do right now. The panel is rebuilt only
-## when the situation changes for this player, so half-entered choices survive updates
-## caused by other players.
+## The controls for whatever the local player has to do now, on the parchment card. It is
+## rebuilt only when the situation changes for this player, so half-made choices survive
+## updates caused by others. Dice are chosen in the 3D tray, market faces in the market.
 
-const DIM := Color(0.67, 0.69, 0.72)
 const ACTIONS: Array[PlayerState.Action] = [
 	PlayerState.Action.ATTACK_PLAYER,
 	PlayerState.Action.ATTACK_MOB,
@@ -13,15 +12,16 @@ const ACTIONS: Array[PlayerState.Action] = [
 	PlayerState.Action.REST,
 ]
 
+var _screen: GameScreen
 var _view: GameState
 var _me: PlayerState
 var _key := ""
 var _waiting_label: Label
+var _info := PlayerInfoOverlay.new()
 
 # Roll
-var _reroll_toggles: Array[Button] = []
 var _wild_options: Array[OptionButton] = []
-var _roll_preview: Label
+var _roll_preview: RichTextLabel
 var _reroll_button: Button
 
 # Declare / plan
@@ -31,17 +31,30 @@ var _target_values: Array[int] = []
 var _attack_spin: SpinBox
 var _guard_spin: SpinBox
 var _sabotage_spins: Dictionary[int, SpinBox] = {}
-var _budget_label: Label
+var _budget_label: RichTextLabel
 var _lock_button: Button
 
 # Shop / bid
-var _selected_slot := -1
 var _renown_spin: SpinBox
 var _bid_gold: SpinBox
 var _bid_renown: SpinBox
 
 
+func setup(screen: GameScreen) -> void:
+	_screen = screen
+	screen.add_child.call_deferred(_info)
+	screen.tray.selection_changed.connect(func() -> void:
+		if _reroll_button:
+			_update_roll())
+
+
+func show_player_info(view: GameState, pid: int) -> void:
+	_info.show_player(view, pid)
+
+
 func render(view: GameState, me_id: int) -> void:
+	if view == null:
+		return
 	_view = view
 	_me = view.player(me_id)
 	var key := _context_key()
@@ -62,7 +75,7 @@ func _context_key() -> String:
 			parts.append(_me.plan_locked)
 		GameState.Phase.RESOLVE:
 			if _view.shopping == _me.id:
-				parts.append_array([_me.gold, _me.renown, _me.dice, _view.market, _view.market_die, _selected_slot])
+				parts.append_array([_me.gold, _me.renown, _me.dice, _view.market, _view.market_die, _screen.market_selection()])
 	return var_to_str(parts)
 
 
@@ -71,19 +84,24 @@ func _rebuild() -> void:
 		remove_child(child)
 		child.queue_free()
 	_waiting_label = null
+	_reroll_button = null
+	_roll_preview = null
 	_attack_spin = null
 	_guard_spin = null
 	_budget_label = null
 	_lock_button = null
 	_sabotage_spins.clear()
+	_screen.tray.selectable = false
 	if _me == null:
-		_add_label("You are watching this game.")
+		_add_text("You are watching this game.")
 		return
 	if _view.phase == GameState.Phase.GAME_OVER:
-		_add_label("The game is over.")
+		_add_title("The final count")
+		_add_text("The game is over. The results are on the table.")
 		return
 	if _me.knocked_out:
-		_add_label("You are knocked out. You are back after turn %d." % _me.out_until_turn)
+		_add_title("Knocked out")
+		_add_text("You are back on your feet after turn %d. Until then the table plays on without you." % _me.out_until_turn)
 		_add_waiting()
 		return
 	var mine := _view.is_waiting_on(_me.id)
@@ -92,35 +110,44 @@ func _rebuild() -> void:
 			if mine:
 				_build_roll()
 				return
-			_add_label("Dice kept. Waiting for the others to finish rolling.")
+			_add_title("Dice kept")
+			_add_text("Waiting for the others to finish rolling.")
 		GameState.Phase.DECLARE:
 			if mine:
 				_build_declare()
 				return
-			_add_label("%s is declaring." % _view.player(_view.current_actor()).name)
+			_add_title("Declarations")
+			if _me.declared:
+				_add_text("You said: %s. The others are speaking." % _view.describe_choice(_me.intention_action, _me.intention_target))
+			else:
+				_add_text("%s is declaring. Listen carefully." % _view.player(_view.current_actor()).name)
 		GameState.Phase.PLAN:
 			if mine:
 				_build_plan()
 				return
-			_add_label("Your plan is locked: %s." % _view.describe_plan(_me))
+			_add_title("Plan locked")
+			_add_text("Your plan: %s." % Icons.plain(_view.describe_plan(_me)))
 		GameState.Phase.RESOLVE:
 			if mine:
 				_build_shop()
 				return
+			_add_title("The reveal")
 			if _view.shopping != 0:
-				_add_label("%s is shopping." % _view.player(_view.shopping).name)
+				_add_text("%s is shopping." % _view.player(_view.shopping).name)
 			else:
-				_add_label("Resolving plans.")
+				_add_text("Plans are playing out. Watch the table and the Chronicle.")
 		GameState.Phase.LOOT:
 			if mine:
 				_build_loot()
 				return
-			_add_label("Boss loot is being picked.")
+			_add_title("Spoils")
+			_add_text("The boss slayers are choosing their loot in secret.")
 		GameState.Phase.BID:
 			if mine:
 				_build_bid()
 				return
-			_add_label("Sealed bids are being placed.")
+			_add_title("Sealed bids")
+			_add_text("Contested loot is being bid for.")
 	_add_waiting()
 
 
@@ -128,47 +155,32 @@ func _update_waiting() -> void:
 	if _waiting_label == null:
 		return
 	var waiting := _view.waiting_on()
-	_waiting_label.text = "Waiting for: %s" % _view.names_of(waiting) if not waiting.is_empty() else ""
+	_waiting_label.text = "Waiting for %s." % _view.names_of(waiting) if not waiting.is_empty() else ""
 
 
 # --- Roll -------------------------------------------------------------------------
 
 func _build_roll() -> void:
 	_add_title("Your roll")
-	_add_label("Select dice to reroll, or keep what you have.")
-	_reroll_toggles.clear()
+	_add_text("Click dice in the tray below to choose which to reroll, or keep what you have.")
+	_screen.tray.selectable = true
 	_wild_options.clear()
-	var row := HFlowContainer.new()
-	add_child(row)
-	var faces := _me.showing_faces()
-	for i in faces.size():
-		var toggle := Button.new()
-		toggle.toggle_mode = true
-		toggle.custom_minimum_size = Vector2(84, 52)
-		toggle.text = "%s\ndie %d" % [Face.label(faces[i]), i + 1]
-		toggle.tooltip_text = Face.describe(faces[i])
-		toggle.toggled.connect(func(_on: bool) -> void: _update_roll())
-		row.add_child(toggle)
-		_reroll_toggles.append(toggle)
-	for face in faces:
+	for face in _me.showing_faces():
 		if Face.kind_of(face) != Face.Kind.WILD:
 			continue
-		var wild_row := HBoxContainer.new()
-		var label := Label.new()
-		label.text = "Wild %s counts as" % Face.label(face)
-		wild_row.add_child(label)
+		var row := HBoxContainer.new()
+		row.add_child(_label("Wild face counts as"))
 		var option := OptionButton.new()
 		for kind in Face.WILD_CHOICES:
-			option.add_item("%s %s" % [Face.icon(kind), Face.NAMES[kind]], kind)
+			option.add_icon_item(Icons.texture(Icons.for_kind(kind)), Face.NAMES[kind], kind)
 		option.item_selected.connect(func(_index: int) -> void: _update_roll())
-		wild_row.add_child(option)
+		row.add_child(option)
 		_wild_options.append(option)
-		add_child(wild_row)
-	_roll_preview = _add_label("")
-	var buttons := HBoxContainer.new()
-	add_child(buttons)
+		add_child(row)
+	_roll_preview = _add_rich("")
+	var buttons := _row()
 	_reroll_button = _add_button(buttons, "Reroll", _on_reroll_pressed)
-	_add_button(buttons, "Keep dice", func() -> void: Session.submit(&"finish_roll", [_wild_kinds()]))
+	_add_button(buttons, "Keep these dice", func() -> void: Session.submit(&"finish_roll", [_wild_kinds()]))
 	_update_roll()
 
 
@@ -180,23 +192,26 @@ func _wild_kinds() -> PackedInt32Array:
 
 
 func _update_roll() -> void:
+	if _roll_preview == null or _me == null:
+		return
 	var totals := _me.roll_totals(_wild_kinds())
-	var preview := "Worth: ⚔ %d   💰 %d   🧠 %d" % [totals.combat, totals.gold, totals.cunning]
-	for key: String in ["guard", "heal", "renown"]:
-		if totals[key] > 0:
-			preview += "   %s %d" % [{"guard": "🛡", "heal": "❤", "renown": "⭐"}[key], totals[key]]
-	_roll_preview.text = preview
-	var selected := _reroll_toggles.filter(func(t: Button) -> bool: return t.button_pressed).size()
+	var parts := PackedStringArray()
+	for key: String in ["combat", "gold", "cunning", "guard", "heal", "renown"]:
+		if totals[key] > 0 or key in ["combat", "gold", "cunning"]:
+			parts.append("%s [b]%d[/b]" % [Icons.bb(key, 22), totals[key]])
+	_roll_preview.text = "Worth:   " + "     ".join(parts)
+	var selected := _screen.tray.selected().size()
 	var cost := _me.reroll_cost()
-	_reroll_button.text = "Reroll (free)" if cost == 0 else "Reroll (costs %d 🧠)" % cost
+	if cost == 0:
+		_reroll_button.text = "Reroll %d (free)" % selected
+	else:
+		_reroll_button.text = "Reroll %d (costs %d cunning)" % [selected, cost]
 	_reroll_button.disabled = selected == 0 or totals.cunning < cost
 
 
 func _on_reroll_pressed() -> void:
-	var dice := PackedInt32Array()
-	for i in _reroll_toggles.size():
-		if _reroll_toggles[i].button_pressed:
-			dice.append(i)
+	var dice := _screen.tray.selected()
+	_screen.tray.clear_selection()
 	Session.submit(&"reroll", [dice])
 
 
@@ -204,10 +219,9 @@ func _on_reroll_pressed() -> void:
 
 func _build_declare() -> void:
 	_add_title("Declare your intention")
-	_add_label("Everyone will see it. Keep your word in your secret plan to earn ⭐; break it to surprise them.")
+	_add_text("Everyone will see it. Keep your word in your secret plan to earn renown; break it to surprise them.")
 	_build_choice(PlayerState.Action.ATTACK_BOSS, 0)
-	var buttons := HBoxContainer.new()
-	add_child(buttons)
+	var buttons := _row()
 	_add_button(buttons, "Declare", func() -> void:
 		var choice := _choice()
 		Session.submit(&"declare", [choice.x, choice.y]))
@@ -215,34 +229,35 @@ func _build_declare() -> void:
 
 func _build_plan() -> void:
 	_add_title("Your secret plan")
-	_add_label("You said: %s. Choose what you will really do." % _view.describe_choice(_me.intention_action, _me.intention_target))
+	_add_text("You said: %s. Choose what you will really do." % _view.describe_choice(_me.intention_action, _me.intention_target))
 	_build_choice(_me.intention_action, _me.intention_target)
 	var grid := GridContainer.new()
 	grid.columns = 4
 	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 6)
 	add_child(grid)
-	_attack_spin = _add_spin(grid, "⚔ Attack", _me.combat)
-	_guard_spin = _add_spin(grid, "🛡 Guard", _me.combat)
+	_attack_spin = _add_spin(grid, "Attack", "combat", _me.combat)
+	_guard_spin = _add_spin(grid, "Guard", "guard", _me.combat)
 	_sabotage_spins.clear()
 	for p in _view.players:
 		if p.id != _me.id and p.is_active():
-			_sabotage_spins[p.id] = _add_spin(grid, "Sabotage %s" % p.name, _me.combat)
-	_budget_label = _add_label("")
-	var buttons := HBoxContainer.new()
-	add_child(buttons)
+			_sabotage_spins[p.id] = _add_spin(grid, "Sabotage %s" % p.name, "sabotage", _me.combat)
+	_budget_label = _add_rich("")
+	var buttons := _row()
 	_lock_button = _add_button(buttons, "Lock plan", _on_lock_pressed)
 	_on_choice_changed()
 
 
 func _build_choice(action: int, target: int) -> void:
-	var row := HBoxContainer.new()
-	add_child(row)
+	var row := _row()
 	_action_option = OptionButton.new()
+	_action_option.custom_minimum_size = Vector2(170, 40)
 	for a in ACTIONS:
 		_action_option.add_item(PlayerState.ACTION_NAMES[a], a)
 	_action_option.select(maxi(ACTIONS.find(action as PlayerState.Action), 0))
 	row.add_child(_action_option)
 	_target_option = OptionButton.new()
+	_target_option.custom_minimum_size = Vector2(0, 40)
 	_target_option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(_target_option)
 	_fill_targets(target)
@@ -259,18 +274,18 @@ func _fill_targets(preferred: int) -> void:
 		PlayerState.Action.ATTACK_PLAYER:
 			for p in _view.players:
 				if p.id != _me.id and p.is_active():
-					_target_option.add_item("%s (❤ %d)" % [p.name, p.hp])
+					_target_option.add_item("%s (%d health)" % [p.name, p.hp])
 					_target_values.append(p.id)
 		PlayerState.Action.ATTACK_MOB:
 			for i in _view.mobs.size():
 				var mob := Content.mob(_view.mobs[i].id)
 				if mob:
-					_target_option.add_item("%s (❤ %d, hits %d)" % [mob.display_name, mob.hp, mob.damage])
+					_target_option.add_item("%s (%d health, hits %d)" % [mob.display_name, mob.hp, mob.damage])
 					_target_values.append(i)
 		_:
 			_target_option.add_item("No target")
 			_target_values.append(0)
-	_target_option.disabled = _target_values.size() <= 1 and not GameState.needs_target(_action_option.get_selected_id())
+	_target_option.disabled = not GameState.needs_target(_action_option.get_selected_id())
 	_target_option.select(maxi(_target_values.find(preferred), 0))
 
 
@@ -284,10 +299,7 @@ func _on_choice_changed() -> void:
 		return
 	# A sensible default split: everything into the attack when attacking, otherwise guard.
 	var attacking := GameState.is_attack(_action_option.get_selected_id())
-	var sabotage_total := 0
-	for amount: int in _sabotage().values():
-		sabotage_total += amount
-	var free := maxi(0, _me.combat - sabotage_total)
+	var free := maxi(0, _me.combat - _sabotage_total())
 	_attack_spin.editable = attacking
 	_attack_spin.set_value_no_signal(free if attacking else 0)
 	_guard_spin.set_value_no_signal(0 if attacking else free)
@@ -303,107 +315,114 @@ func _sabotage() -> Dictionary:
 	return sabotage
 
 
-func _update_budget() -> void:
-	var used := int(_attack_spin.value) + int(_guard_spin.value)
+func _sabotage_total() -> int:
+	var total := 0
 	for amount: int in _sabotage().values():
-		used += amount
-	var text := "Combat used: %d of %d" % [used, _me.combat]
+		total += amount
+	return total
+
+
+func _update_budget() -> void:
+	var used := int(_attack_spin.value) + int(_guard_spin.value) + _sabotage_total()
+	var text := "%s used [b]%d[/b] of [b]%d[/b]" % [Icons.bb("combat", 20), used, _me.combat]
 	if _me.guard_bonus > 0:
-		text += "  (plus 🛡 %d from your dice, always guarding)" % _me.guard_bonus
+		text += "   (plus %s %d from your dice, always guarding)" % [Icons.bb("guard", 20), _me.guard_bonus]
+	if used > _me.combat:
+		text += "   [color=#9b2416]too much[/color]"
 	_budget_label.text = text
 	_lock_button.disabled = used > _me.combat
 
 
 func _on_lock_pressed() -> void:
 	var choice := _choice()
-	Session.submit(&"lock_plan", [choice.x, choice.y, int(_attack_spin.value), int(_guard_spin.value), _sabotage()])
+	var args := [choice.x, choice.y, int(_attack_spin.value), int(_guard_spin.value), _sabotage()]
+	if not Settings.get_value("gameplay", "confirm_lock"):
+		Session.submit(&"lock_plan", args)
+		return
+	var keeps := choice.x == _me.intention_action and choice.y == _me.intention_target
+	var verdict := "You keep your word." if keeps else "You break your word: no renown this turn."
+	_screen.confirm("Lock this plan?", "%s.\n%s" % [_view.describe_choice(choice.x, choice.y), verdict], "Lock it",
+		func() -> void: Session.submit(&"lock_plan", args))
 
 
 # --- Shop -------------------------------------------------------------------------
 
 func _build_shop() -> void:
-	_add_title("Market")
-	_add_label("You have 💰 %d and ⭐ %d. Buy a face, then click the face on your dice it replaces." % [_me.gold, _me.renown])
-	var pay_row := HBoxContainer.new()
-	add_child(pay_row)
-	var pay_label := Label.new()
-	pay_label.text = "Pay with ⭐ up to"
-	pay_row.add_child(pay_label)
+	_add_title("Your turn at the market")
+	_add_rich("You have %s [b]%d[/b] and %s [b]%d[/b]. Pick a face in the market on the right, then the face on your dice it replaces." % [
+		Icons.bb("gold", 20), _me.gold, Icons.bb("renown", 20), _me.renown])
+	var pay_row := _row()
+	pay_row.add_child(_label("Pay with renown up to"))
 	_renown_spin = SpinBox.new()
 	_renown_spin.max_value = _me.renown
 	pay_row.add_child(_renown_spin)
 
-	var market := HFlowContainer.new()
-	add_child(market)
-	for slot in _view.market.size():
-		var face := _view.market[slot]
-		if face == 0:
-			continue
-		var price := Content.face_price(face)
-		var button := Button.new()
-		button.toggle_mode = true
-		button.button_pressed = slot == _selected_slot
-		button.custom_minimum_size = Vector2(90, 52)
-		button.text = "%s\n%d" % [Face.label(face), price]
-		button.tooltip_text = Face.describe(face)
-		button.disabled = price > _me.gold + _me.renown
-		button.pressed.connect(func() -> void:
-			_selected_slot = -1 if _selected_slot == slot else slot
-			render.call_deferred(_view, _me.id))
-		market.add_child(button)
-
-	if _selected_slot >= 0 and _selected_slot < _view.market.size() and _view.market[_selected_slot] != 0:
-		_add_label("Replace which face with %s?" % Face.label(_view.market[_selected_slot]))
+	var slot := _screen.market_selection()
+	if slot >= 0 and slot < _view.market.size() and _view.market[slot] != 0:
+		_add_rich("Replace which face with %s?" % Icons.rich(Face.label(_view.market[slot]), 22))
 		for d in _me.dice.size():
 			var row := HFlowContainer.new()
-			var label := Label.new()
-			label.text = "Die %d" % (d + 1)
+			row.add_theme_constant_override("h_separation", 6)
+			var label := _label("Die %d" % (d + 1))
 			label.custom_minimum_size = Vector2(56, 0)
 			row.add_child(label)
 			for f in _me.dice[d].size():
-				var face_button := Button.new()
-				face_button.text = Face.label(_me.dice[d][f])
-				face_button.custom_minimum_size = Vector2(52, 36)
-				face_button.pressed.connect(_buy_face.bind(_selected_slot, d, f))
-				row.add_child(face_button)
+				var face := _me.dice[d][f]
+				var button := Button.new()
+				button.icon = Icons.texture(Icons.for_kind(Face.kind_of(face)))
+				button.expand_icon = false
+				button.add_theme_constant_override("icon_max_width", 24)
+				if Face.kind_of(face) == Face.Kind.DOUBLE:
+					button.text = "x2"
+				elif Face.kind_of(face) != Face.Kind.NONE:
+					button.text = str(Face.value_of(face))
+				button.tooltip_text = Face.describe(face)
+				button.custom_minimum_size = Vector2(62, 40)
+				button.pressed.connect(_buy_face.bind(slot, d, f))
+				row.add_child(button)
 			add_child(row)
 
-	var buttons := HBoxContainer.new()
-	add_child(buttons)
-	var die_button := _add_button(buttons, "Buy die (%d)" % Content.DIE_PRICE, func() -> void:
+	var buttons := _row()
+	var die_button := _add_button(buttons, "Buy a die (%d)" % Content.DIE_PRICE, func() -> void:
 		Session.submit(&"buy_die", [_renown_for(Content.DIE_PRICE)]))
 	die_button.disabled = not _view.market_die or Content.DIE_PRICE > _me.gold + _me.renown
-	var refresh_button := _add_button(buttons, "Refresh row (%d)" % Content.REFRESH_PRICE, func() -> void:
-		_selected_slot = -1
+	var refresh_button := _add_button(buttons, "Refresh the row (%d)" % Content.REFRESH_PRICE, func() -> void:
+		_screen.clear_market_selection()
 		Session.submit(&"refresh_market", [_renown_for(Content.REFRESH_PRICE)]))
 	refresh_button.disabled = Content.REFRESH_PRICE > _me.gold + _me.renown
 	_add_button(buttons, "Done shopping", func() -> void:
-		_selected_slot = -1
+		_screen.clear_market_selection()
 		Session.submit(&"finish_shop", []))
 
 
-## Renown to spend on a purchase: the chosen amount, but never more than needed and always
-## enough to cover what gold cannot.
+## Renown to spend: the chosen amount, never more than needed, always enough to cover what
+## gold cannot.
 func _renown_for(price: int) -> int:
 	var renown := mini(int(_renown_spin.value), price)
 	return clampi(maxi(renown, price - _me.gold), 0, _me.renown)
 
 
 func _buy_face(slot: int, die: int, face_index: int) -> void:
-	_selected_slot = -1
-	Session.submit(&"buy_face", [slot, die, face_index, _renown_for(Content.face_price(_view.market[slot]))])
+	var price := Content.face_price(_view.market[slot])
+	_screen.clear_market_selection()
+	Session.submit(&"buy_face", [slot, die, face_index, _renown_for(price)])
 
 
 # --- Loot and bids ----------------------------------------------------------------
 
 func _build_loot() -> void:
-	_add_title("Boss loot")
-	_add_label("Pick one item in secret. If others pick the same item, it goes to a sealed bid.")
+	_add_title("Spoils of the hunt")
+	_add_text("Pick one item in secret. If others pick the same item, it goes to a sealed bid.")
 	for i in _view.loot.size():
 		var trinket := Content.trinket(_view.loot[i])
 		var button := Button.new()
-		button.text = "%s: %s" % [trinket.display_name, trinket.description]
+		button.icon = Icons.texture("trinket")
+		button.expand_icon = false
+		button.add_theme_constant_override("icon_max_width", 28)
+		button.text = "%s: %s" % [trinket.display_name, Icons.plain(trinket.description)]
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button.custom_minimum_size = Vector2(0, 48)
 		button.pressed.connect(func() -> void: Session.submit(&"pick_loot", [i]))
 		add_child(button)
 
@@ -416,15 +435,15 @@ func _build_bid() -> void:
 		if id != _me.id:
 			rivals.append(id)
 	_add_title("Sealed bid: %s" % trinket.display_name)
-	_add_label("%s\nAgainst %s. The highest bid wins and pays; ties go to higher initiative." % [
-		trinket.description, _view.names_of(rivals)])
+	_add_rich("%s\nAgainst %s. The highest total wins and pays; ties go to the more cunning player." % [
+		Icons.rich(trinket.description, 18, false), _view.names_of(rivals)])
 	var grid := GridContainer.new()
-	grid.columns = 2
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 12)
 	add_child(grid)
-	_bid_gold = _add_spin(grid, "💰 Gold", _me.gold)
-	_bid_renown = _add_spin(grid, "⭐ Renown", _me.renown)
-	var buttons := HBoxContainer.new()
-	add_child(buttons)
+	_bid_gold = _add_spin(grid, "Gold", "gold", _me.gold)
+	_bid_renown = _add_spin(grid, "Renown", "renown", _me.renown)
+	var buttons := _row()
 	_add_button(buttons, "Place bid", func() -> void:
 		Session.submit(&"bid", [int(_bid_gold.value), int(_bid_renown.value)]))
 
@@ -434,35 +453,65 @@ func _build_bid() -> void:
 func _add_title(text: String) -> void:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 22)
+	label.theme_type_variation = &"InkHeading"
 	add_child(label)
 
 
-func _add_label(text: String) -> Label:
+func _label(text: String) -> Label:
 	var label := Label.new()
 	label.text = text
+	label.theme_type_variation = &"Ink"
+	return label
+
+
+func _add_text(text: String) -> Label:
+	var label := _label(text)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(label)
 	return label
 
 
+func _add_rich(text: String) -> RichTextLabel:
+	var rich := RichTextLabel.new()
+	rich.bbcode_enabled = true
+	rich.fit_content = true
+	rich.scroll_active = false
+	rich.theme_type_variation = &"InkRich"
+	rich.text = text
+	add_child(rich)
+	return rich
+
+
 func _add_waiting() -> void:
-	_waiting_label = _add_label("")
-	_waiting_label.add_theme_color_override("font_color", DIM)
+	_waiting_label = _add_text("")
+	_waiting_label.theme_type_variation = &"InkDim"
+
+
+func _row() -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	add_child(row)
+	return row
 
 
 func _add_button(parent: Node, text: String, on_pressed: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(0, 38)
+	button.custom_minimum_size = Vector2(0, 42)
 	button.pressed.connect(on_pressed)
 	parent.add_child(button)
 	return button
 
 
-func _add_spin(grid: GridContainer, text: String, max_value: int) -> SpinBox:
-	var label := Label.new()
-	label.text = text
+func _add_spin(grid: GridContainer, text: String, icon_name: String, max_value: int) -> SpinBox:
+	var label := RichTextLabel.new()
+	label.bbcode_enabled = true
+	label.fit_content = true
+	label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	label.theme_type_variation = &"InkRich"
+	label.custom_minimum_size = Vector2(150, 0)
+	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	label.text = "%s %s" % [Icons.bb(icon_name, 20), Icons.rich(text)]
 	grid.add_child(label)
 	var spin := SpinBox.new()
 	spin.max_value = max_value
