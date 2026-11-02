@@ -6,4 +6,4 @@
 script = ExtResource("1_script")
 id = &"sharp_tooth"
 display_name = "Sharp Tooth"
-description = "+1 ⚔ for every combat face you roll."
+description = "+1 {combat} for every combat face you roll."

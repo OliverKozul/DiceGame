@@ -46,12 +46,12 @@ func _start() -> void:
 			var err := Network.host_enet(player_name)
 			if not err.is_empty():
 				printerr(err)
-				get_tree().quit(1)
+				Transition.quit_game(1)
 	if options.has("autojoin"):
 		var err := Network.join_enet(player_name, options["autojoin"])
 		if not err.is_empty():
 			printerr(err)
-			get_tree().quit(1)
+			Transition.quit_game(1)
 
 
 func _seed() -> int:
@@ -78,7 +78,7 @@ func _on_view_changed(view: GameState) -> void:
 		_screenshot(view)
 	if options.has("leave-at-turn") and view.turn >= int(options["leave-at-turn"]):
 		print("LEAVING at turn %d" % view.turn)
-		get_tree().quit()
+		Transition.quit_game()
 		return
 	if view.phase != GameState.Phase.GAME_OVER or _finished:
 		return
@@ -91,7 +91,7 @@ func _on_view_changed(view: GameState) -> void:
 	print("RESULT " + JSON.stringify(summary))
 	if options.has("quit-on-end"):
 		# The host lingers so the final view reaches every client before it disconnects.
-		get_tree().create_timer(2.0 if Network.is_host() else 0.5).timeout.connect(get_tree().quit)
+		get_tree().create_timer(2.0 if Network.is_host() else 0.5).timeout.connect(func() -> void: Transition.quit_game())
 
 
 func _screenshot(view: GameState) -> void:

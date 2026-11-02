@@ -6,4 +6,4 @@
 script = ExtResource("1_script")
 id = &"goblet_of_blood"
 display_name = "Goblet Of Blood"
-description = "When your attack deals damage, heal 1 ❤, plus 1 for every 5 damage."
+description = "When your attack deals damage, heal 1 {heal}, plus 1 for every 5 damage."

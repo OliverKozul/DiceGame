@@ -1,7 +1,7 @@
 class_name Face
 extends RefCounted
 ## A die face packed into one int: kind * 16 + value. Faces are plain ints so dice copy,
-## compare and serialize cheaply. Value is 1..15.
+## compare and serialize cheaply. Value is 1..15. Text uses {icon} tokens (see Icons).
 
 enum Kind { NONE, COMBAT, GOLD, CUNNING, GUARD, HEAL, WILD, RENOWN, DOUBLE }
 
@@ -9,15 +9,15 @@ enum Kind { NONE, COMBAT, GOLD, CUNNING, GUARD, HEAL, WILD, RENOWN, DOUBLE }
 const WILD_CHOICES: Array[Kind] = [Kind.COMBAT, Kind.GOLD, Kind.CUNNING]
 
 const ICONS: Dictionary = {
-	Kind.NONE: "·",
-	Kind.COMBAT: "⚔",
-	Kind.GOLD: "💰",
-	Kind.CUNNING: "🧠",
-	Kind.GUARD: "🛡",
-	Kind.HEAL: "❤",
-	Kind.WILD: "✦",
-	Kind.RENOWN: "⭐",
-	Kind.DOUBLE: "×",
+	Kind.NONE: "{blank}",
+	Kind.COMBAT: "{combat}",
+	Kind.GOLD: "{gold}",
+	Kind.CUNNING: "{cunning}",
+	Kind.GUARD: "{guard}",
+	Kind.HEAL: "{heal}",
+	Kind.WILD: "{wild}",
+	Kind.RENOWN: "{renown}",
+	Kind.DOUBLE: "{double}",
 }
 
 const NAMES: Dictionary = {
@@ -52,7 +52,7 @@ static func icon(kind: Kind) -> String:
 static func label(face: int) -> String:
 	var kind := kind_of(face)
 	if kind == Kind.DOUBLE:
-		return "×2"
+		return "{double}"
 	return "%s%d" % [icon(kind), value_of(face)]
 
 

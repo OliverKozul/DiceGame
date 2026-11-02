@@ -71,6 +71,13 @@ static var _mobs: Array[Mob] = []
 static var _bosses: Array[Boss] = []
 
 
+## Drops the loaded content (used by test scripts before they quit).
+static func clear_cache() -> void:
+	_trinkets.clear()
+	_mobs.clear()
+	_bosses.clear()
+
+
 static func trinkets() -> Array[Trinket]:
 	if _trinkets.is_empty():
 		for path in TRINKET_PATHS:

@@ -6,4 +6,4 @@
 script = ExtResource("1_script")
 id = &"third_eye"
 display_name = "Third Eye"
-description = "Every cunning face you roll gives 3 more 🧠 and heals 1 ❤."
+description = "Every cunning face you roll gives 3 more {cunning} and heals 1 {heal}."

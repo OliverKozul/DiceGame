@@ -6,4 +6,4 @@
 script = ExtResource("1_script")
 id = &"crown_of_honor"
 display_name = "Crown Of Honor"
-description = "+1 extra ⭐ whenever you keep your intention."
+description = "+1 extra {renown} whenever you keep your intention."

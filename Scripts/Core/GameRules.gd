@@ -20,11 +20,14 @@ const OPS: Dictionary = {
 
 const SOURCE_MOB := 0
 const SOURCE_BOSS := -1
+const EVENT_LIMIT := 400
 
 var state := GameState.new()
 var rng := RandomNumberGenerator.new()
 ## Every log line of the game; the state only keeps the most recent ones for clients.
 var history: Array[String] = []
+## Structured, public events for clients to animate: {"seq", "type", ...data}.
+var events: Array[Dictionary] = []
 
 var _market_deck := PackedInt32Array()
 var _market_discard := PackedInt32Array()
@@ -32,6 +35,7 @@ var _mob_deck: Array[StringName] = []
 var _boss_index := 0
 var _loot_picks: Dictionary[int, int] = {}
 var _bids: Dictionary[int, Vector2i] = {}
+var _event_seq := 0
 
 
 ## roster: [{"id": int, "name": String, "bot": bool}, ...] in seat order.
@@ -39,6 +43,8 @@ func setup(roster: Array[Dictionary], seed_value: int, max_turns: int = Content.
 	rng.seed = seed_value
 	state = GameState.new()
 	history = []
+	events = []
+	_event_seq = 0
 	state.max_turns = max_turns
 	for i in roster.size():
 		var p := PlayerState.new()
@@ -122,6 +128,29 @@ func log_event(text: String) -> void:
 		state.log_lines.assign(state.log_lines.slice(state.log_lines.size() - GameState.LOG_LIMIT))
 
 
+## Records something that happened, for clients to animate. Every event is public.
+func emit_event(type: StringName, data: Dictionary = {}) -> void:
+	_event_seq += 1
+	var event := data.duplicate()
+	event["seq"] = _event_seq
+	event["type"] = type
+	events.append(event)
+	if events.size() > EVENT_LIMIT:
+		events.assign(events.slice(events.size() - EVENT_LIMIT))
+
+
+func last_event_seq() -> int:
+	return _event_seq
+
+
+func events_since(seq: int) -> Array[Dictionary]:
+	var newer: Array[Dictionary] = []
+	for event in events:
+		if event.seq > seq:
+			newer.append(event)
+	return newer
+
+
 # --- Requests ---------------------------------------------------------------
 
 func _op_reroll(pid: int, dice: PackedInt32Array) -> String:
@@ -138,11 +167,12 @@ func _op_reroll(pid: int, dice: PackedInt32Array) -> String:
 		seen[i] = true
 	var cost := p.reroll_cost()
 	if cost > 0 and p.roll_totals().cunning < cost:
-		return "Rerolling again costs %d 🧠." % cost
+		return "Rerolling again costs %d {cunning}." % cost
 	p.cunning_spent += cost
 	p.rerolls += 1
 	for i in dice:
 		p.showing[i] = rng.randi_range(0, p.dice[i].size() - 1)
+	emit_event(&"reroll", {"pid": pid, "dice": dice})
 	return ""
 
 
@@ -159,17 +189,18 @@ func _op_finish_roll(pid: int, wild_kinds: PackedInt32Array) -> String:
 	p.renown += totals.renown
 	var healed := p.heal(totals.heal)
 	p.roll_done = true
+	emit_event(&"kept", {"pid": pid, "combat": totals.combat, "gold": totals.gold, "cunning": totals.cunning, "guard": totals.guard, "healed": healed, "renown": totals.renown})
 
 	var faces := PackedStringArray()
 	for face in p.showing_faces():
 		faces.append(Face.label(face))
-	var gains := "⚔%d 💰%d 🧠%d" % [totals.combat, totals.gold, totals.cunning]
+	var gains := "{combat}%d {gold}%d {cunning}%d" % [totals.combat, totals.gold, totals.cunning]
 	if totals.guard > 0:
-		gains += " 🛡%d" % totals.guard
+		gains += " {guard}%d" % totals.guard
 	if healed > 0:
-		gains += " ❤+%d" % healed
+		gains += " {heal}+%d" % healed
 	if totals.renown > 0:
-		gains += " ⭐+%d" % totals.renown
+		gains += " {renown}+%d" % totals.renown
 	log_event("%s rolls [%s]: %s." % [p.name, " ".join(faces), gains])
 	return ""
 
@@ -187,6 +218,7 @@ func _op_declare(pid: int, action: int, target: int) -> String:
 	p.intention_action = action as PlayerState.Action
 	p.intention_target = target
 	state.cursor += 1
+	emit_event(&"declare", {"pid": pid, "action": action, "target": target})
 	log_event("%s declares: %s." % [p.name, state.describe_choice(action, target)])
 	return ""
 
@@ -220,13 +252,14 @@ func _op_lock_plan(pid: int, action: int, target: int, attack: int, guard: int, 
 		clean[key] = amount
 		total += amount
 	if total > p.combat:
-		return "You only have %d ⚔ to split." % p.combat
+		return "You only have %d {combat} to split." % p.combat
 	p.plan_action = action as PlayerState.Action
 	p.plan_target = target
 	p.plan_attack = attack
 	p.plan_guard = guard
 	p.plan_sabotage = clean
 	p.plan_locked = true
+	emit_event(&"locked", {"pid": pid})
 	return ""
 
 
@@ -249,6 +282,7 @@ func _op_buy_face(pid: int, slot: int, die: int, face_index: int, renown: int) -
 	faces[face_index] = face
 	p.dice[die] = faces
 	state.market[slot] = 0
+	emit_event(&"buy_face", {"pid": pid, "face": face, "die": die, "index": face_index, "old": old})
 	log_event("%s buys %s for %d and replaces %s on die %d." % [p.name, Face.label(face), price, Face.label(old), die + 1])
 	return ""
 
@@ -265,6 +299,7 @@ func _op_buy_die(pid: int, renown: int) -> String:
 		return err
 	p.add_die(Content.basic_die())
 	state.market_die = false
+	emit_event(&"buy_die", {"pid": pid})
 	log_event("%s buys a new die." % p.name)
 	return ""
 
@@ -282,6 +317,7 @@ func _op_refresh_market(pid: int, renown: int) -> String:
 			_market_discard.append(state.market[i])
 			state.market[i] = 0
 	_refill_market()
+	emit_event(&"refresh", {"pid": pid})
 	log_event("%s refreshes the market." % p.name)
 	return ""
 
@@ -291,6 +327,7 @@ func _op_finish_shop(pid: int) -> String:
 	if not err.is_empty():
 		return err
 	state.player(pid).resolved = true
+	emit_event(&"shop_done", {"pid": pid})
 	state.shopping = 0
 	state.cursor += 1
 	return ""
@@ -408,6 +445,7 @@ func _start_turn() -> void:
 			for i in p.dice.size():
 				p.showing[i] = rng.randi_range(0, p.dice[i].size() - 1)
 	state.phase = GameState.Phase.ROLL
+	emit_event(&"turn_start", {"turn": state.turn})
 	log_event("── Turn %d of %d ──" % [state.turn, state.max_turns])
 
 
@@ -425,9 +463,10 @@ func _begin_declare() -> void:
 	state.initiative = ids
 	state.cursor = 0
 	state.phase = GameState.Phase.DECLARE
+	emit_event(&"initiative", {"order": ids.duplicate()})
 	var order := PackedStringArray()
 	for id in ids:
-		order.append("%s 🧠%d" % [state.player(id).name, state.player(id).cunning])
+		order.append("%s {cunning}%d" % [state.player(id).name, state.player(id).cunning])
 	log_event("Initiative: %s." % ", ".join(order))
 
 
@@ -438,15 +477,18 @@ func _reveal() -> void:
 		p.attack_left = p.plan_attack
 		p.guard_left = p.plan_guard + p.guard_bonus
 		var text := "%s reveals: %s" % [p.name, state.describe_plan(p)]
+		var gained := 0
 		if p.kept_word:
 			var bonus := Content.HONESTY_RENOWN
 			for trinket_id in p.trinkets:
 				bonus += Content.trinket(trinket_id).honesty_bonus()
 			p.renown += bonus
-			text += " — kept their word (+%d ⭐)." % bonus
+			gained = bonus
+			text += " — kept their word (+%d {renown})." % bonus
 		else:
 			text += " — broke their word."
 		log_event(text)
+		emit_event(&"reveal", {"pid": id, "kept": p.kept_word, "renown": gained})
 	state.phase = GameState.Phase.RESOLVE
 	state.cursor = 0
 
@@ -461,6 +503,7 @@ func _run_resolution() -> bool:
 			state.cursor += 1
 			continue
 		if not p.is_active():
+			emit_event(&"lost", {"pid": p.id})
 			log_event("%s is down; their action is lost." % p.name)
 			p.resolved = true
 			state.cursor += 1
@@ -468,6 +511,7 @@ func _run_resolution() -> bool:
 		_resolve_sabotage(p)
 		if p.plan_action == PlayerState.Action.SHOP:
 			state.shopping = p.id
+			emit_event(&"shop", {"pid": p.id})
 			log_event("%s goes shopping." % p.name)
 			return false
 		_resolve_action(p)
@@ -496,6 +540,7 @@ func _resolve_sabotage(p: PlayerState) -> void:
 			removed = mini(amount, t.attack_left)
 			t.attack_left -= removed
 			what = "attack"
+		emit_event(&"sabotage", {"pid": p.id, "target": t.id, "amount": removed, "what": what})
 		log_event("%s sabotages %s: −%d %s." % [p.name, t.name, removed, what])
 		for trinket_id in p.trinkets:
 			Content.trinket(trinket_id).on_sabotage(self, p, t)
@@ -506,12 +551,14 @@ func _resolve_action(p: PlayerState) -> void:
 		PlayerState.Action.ATTACK_PLAYER:
 			var t := state.player(p.plan_target)
 			if not t.is_active():
+				emit_event(&"whiff", {"pid": p.id, "target": t.id})
 				log_event("%s attacks %s, but they are already down." % [p.name, t.name])
 				return
 			var blocked := mini(p.attack_left, t.guard_left)
 			t.guard_left -= blocked
 			var damage := p.attack_left - blocked
-			log_event("%s attacks %s with ⚔%d: %d blocked, %d damage." % [p.name, t.name, p.attack_left, blocked, damage])
+			emit_event(&"attack", {"pid": p.id, "target": t.id, "attack": p.attack_left, "blocked": blocked, "damage": damage})
+			log_event("%s attacks %s with {combat}%d: %d blocked, %d damage." % [p.name, t.name, p.attack_left, blocked, damage])
 			if damage > 0:
 				_damage_dealt(p, damage)
 				_deal_damage(t, damage, p.id)
@@ -524,29 +571,36 @@ func _resolve_action(p: PlayerState) -> void:
 				slot.killed = true
 				p.score += Content.MOB_KILL_SCORE
 				var reward: Trinket = mob.rewards[rng.randi_range(0, mob.rewards.size() - 1)]
-				log_event("%s slays the %s (+%d 🏆) and gains %s." % [p.name, mob.display_name, Content.MOB_KILL_SCORE, reward.display_name])
+				log_event("%s slays the %s (+%d {score}) and gains %s." % [p.name, mob.display_name, Content.MOB_KILL_SCORE, reward.display_name])
+				emit_event(&"mob_kill", {"pid": p.id, "slot": p.plan_target, "trinket": reward.id})
 				_grant_trinket(p, reward.id)
 			else:
 				var blocked := mini(mob.damage, p.guard_left)
 				p.guard_left -= blocked
 				var damage := mob.damage - blocked
-				log_event("%s fails to slay the %s (⚔%d of %d) and takes %d damage." % [p.name, mob.display_name, p.attack_left, mob.hp, damage])
+				log_event("%s fails to slay the %s ({combat}%d of %d) and takes %d damage." % [p.name, mob.display_name, p.attack_left, mob.hp, damage])
+				emit_event(&"mob_fail", {"pid": p.id, "slot": p.plan_target, "damage": damage})
 				if damage > 0:
 					_deal_damage(p, damage, SOURCE_MOB)
 		PlayerState.Action.ATTACK_BOSS:
 			var boss := state.boss()
 			if not state.boss_alive():
+				emit_event(&"whiff", {"pid": p.id, "target": 0})
 				log_event("%s attacks the %s, but it is already slain." % [p.name, boss.display_name])
 				return
 			state.boss_damage[p.id] = state.boss_damage.get(p.id, 0) + p.attack_left
 			state.boss_hp = maxi(0, state.boss_hp - p.attack_left)
+			emit_event(&"boss_hit", {"pid": p.id, "damage": p.attack_left, "hp": state.boss_hp})
 			log_event("%s hits the %s for %d (%d/%d left)." % [p.name, boss.display_name, p.attack_left, state.boss_hp, state.boss_max_hp])
 			if p.attack_left > 0:
 				_damage_dealt(p, p.attack_left)
 			if not state.boss_alive():
+				emit_event(&"boss_slain")
 				log_event("The %s is slain!" % boss.display_name)
 		PlayerState.Action.REST:
-			log_event("%s rests and heals %d ❤." % [p.name, p.heal(Content.REST_HEAL)])
+			var healed := p.heal(Content.REST_HEAL)
+			emit_event(&"rest", {"pid": p.id, "healed": healed})
+			log_event("%s rests and heals %d {heal}." % [p.name, healed])
 
 
 func _damage_dealt(p: PlayerState, amount: int) -> void:
@@ -560,18 +614,20 @@ func _deal_damage(target: PlayerState, amount: int, source: int) -> void:
 	if target.hp > 0 or target.knocked_out:
 		return
 	target.knocked_out = true
+	emit_event(&"knockout", {"pid": target.id, "by": source})
 	target.out_until_turn = state.turn + 1
 	target.score = maxi(0, target.score - Content.KO_VICTIM_PENALTY)
 	var attacker := state.player(source) if source > 0 else null
 	if attacker:
 		attacker.score += Content.KO_ATTACKER_SCORE
-		log_event("%s knocks out %s! (%s +%d 🏆, %s −%d 🏆)" % [attacker.name, target.name, attacker.name, Content.KO_ATTACKER_SCORE, target.name, Content.KO_VICTIM_PENALTY])
+		log_event("%s knocks out %s! (%s +%d {score}, %s −%d {score})" % [attacker.name, target.name, attacker.name, Content.KO_ATTACKER_SCORE, target.name, Content.KO_VICTIM_PENALTY])
 	else:
-		log_event("%s is knocked out! (−%d 🏆)" % [target.name, Content.KO_VICTIM_PENALTY])
+		log_event("%s is knocked out! (−%d {score})" % [target.name, Content.KO_VICTIM_PENALTY])
 
 
 func _grant_trinket(p: PlayerState, trinket_id: StringName) -> void:
 	p.trinkets.append(trinket_id)
+	emit_event(&"trinket", {"pid": p.id, "trinket": trinket_id})
 	Content.trinket(trinket_id).on_acquired(self, p)
 
 
@@ -585,6 +641,7 @@ func _end_of_turn() -> void:
 			var blocked := mini(boss.damage, a.guard_left)
 			a.guard_left -= blocked
 			var damage := boss.damage - blocked
+			emit_event(&"boss_strike", {"pid": a.id, "blocked": blocked, "damage": damage})
 			log_event("The %s strikes %s: %d blocked, %d damage." % [boss.display_name, a.name, blocked, damage])
 			if damage > 0:
 				_deal_damage(a, damage, SOURCE_BOSS)
@@ -597,11 +654,12 @@ func _end_of_turn() -> void:
 			dealers.append(id)
 	for id in dealers:
 		state.player(id).score += Content.BOSS_KILL_SCORE
+	emit_event(&"boss_reward", {"pids": dealers.duplicate()})
 	if not dealers.is_empty():
 		var slayer_names := PackedStringArray()
 		for id in dealers:
 			slayer_names.append(state.player(id).name)
-		log_event("Boss slayers: %s (+%d 🏆 each)." % [", ".join(slayer_names), Content.BOSS_KILL_SCORE])
+		log_event("Boss slayers: %s (+%d {score} each)." % [", ".join(slayer_names), Content.BOSS_KILL_SCORE])
 
 	state.loot_eligible.assign(dealers.filter(func(id: int) -> bool: return state.player(id).is_active()))
 	var pool := Content.BOSS_LOOT.duplicate()
@@ -614,6 +672,7 @@ func _end_of_turn() -> void:
 	state.loot_waiting = state.loot_eligible.duplicate()
 	_loot_picks.clear()
 	state.phase = GameState.Phase.LOOT
+	emit_event(&"loot", {"items": state.loot.duplicate()})
 	var loot_names := PackedStringArray()
 	for item in state.loot:
 		loot_names.append(Content.trinket(item).display_name)
@@ -638,6 +697,7 @@ func _settle_loot() -> void:
 		if pickers.size() == 1:
 			var p := state.player(pickers[0])
 			log_event("%s takes %s." % [p.name, trinket.display_name])
+			emit_event(&"loot_taken", {"pid": p.id, "item": item})
 			_grant_trinket(p, trinket.id)
 		else:
 			var names := PackedStringArray()
@@ -647,6 +707,7 @@ func _settle_loot() -> void:
 			var bidders: Array[int] = []
 			bidders.assign(pickers)
 			state.auctions.append({"item": item, "bidders": bidders})
+			emit_event(&"auction", {"item": item, "bidders": bidders.duplicate()})
 	if state.auctions.is_empty():
 		_cleanup()
 		return
@@ -676,6 +737,7 @@ func _settle_bids() -> void:
 		p.gold -= paid.x
 		p.renown -= paid.y
 		var trinket := Content.trinket(state.loot[auction.item])
+		emit_event(&"auction_won", {"pid": winner, "item": auction.item, "paid": paid.x + paid.y})
 		log_event("%s wins %s (bids: %s)." % [p.name, trinket.display_name, ", ".join(shown)])
 		_grant_trinket(p, trinket.id)
 	_cleanup()
@@ -690,10 +752,12 @@ func _cleanup() -> void:
 	for slot in state.mobs:
 		if slot.killed:
 			slot.id = _draw_mob()
+			emit_event(&"mob_spawn", {"mob": slot.id})
 			slot.killed = false
 	if not state.boss_alive():
 		_boss_index += 1
 		_set_boss()
+		emit_event(&"new_boss", {"boss": state.boss_id})
 		log_event("A new boss appears: the %s." % state.boss().display_name)
 	_refill_market()
 	state.market_die = true
@@ -708,7 +772,8 @@ func _cleanup() -> void:
 		if p.knocked_out and p.out_until_turn <= state.turn:
 			p.knocked_out = false
 			p.hp = ceili(p.max_hp / 2.0)
-			log_event("%s is back on their feet with %d ❤." % [p.name, p.hp])
+			emit_event(&"comeback", {"pid": p.id, "hp": p.hp})
+			log_event("%s is back on their feet with %d {heal}." % [p.name, p.hp])
 	if state.turn >= state.max_turns:
 		_finish_game()
 	else:
@@ -731,6 +796,7 @@ func _finish_game() -> void:
 		return pa.seat < pb.seat)
 	state.standings = ids
 	state.phase = GameState.Phase.GAME_OVER
+	emit_event(&"game_over", {"standings": ids.duplicate()})
 	var lines := PackedStringArray()
 	for i in ids.size():
 		var p := state.player(ids[i])

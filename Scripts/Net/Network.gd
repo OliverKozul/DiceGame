@@ -384,7 +384,7 @@ func _change_scene(path: String) -> void:
 	if current and current.scene_file_path == path and path == MENU_SCENE:
 		roster_changed.emit()
 		return
-	get_tree().change_scene_to_file.call_deferred(path)
+	Transition.change_scene(path)
 
 
 # --- RPCs -------------------------------------------------------------------------

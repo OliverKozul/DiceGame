@@ -160,9 +160,9 @@ func describe_choice(action: int, target: int) -> String:
 func describe_plan(p: PlayerState) -> String:
 	var parts := PackedStringArray()
 	if p.plan_attack > 0:
-		parts.append("⚔%d" % p.plan_attack)
+		parts.append("{combat}%d" % p.plan_attack)
 	if p.plan_guard + p.guard_bonus > 0:
-		parts.append("🛡%d" % (p.plan_guard + p.guard_bonus))
+		parts.append("{guard}%d" % (p.plan_guard + p.guard_bonus))
 	for target_id in p.plan_sabotage:
 		var t := player(target_id)
 		parts.append("sabotage %s %d" % [t.name if t else "?", p.plan_sabotage[target_id]])

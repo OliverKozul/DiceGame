@@ -6,4 +6,5 @@ func on_sabotage(rules: GameRules, owner: PlayerState, target: PlayerState) -> v
 	if target.gold > 0:
 		target.gold -= 1
 		owner.gold += 1
-		rules.log_event("%s's Coin Magnet steals 1 💰 from %s." % [owner.name, target.name])
+		rules.emit_event(&"steal", {"pid": owner.id, "target": target.id})
+		rules.log_event("%s's Coin Magnet steals 1 {gold} from %s." % [owner.name, target.name])

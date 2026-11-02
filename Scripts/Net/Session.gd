@@ -4,6 +4,8 @@ extends Node
 ## latest view. The UI talks to the game exclusively through submit() and view_changed.
 
 signal view_changed(view: GameState)
+## The new view plus the events that led to it, for the presentation layer to animate.
+signal update_received(view: GameState, events: Array)
 signal request_failed(message: String)
 
 const BOT_DELAY := 0.6
@@ -19,6 +21,9 @@ var bot_delay := BOT_DELAY
 var afk_timeout := AFK_TIMEOUT
 ## Lets BotBrain play the local seat (used by automated tests).
 var autoplay := false
+## Set by the game screen while it is animating; the host's bots wait for it so a local
+## human can follow what happens.
+var presentation_busy := false
 
 var _roster: Array[Dictionary] = []
 var _seed := 0
@@ -28,6 +33,8 @@ var _bot_rng := RandomNumberGenerator.new()
 var _bot_timer := Timer.new()
 var _afk_timer := Timer.new()
 var _waiting_since: Dictionary[int, float] = {}
+## Last event each peer has been sent.
+var _sent_seq: Dictionary[int, int] = {}
 var _autoplay_queued := false
 ## What the local seat looked like when autoplay last submitted; used to avoid sending the
 ## same move twice while the host's answer is still on its way.
@@ -49,6 +56,8 @@ func reset() -> void:
 	_roster = []
 	_ready_peers.clear()
 	_waiting_since.clear()
+	_sent_seq.clear()
+	presentation_busy = false
 	_autoplay_signature = ""
 	_bot_timer.stop()
 	_afk_timer.stop()
@@ -97,6 +106,7 @@ func on_peer_left(id: int) -> void:
 	if p == null:
 		return
 	rules.set_bot(id, true, false)
+	rules.emit_event(&"left", {"pid": id})
 	rules.log_event("%s left the game; a bot takes over their seat." % p.name)
 	_after_change()
 
@@ -119,6 +129,9 @@ func _try_start() -> void:
 			return
 	rules = GameRules.new()
 	rules.setup(_roster, _seed, _max_turns)
+	for seat in _roster:
+		if not seat.bot:
+			_sent_seq[seat.id] = 0
 	if afk_timeout > 0.0:
 		_afk_timer.start()
 	_after_change()
@@ -154,6 +167,10 @@ func _after_change() -> void:
 
 func _send_view(id: int) -> void:
 	var data := rules.state.to_view(id)
+	# A peer that joins the view stream late gets the current table without a backlog.
+	var since: int = _sent_seq.get(id, rules.last_event_seq())
+	data["events"] = rules.events_since(since)
+	_sent_seq[id] = rules.last_event_seq()
 	if id == local_id():
 		_apply_view(data)
 	elif Network.peer_is_reachable(id):
@@ -167,8 +184,15 @@ func _send_error(id: int, message: String) -> void:
 		_rpc_error.rpc_id(id, message)
 
 
+## Called by the game screen when it has finished animating.
+func presentation_finished() -> void:
+	presentation_busy = false
+	if rules != null and multiplayer.is_server():
+		_schedule_bot()
+
+
 func _schedule_bot() -> void:
-	if not _bot_timer.is_stopped():
+	if not _bot_timer.is_stopped() or presentation_busy:
 		return
 	for id in rules.state.waiting_on():
 		if rules.state.player(id).is_bot:
@@ -178,7 +202,7 @@ func _schedule_bot() -> void:
 
 ## Plays one bot move, then lets _after_change schedule the next one.
 func _run_bot() -> void:
-	if rules == null:
+	if rules == null or presentation_busy:
 		return
 	for id in rules.state.waiting_on():
 		var p := rules.state.player(id)
@@ -215,6 +239,7 @@ func _check_afk() -> void:
 
 func _apply_view(data: Dictionary) -> void:
 	view = GameState.from_view(data)
+	update_received.emit(view, data.get("events", []))
 	view_changed.emit(view)
 	if autoplay:
 		_queue_autoplay()

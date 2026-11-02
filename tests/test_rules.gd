@@ -5,6 +5,13 @@ extends SceneTree
 ##   godot --headless --path . --script res://tests/test_rules.gd -- [games]
 
 var failures := 0
+var _exit_code := -1
+## Every event type seen in any game, to check the presentation layer gets them all.
+var event_types := {}
+const CORE_EVENTS: Array[String] = ["turn_start", "reroll", "kept", "initiative", "declare", "locked", "reveal",
+	"sabotage", "attack", "mob_kill", "mob_fail", "boss_hit", "boss_slain", "boss_strike", "rest", "knockout",
+	"trinket", "shop", "buy_face", "shop_done", "loot", "loot_taken", "auction", "auction_won", "mob_spawn",
+	"new_boss", "comeback", "game_over", "boss_reward"]
 
 
 func _init() -> void:
@@ -31,12 +38,25 @@ func _init() -> void:
 	_report("weak boss", weak, 0.0)
 	if weak.boss_kills == 0 or weak.auctions == 0:
 		_fail("weak-boss games never killed the boss or never held an auction")
+	for type in CORE_EVENTS:
+		if not event_types.has(type):
+			_fail("event type never emitted: " + type)
+	print("event types seen: %d" % event_types.size())
 
+	Content.clear_cache()
 	if failures == 0:
 		print("ALL RULE TESTS PASSED")
 	else:
 		print("FAILURES: %d" % failures)
-	quit(1 if failures else 0)
+	_exit_code = 1 if failures else 0
+
+
+# Quit on the first frame rather than inside _init, so the autoloads start and stop cleanly.
+func _process(_delta: float) -> bool:
+	if _exit_code >= 0:
+		root.get_node("Transition").call("quit_game", _exit_code)
+		_exit_code = -1
+	return false
 
 
 func _seats_for(g: int) -> int:
@@ -75,6 +95,7 @@ func _play(seed_value: int, seats: int, stats: Dictionary, boss_cap: int = 0) ->
 	var brain_rng := RandomNumberGenerator.new()
 	brain_rng.seed = seed_value * 7919 + 1
 	var steps := 0
+	var last_seq := 0
 	while rules.state.phase != GameState.Phase.GAME_OVER:
 		var waiting := rules.state.waiting_on()
 		if waiting.is_empty():
@@ -98,6 +119,11 @@ func _play(seed_value: int, seats: int, stats: Dictionary, boss_cap: int = 0) ->
 			_fail("seed %d: bot request %s %s refused: %s" % [seed_value, request[0], request[1], err])
 			return ""
 		_check_invariants(rules.state, seed_value)
+		for event in rules.events_since(last_seq):
+			if event.seq != last_seq + 1:
+				_fail("seed %d: event sequence jumped from %d to %d" % [seed_value, last_seq, event.seq])
+			last_seq = event.seq
+			event_types[str(event.type)] = true
 		steps += 1
 		if steps > 20000:
 			_fail("seed %d: game did not finish" % seed_value)
