@@ -172,6 +172,14 @@ func describe_plan(p: PlayerState) -> String:
 	return text
 
 
+func names_of(ids: Array[int]) -> String:
+	var names := PackedStringArray()
+	for id in ids:
+		var p := player(id)
+		names.append(p.name if p else "?")
+	return ", ".join(names)
+
+
 func auction_for(id: int) -> Dictionary:
 	for auction in auctions:
 		if (auction.bidders as Array).has(id):

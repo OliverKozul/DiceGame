@@ -12,8 +12,16 @@ config_version=5
 
 config/name="DiceGame"
 config/version="0.2.0"
+run/main_scene="res://Scenes/Menu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://Assets/icon.svg"
+
+[autoload]
+
+SteamService="*res://Scripts/Net/SteamService.gd"
+Session="*res://Scripts/Net/Session.gd"
+Network="*res://Scripts/Net/Network.gd"
+Dev="*res://Scripts/Dev/Dev.gd"
 
 [display]
 
@@ -22,5 +30,6 @@ window/size/viewport_height=720
 
 [gui]
 
+theme/custom="res://Assets/Theme.tres"
 theme/default_font_multichannel_signed_distance_field=true
 theme/default_font_generate_mipmaps=true

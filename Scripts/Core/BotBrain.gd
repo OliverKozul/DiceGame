@@ -144,18 +144,31 @@ static func _options(view: GameState, p: PlayerState) -> Array:
 		var value := 3.0 + mob.tier - mob.hp * 0.1 if combat >= mob.hp else 0.2
 		options.append([PlayerState.Action.ATTACK_MOB, slot, value])
 
+	# Join a boss attack that the declared attackers can finish; propose one when the whole
+	# table could, hoping others join (in the plan phase only declared attackers count).
 	var boss_power := combat
+	var table_power := 0
 	for other in view.players:
+		if not other.is_active():
+			continue
+		table_power += other.combat
 		if other.id != p.id and other.declared and other.intention_action == PlayerState.Action.ATTACK_BOSS:
 			boss_power += other.combat
-	options.append([PlayerState.Action.ATTACK_BOSS, 0, 3.5 if combat > 0 and boss_power >= view.boss_hp else 0.4])
+	var boss_value := 0.4
+	if combat > 0 and boss_power >= view.boss_hp:
+		boss_value = 3.5
+	elif view.phase == GameState.Phase.DECLARE and combat >= 2 and table_power >= view.boss_hp:
+		boss_value = 2.2
+	options.append([PlayerState.Action.ATTACK_BOSS, 0, boss_value])
 
 	var leader := 0
 	for other in view.players:
 		if other.id == p.id or not other.is_active():
 			continue
 		var value := 0.8 + combat * 0.3
-		if combat > 0 and other.hp <= combat:
+		if combat == 0:
+			value = 0.05
+		elif other.hp <= combat:
 			value = 4.0
 		if leader == 0 or view.final_score(other) > view.final_score(view.player(leader)):
 			leader = other.id

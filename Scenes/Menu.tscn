@@ -1,0 +1,218 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/Menu.gd" id="1_menu"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/CloisterBlack.ttf" id="2_title"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0627451, 0.0823529, 0.109804, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(620, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Card"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="Center/Card/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Center/Card/Margin/VBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_title")
+theme_override_font_sizes/font_size = 56
+text = "Dice Game"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Center/Card/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.72, 0.76, 1)
+text = "Honest promises. Well-timed betrayal."
+horizontal_alignment = 1
+
+[node name="MainPanel" type="VBoxContainer" parent="Center/Card/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameRow" type="HBoxContainer" parent="Center/Card/Margin/VBox/MainPanel"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Center/Card/Margin/VBox/MainPanel/NameRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Your name"
+
+[node name="NameEdit" type="LineEdit" parent="Center/Card/Margin/VBox/MainPanel/NameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Player"
+max_length = 20
+
+[node name="SoloRow" type="HBoxContainer" parent="Center/Card/Margin/VBox/MainPanel"]
+layout_mode = 2
+
+[node name="SoloButton" type="Button" parent="Center/Card/Margin/VBox/MainPanel/SoloRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Play vs bots"
+
+[node name="BotsSpin" type="SpinBox" parent="Center/Card/Margin/VBox/MainPanel/SoloRow"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 2.0
+max_value = 5.0
+value = 3.0
+suffix = "bots"
+
+[node name="SteamSeparator" type="HSeparator" parent="Center/Card/Margin/VBox/MainPanel"]
+layout_mode = 2
+
+[node name="SteamLabel" type="Label" parent="Center/Card/Margin/VBox/MainPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.72, 0.76, 1)
+text = "Steam"
+autowrap_mode = 3
+
+[node name="SteamRow" type="HBoxContainer" parent="Center/Card/Margin/VBox/MainPanel"]
+layout_mode = 2
+
+[node name="HostSteamButton" type="Button" parent="Center/Card/Margin/VBox/MainPanel/SteamRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Host Steam lobby"
+
+[node name="RefreshFriendsButton" type="Button" parent="Center/Card/Margin/VBox/MainPanel/SteamRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Find friends' lobbies"
+
+[node name="FriendList" type="ItemList" parent="Center/Card/Margin/VBox/MainPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+
+[node name="JoinFriendButton" type="Button" parent="Center/Card/Margin/VBox/MainPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Join selected lobby"
+
+[node name="LanSeparator" type="HSeparator" parent="Center/Card/Margin/VBox/MainPanel"]
+layout_mode = 2
+
+[node name="LanRow" type="HBoxContainer" parent="Center/Card/Margin/VBox/MainPanel"]
+layout_mode = 2
+
+[node name="HostLanButton" type="Button" parent="Center/Card/Margin/VBox/MainPanel/LanRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Host direct IP"
+
+[node name="AddressEdit" type="LineEdit" parent="Center/Card/Margin/VBox/MainPanel/LanRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "Host IP address"
+
+[node name="JoinLanButton" type="Button" parent="Center/Card/Margin/VBox/MainPanel/LanRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join"
+
+[node name="RoomPanel" type="VBoxContainer" parent="Center/Card/Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RoomTitle" type="Label" parent="Center/Card/Margin/VBox/RoomPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Lobby"
+horizontal_alignment = 1
+
+[node name="RosterList" type="VBoxContainer" parent="Center/Card/Margin/VBox/RoomPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RoomHint" type="Label" parent="Center/Card/Margin/VBox/RoomPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.72, 0.76, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HostRow" type="HBoxContainer" parent="Center/Card/Margin/VBox/RoomPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AddBotButton" type="Button" parent="Center/Card/Margin/VBox/RoomPanel/HostRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add bot"
+
+[node name="RemoveBotButton" type="Button" parent="Center/Card/Margin/VBox/RoomPanel/HostRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove bot"
+
+[node name="InviteButton" type="Button" parent="Center/Card/Margin/VBox/RoomPanel/HostRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Invite friends"
+
+[node name="StartButton" type="Button" parent="Center/Card/Margin/VBox/RoomPanel/HostRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start game"
+
+[node name="LeaveRoomButton" type="Button" parent="Center/Card/Margin/VBox/RoomPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Leave"
+
+[node name="StatusLabel" type="Label" parent="Center/Card/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.75, 0.35, 1)
+horizontal_alignment = 1
+autowrap_mode = 3

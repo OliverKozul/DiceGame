@@ -1,0 +1,329 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/GameScreen.gd" id="1_screen"]
+[ext_resource type="Script" path="res://Scripts/UI/ActionPanel.gd" id="2_action"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/CloisterBlack.ttf" id="3_title"]
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_screen")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0627451, 0.0823529, 0.109804, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Columns" type="HBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Left" type="PanelContainer" parent="Margin/Columns"]
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+
+[node name="LeftMargin" type="MarginContainer" parent="Margin/Columns/Left"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Columns/Left/LeftMargin"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="PlayerRows" type="VBoxContainer" parent="Margin/Columns/Left/LeftMargin/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Center" type="VBoxContainer" parent="Margin/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Margin/Columns/Center"]
+layout_mode = 2
+
+[node name="HeaderText" type="VBoxContainer" parent="Margin/Columns/Center/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PhaseLabel" type="Label" parent="Margin/Columns/Center/Header/HeaderText"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Waiting for players…"
+
+[node name="HintLabel" type="Label" parent="Margin/Columns/Center/Header/HeaderText"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.72, 0.76, 1)
+autowrap_mode = 3
+
+[node name="LeaveButton" type="Button" parent="Margin/Columns/Center/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "Leave"
+
+[node name="ActionFrame" type="PanelContainer" parent="Margin/Columns/Center"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ActionMargin" type="MarginContainer" parent="Margin/Columns/Center/ActionFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="ActionScroll" type="ScrollContainer" parent="Margin/Columns/Center/ActionFrame/ActionMargin"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ActionPanel" type="VBoxContainer" parent="Margin/Columns/Center/ActionFrame/ActionMargin/ActionScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+script = ExtResource("2_action")
+
+[node name="LogFrame" type="PanelContainer" parent="Margin/Columns/Center"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+
+[node name="LogMargin" type="MarginContainer" parent="Margin/Columns/Center/LogFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="LogText" type="RichTextLabel" parent="Margin/Columns/Center/LogFrame/LogMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 15
+scroll_following = true
+
+[node name="Right" type="VBoxContainer" parent="Margin/Columns"]
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StatsFrame" type="PanelContainer" parent="Margin/Columns/Right"]
+layout_mode = 2
+
+[node name="StatsMargin" type="MarginContainer" parent="Margin/Columns/Right/StatsFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="StatsLabel" type="RichTextLabel" parent="Margin/Columns/Right/StatsFrame/StatsMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="EnemyFrame" type="PanelContainer" parent="Margin/Columns/Right"]
+layout_mode = 2
+
+[node name="EnemyMargin" type="MarginContainer" parent="Margin/Columns/Right/EnemyFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="EnemyLabel" type="RichTextLabel" parent="Margin/Columns/Right/EnemyFrame/EnemyMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 15
+theme_override_font_sizes/bold_font_size = 15
+bbcode_enabled = true
+fit_content = true
+
+[node name="MarketFrame" type="PanelContainer" parent="Margin/Columns/Right"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarketMargin" type="MarginContainer" parent="Margin/Columns/Right/MarketFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="MarketLabel" type="RichTextLabel" parent="Margin/Columns/Right/MarketFrame/MarketMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 15
+theme_override_font_sizes/bold_font_size = 15
+bbcode_enabled = true
+fit_content = true
+
+[node name="InfoPopup" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(560, 440)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -220.0
+offset_right = 280.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="InfoMargin" type="MarginContainer" parent="InfoPopup"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="InfoVBox" type="VBoxContainer" parent="InfoPopup/InfoMargin"]
+layout_mode = 2
+
+[node name="InfoTitle" type="Label" parent="InfoPopup/InfoMargin/InfoVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="InfoBody" type="RichTextLabel" parent="InfoPopup/InfoMargin/InfoVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="InfoCloseButton" type="Button" parent="InfoPopup/InfoMargin/InfoVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Close"
+
+[node name="EndScreen" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="EndCenter" type="CenterContainer" parent="EndScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EndPanel" type="PanelContainer" parent="EndScreen/EndCenter"]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+
+[node name="EndMargin" type="MarginContainer" parent="EndScreen/EndCenter/EndPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="EndVBox" type="VBoxContainer" parent="EndScreen/EndCenter/EndPanel/EndMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="EndTitle" type="Label" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_title")
+theme_override_font_sizes/font_size = 44
+horizontal_alignment = 1
+
+[node name="EndBody" type="RichTextLabel" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="EndButtons" type="HBoxContainer" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="ReturnButton" type="Button" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox/EndButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back to lobby"
+
+[node name="ViewTableButton" type="Button" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox/EndButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "View table"
+
+[node name="EndLeaveButton" type="Button" parent="EndScreen/EndCenter/EndPanel/EndMargin/EndVBox/EndButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Leave"
+
+[node name="Toast" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -64.0
+offset_right = 300.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ToastTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 4.0
+one_shot = true
+
+[node name="LeaveDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Leave the game?"
+dialog_text = "A bot will take over your seat. If you are the host, the game ends for everyone."

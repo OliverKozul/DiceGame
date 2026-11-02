@@ -7,5 +7,5 @@ script = ExtResource("1_script")
 id = &"ancient_wyrm"
 display_name = "Ancient Wyrm"
 description = "Older than the mountains."
-hp_per_player = 8
+hp_per_player = 4
 damage = 5
