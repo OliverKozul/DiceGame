@@ -1,8 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://covx5squoua30"]
+[gd_resource type="Resource" script_class="Trinket" format=3 uid="uid://covx5squoua30"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/SaboteurDagger.gd" id="1_5rmd5"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/SaboteurDagger.gd" id="1_script"]
 
 [resource]
-script = ExtResource("1_5rmd5")
-name = "Saboteur Dagger"
-description = "Increases sabotage amount by 1."
+script = ExtResource("1_script")
+id = &"saboteur_dagger"
+display_name = "Saboteur Dagger"
+description = "Each of your sabotages removes 1 extra combat."

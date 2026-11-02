@@ -1,100 +1,107 @@
-## **Overview**
+# DiceGame
 
-A fast-paced **dice-building, rogue-like battle game** where players roll dice, secretly choose actions, and compete for survival. Strategic alliances and betrayals make every round unpredictable.
+A dice-building game of honest promises and well-timed betrayal for 3–6 players (about 30–45 minutes).
+Every turn you roll your dice, publicly declare what you will do, secretly plan what you really do, and
+then everything resolves in order of cunning. Keep your word and earn renown; break it and catch your
+rivals off guard. The highest score after 15 turns wins.
 
-## **Game Flow**
+The game is designed to also work as a physical board game; see [DESIGN.md](DESIGN.md) for the full
+rules and design intent, and [ROADMAP.md](ROADMAP.md) for what is planned next.
 
-1. **Each player starts with one die** (D6) featuring different face types:
-	- 🎲 **Gold** – Used to buy new dice faces or items.
-	- ⚔ **Combat** – Used for attacking or countering players, mobs, or bosses.
-	- 🧠 **Cunning** – Determines turn order (higher Cunning acts later).
-	- 🎁 **Special** – Triggers unique effects based on upgrades.
-2. **Simultaneous Turns**
-	- All players **roll their dice at the same time**.
-	- Players **secretly choose an action** using an action token.
-	- Once all actions are locked in, they are **revealed simultaneously** in the **play phase**.
+## Playing
 
-## **Turn Order Resolution**
+- **Play vs bots:** enter a name, press *Play vs bots*, choose 2–5 opponents.
+- **Steam (friends):** *Host Steam lobby*, then *Invite friends* (Steam overlay). Friends accept the invite,
+  or press *Find friends' lobbies* and join from the list. Steam names are used.
+- **Direct IP / LAN:** *Host direct IP* on one machine (port 7777, UDP); others type its IP and *Join*.
+- In any lobby the host can add bots to fill seats (3–6 seats) and starts the game.
+- If a player disconnects, a bot takes over their seat. If the host leaves, the game ends for everyone.
+  After the game the host can bring everyone back to the lobby for another round.
+- **At the table:** click dice in the tray to choose rerolls; when shopping, click a market face and then
+  the face it replaces; click a seat to see that player's dice and trinkets. Space or a click skips
+  animations, and Esc opens the menu (online, the game keeps going). *How to play* explains every rule,
+  and first-game tips appear the first time you reach each step.
+- **Settings:** fullscreen, vsync, interface size, four volume sliders, animation speed, reduced motion,
+  confirm-before-locking, high-contrast stamps and tips, saved to `user://settings.cfg`.
 
-1. **Initiative = Cunning + Gold Tiebreaker**
-    - Players act in ascending Cunning order.
-    - If tied, the player with less Gold acts first.
-    - If still tied, roll a tiebreaker D6.
-2. **Turn Order Applies to All Actions**
-    - **Combat, Shopping, and Countering** are resolved in Cunning order.
-    - More cunning players can attack or counter less cunning players before they act.
+## How a turn works
 
-## **Actions**
+1. **Roll** all your dice. One free reroll of any dice; every further reroll costs 1 🧠.
+2. **Declare** (lowest cunning first, so the most cunning player declares last): announce an action and
+   target, e.g. "Attack Bob", "Attack Rat King", "Attack the boss", "Shop", "Rest".
+3. **Plan** in secret, all at once: your real action and target, and how to split your ⚔ between
+   attack, guard (blocks damage all turn) and sabotage (removes combat from other players).
+4. **Reveal and resolve**, highest cunning first. Keeping your word earns ⭐ renown. A player knocked out
+   before their turn loses their action.
+5. **End of turn:** a surviving boss strikes its attackers; a slain boss drops loot (secret picks, sealed
+   bids for contested items). Combat and cunning reset; gold, renown and score carry over.
 
-Each round, players can choose one of the following actions:
+| | |
+|---|---|
+| ❤ HP | 14; at 0 you are knocked out for a turn and return at half HP |
+| ⚔ Combat / 🧠 Cunning | from dice, lost at the end of the turn |
+| 💰 Gold / ⭐ Renown | spent in the market and on bids; unspent renown counts as score |
+| 🏆 Score | +1 per mob kill, +2 per boss kill (each damaging attacker), +2 for knocking out a player |
 
-- **⚔ Attack Player** – Damage another player to weaken their HP.
-- **⚔ Attack Mobs** – Defeat minor enemies to gain permanent buffs.
-- **⚔ Attack Boss** – Work together (or sabotage) to take down a powerful boss for rare rewards.
-- **💰 Buy Item** – Spend Gold to upgrade dice, buy trinkets, or enhance abilities.
-- **🛡 Counter Player** – Reduce another player’s Attack before they act.
+**Building your dice:** shop at the shared market (shoppers buy in cunning order) to replace faces on
+your dice with stronger ones (⚔3, 💰3, 🛡 guard, ❤ heal, ✦ wild, ⭐ renown, ×2) or buy extra dice.
+Mobs grant trinkets (passive effects); bosses get stronger after each kill.
 
-## **Countering Mechanic**
+## Development
 
-- Players can allocate **some or all of their Attack points** to counter an opponent.
-- Countering reduces the target’s Attack by the allocated amount.
-- If an opponent’s Attack is reduced to **zero**, their action fails.
+Open the project with the **GodotSteam 4.6** editor (stock Godot 4.6 also works, without Steam).
 
-## **⚔ Combat & Enemies**
+```
+Scripts/Core      rules engine: GameRules (host-only state machine that also emits events),
+                  GameState/PlayerState, Face, Content (all content and tuning numbers), BotBrain
+Scripts/Content   Trinket / Mob / Boss resource scripts and the trinket effects
+Scripts/Net       Network (connections, lobby, handshake), Session (game channel), SteamService
+Scripts/Systems   Settings, Audio (effects, music, ambience), Transition (scene changes, quitting)
+Scripts/UI        Menu, GameScreen + Presenter (animations), ActionPanel, SeatCard, DiceTray (3D dice),
+                  overlays (settings, how to play, escape menu, player sheet, end screen), Icons, Parchment
+Scripts/Dev       Dev: command-line automation for tests and screenshots
+Assets            fonts, icons (SVG), shaders, audio (CC0, see CREDITS.md), Theme.tres
+Resources         trinket, mob and boss data (.tres)
+tests, tools      test suites and helper scripts (not exported)
+```
 
-### **🐀 Mobs (Minor Enemies)**
+**Look and feel.** The tavern theme is generated by `tools/build_theme.gd`; wood, parchment, candle light
+and transitions are shaders in `Assets/Shaders`. Game text uses `{icon}` tokens (`{combat}3`) that
+`Icons.rich()` turns into the hand-drawn icons. The host's structured events drive the animations:
+`GameScreen` queues each update, `Presenter` plays its events, then the new state is drawn.
 
-- Can be defeated by a single player.
-- Reward the slayer with **permanent buffs.**
-- **"Rat King" (2 HP)**
-	- 🏅 **Reward: "Sharp Fangs" (+1 to all combat faces)**
+**Networking model.** The host is the only authority. Clients send small requests
+(`Session.submit(op, args)`), the host validates them in `GameRules.apply()`, advances the game and sends
+every player their own view of the state (other players' secret plans, loot picks and bids hidden)
+plus the events since their last update. Bots are played by the host using the same views a human
+would see, and wait for the host's animations so a human at the host can follow.
 
-### **🐉 Bosses (Major Enemies)**
+### Checks
 
-- High HP and strong attacks.
-- Offer **better rewards** but require teamwork—or strategic sabotage.
-- Example: A boss with **20 HP** requires **all four players (5 damage each) to attack** to defeat it.
-- If only **three players attack**, they fail and take damage—while the fourth player, who chose a different action, benefits instead.
-- Players **secretly choose what they want** from the loot pool.
-- If only one player picks an item, they get it.
-- If multiple players pick the same item, a **hidden auction** takes place.
-- **"Eldritch Horror" (10 HP)**
-	- 🎲 **New Die: "Warped Die" (Comes with a mix of Combat, Gold, and Special effects)**
-	- 🏅 **Reward Example 1: "Abyssal Pact" (+3 Combat, but -1 Cunning permanently)**
-	- 🏅 **Reward Example 2: "Mind’s Eye" (+2 Cunning and see one player's secret action before revealing phase)**
+Godot path below is the GodotSteam editor; set `GODOT` to override it in the Python tools.
 
+```sh
+# Rules: hundreds of full bot games with invariants, determinism, hidden-info and refusal checks
+GodotSteam4.6.exe --headless --path . --script res://tests/test_rules.gd -- 300
 
-## **🏪 Shop Items (Bought with Gold)**
+# 3D dice: every throw must land flat on exactly the rolled face, with no overlaps
+GodotSteam4.6.exe --headless --path . res://tests/test_dice.tscn -- 20
 
-Players can purchase upgrades that **customize dice, improve stats, or grant unique effects**.
+# Every editor warning/error, via Godot's language server (must report 0 problems)
+python tools/gdlint.py
 
-### **🎲 Dice Face Upgrades**
+# End to end: a direct-IP host and 3 clients played by bots; one client quits mid-game
+python tools/nettest.py
+```
 
-- **"Brutal Edge"** – Replace a face with **⚔ +2 Combat**.
-- **"Silver Tongue"** – Replace a face with **🧠 +2 Cunning**.
-- **"Golden Touch"** – Replace a face with **💰 +2 Gold**.
+The `Dev` autoload accepts command-line options after `--` (see `Scripts/Dev/Dev.gd`), for example
+`--autohost=offline --bots=4 --autoplay --bot-delay=0 --quit-on-end`, `--menu-shots=DIR` or
+`--screenshots=DIR --shot-interval=1`. `tests/balance_report.gd` prints how often each action and
+event happens in bot games, for tuning.
 
-### **🔮 Trinkets (Passive Upgrades)**
+### Exporting
 
-- **"Lucky Charm"** – Gain +1 re-roll per turn.
-- **"Saboteur’s Dagger"** – Your first sabotage each turn **reduces enemy attack by an extra 2**.
-- **"Thief's Die"** – After rolling, choose **one face** of another player's die to contribute to your dice.
-
-### **📜 Special Consumables (Single-use Items)**
-
-- **"Hidden Blade"** – Secretly assign **5 Combat** to sabotage instead of your main action.
-- **"Warp Token"** – Swap turn order with any player this round.
-- **"Bandage Wraps"** – Heal **3 HP instantly**.
-
-## **Player Stats & Resources**
-
-- **HP** – Lose all HP and you're eliminated.
-- **Cunning** – Used to determine playing order.
-- **Trinkets** – Passive bonuses from mobs/boss fights.
-- **Dice** – Players can upgrade and customize dice faces over time.
-- **Gold** – Used to buy new dice faces and items.
-- **Items** – Bought with Gold, they grant **special effects or rerolls**.
-
-## **Win Condition**
-
-- The **last player standing** wins.
+`export_presets.cfg` uses the GodotSteam 4.6 export templates (paths point at the Downloads folder).
+Export with `GodotSteam4.6.exe --headless --path . --export-release "Windows Desktop" DiceGame.exe`.
+Ship `steam_api64.dll` next to the exe. `steam_appid.txt` (App ID 480, Valve's shared test app) is only
+for development and testing outside Steam; remove it once the game has its own App ID.

@@ -11,28 +11,30 @@ config_version=5
 [application]
 
 config/name="DiceGame"
-run/main_scene="res://Scenes/Lobby.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/version="0.2.0"
+run/main_scene="res://Scenes/Menu.tscn"
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://Assets/icon.svg"
 
 [autoload]
 
-Global="*res://Scripts/Globals/Global.gd"
-SignalBus="*res://Scripts/Globals/SignalBus.gd"
-Utils="*res://Scripts/Globals/Utils.gd"
-Enums="*res://Scripts/Globals/Enums.gd"
-
-[debug]
-
-gdscript/warnings/unused_signal=0
-gdscript/warnings/integer_division=0
+Settings="*res://Scripts/Systems/Settings.gd"
+Audio="*res://Scripts/Systems/Audio.gd"
+Transition="*res://Scripts/Systems/Transition.gd"
+SteamService="*res://Scripts/Net/SteamService.gd"
+Session="*res://Scripts/Net/Session.gd"
+Network="*res://Scripts/Net/Network.gd"
+Dev="*res://Scripts/Dev/Dev.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [gui]
 
+theme/custom="res://Assets/Theme.tres"
 theme/default_font_multichannel_signed_distance_field=true
 theme/default_font_generate_mipmaps=true

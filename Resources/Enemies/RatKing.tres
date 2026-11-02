@@ -1,14 +1,17 @@
-[gd_resource type="Resource" script_class="Mob" load_steps=5 format=3 uid="uid://bp7ja4cf8m23m"]
+[gd_resource type="Resource" script_class="Mob" format=3 uid="uid://bp7ja4cf8m23m"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/Trinket.gd" id="1_gcx3s"]
-[ext_resource type="Script" path="res://Scripts/Resources/Mob.gd" id="2_j6tpc"]
-[ext_resource type="Resource" uid="uid://fkovavv5x2k0" path="res://Resources/Trinkets/SharpTooth.tres" id="2_vnc2e"]
-[ext_resource type="Resource" uid="uid://covx5squoua30" path="res://Resources/Trinkets/SaboteurDagger.tres" id="3_tgeon"]
+[ext_resource type="Script" path="res://Scripts/Content/Mob.gd" id="1_script"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinket.gd" id="2_trinket"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/SharpTooth.tres" id="3_reward"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/SaboteurDagger.tres" id="4_reward"]
 
 [resource]
-script = ExtResource("2_j6tpc")
-name = "Rat King"
-hp = 1
-damage = 1
+script = ExtResource("1_script")
+id = &"rat_king"
+display_name = "Rat King"
 description = "Simple guy."
-drops = Array[ExtResource("1_gcx3s")]([ExtResource("2_vnc2e"), ExtResource("3_tgeon")])
+tier = 1
+copies = 3
+hp = 2
+damage = 1
+rewards = Array[ExtResource("2_trinket")]([ExtResource("3_reward"), ExtResource("4_reward")])

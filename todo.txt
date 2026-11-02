@@ -1,7 +1,0 @@
-- Balance
-- More trinkets
-- Shop consumables
-- More mobs
-
-- Bugs:
-	- Intention labels badly ordered

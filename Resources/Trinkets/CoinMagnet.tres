@@ -1,8 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c6px03v0dgg1f"]
+[gd_resource type="Resource" script_class="Trinket" format=3 uid="uid://c6px03v0dgg1f"]
 
-[ext_resource type="Script" path="res://Scripts/Resources/CoinMagnet.gd" id="1_oup6q"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/CoinMagnet.gd" id="1_script"]
 
 [resource]
-script = ExtResource("1_oup6q")
-name = "Coin Magnet"
-description = "Your coins are belong to me."
+script = ExtResource("1_script")
+id = &"coin_magnet"
+display_name = "Coin Magnet"
+description = "Each of your sabotages also steals 1 {gold} from the target."

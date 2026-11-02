@@ -1,0 +1,469 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/Menu.gd" id="1_menu"]
+[ext_resource type="PackedScene" path="res://Scenes/Parts/Backdrop.tscn" id="2_backdrop"]
+[ext_resource type="PackedScene" path="res://Scenes/Parts/Candle.tscn" id="3_candle"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sign"]
+content_margin_left = 48.0
+content_margin_top = 16.0
+content_margin_right = 48.0
+content_margin_bottom = 14.0
+bg_color = Color(0.36, 0.21, 0.1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.18, 0.1, 0.04, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 16
+shadow_offset = Vector2(0, 10)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+content_margin_left = 26.0
+content_margin_top = 20.0
+content_margin_right = 26.0
+content_margin_bottom = 20.0
+bg_color = Color(0.08, 0.045, 0.02, 0.78)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.45, 0.28, 0.16, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 18
+shadow_offset = Vector2(0, 10)
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Backdrop" parent="." instance=ExtResource("2_backdrop")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="CandleLeft" parent="." instance=ExtResource("3_candle")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = -250.0
+offset_right = 210.0
+offset_bottom = -30.0
+grow_vertical = 0
+
+[node name="CandleLeft2" parent="." instance=ExtResource("3_candle")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 215.0
+offset_top = -200.0
+offset_right = 275.0
+offset_bottom = 20.0
+grow_vertical = 0
+scale = Vector2(0.8, 0.8)
+
+[node name="CandleRight" parent="." instance=ExtResource("3_candle")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -230.0
+offset_top = -240.0
+offset_right = -170.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Chains" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_right = 150.0
+offset_bottom = 40.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="ChainLeft" type="ColorRect" parent="Chains"]
+layout_mode = 0
+offset_left = 40.0
+offset_right = 44.0
+offset_bottom = 40.0
+mouse_filter = 2
+color = Color(0.55, 0.42, 0.2, 1)
+
+[node name="ChainRight" type="ColorRect" parent="Chains"]
+layout_mode = 0
+offset_left = 256.0
+offset_right = 260.0
+offset_bottom = 40.0
+mouse_filter = 2
+color = Color(0.55, 0.42, 0.2, 1)
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 36.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 22
+alignment = 0
+
+[node name="SignCenter" type="CenterContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="Sign" type="PanelContainer" parent="Layout/SignCenter"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sign")
+
+[node name="SignText" type="VBoxContainer" parent="Layout/SignCenter/Sign"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="Layout/SignCenter/Sign/SignText"]
+layout_mode = 2
+theme_type_variation = &"Title"
+text = "Dice Game"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Layout/SignCenter/Sign/SignText"]
+layout_mode = 2
+theme_type_variation = &"Dim"
+theme_override_colors/font_color = Color(0.94, 0.85, 0.69, 1)
+theme_override_font_sizes/font_size = 17
+text = "Honest promises. Well-timed betrayal."
+horizontal_alignment = 1
+
+[node name="CardCenter" type="CenterContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Card" type="PanelContainer" parent="Layout/CardCenter"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="Pages" type="VBoxContainer" parent="Layout/CardCenter/Card"]
+layout_mode = 2
+
+[node name="MainPage" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="Layout/CardCenter/Card/Pages/MainPage"]
+layout_mode = 2
+theme_type_variation = &"Caps"
+text = "YOUR NAME AT THE TABLE"
+
+[node name="NameEdit" type="LineEdit" parent="Layout/CardCenter/Card/Pages/MainPage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+placeholder_text = "Player"
+max_length = 20
+
+[node name="SoloButton" type="Button" parent="Layout/CardCenter/Card/Pages/MainPage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"PlankButton"
+text = "Play vs bots"
+
+[node name="OnlineButton" type="Button" parent="Layout/CardCenter/Card/Pages/MainPage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"PlankButton"
+text = "Play with friends"
+
+[node name="SmallRow" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/MainPage"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RulesButton" type="Button" parent="Layout/CardCenter/Card/Pages/MainPage/SmallRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "How to play"
+
+[node name="SettingsButton" type="Button" parent="Layout/CardCenter/Card/Pages/MainPage/SmallRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Settings"
+
+[node name="BottomRow" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/MainPage"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CreditsButton" type="Button" parent="Layout/CardCenter/Card/Pages/MainPage/BottomRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TextButton"
+text = "Credits"
+
+[node name="QuitButton" type="Button" parent="Layout/CardCenter/Card/Pages/MainPage/BottomRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TextButton"
+text = "Quit"
+
+[node name="SoloPage" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SoloTitle" type="Label" parent="Layout/CardCenter/Card/Pages/SoloPage"]
+layout_mode = 2
+theme_type_variation = &"Heading"
+text = "A table of bots"
+horizontal_alignment = 1
+
+[node name="SoloHint" type="Label" parent="Layout/CardCenter/Card/Pages/SoloPage"]
+layout_mode = 2
+theme_type_variation = &"Dim"
+text = "Bots see only what a player at the table would see, and they keep their word about two times in three."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BotsRow" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/SoloPage"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="BotsLabel" type="Label" parent="Layout/CardCenter/Card/Pages/SoloPage/BotsRow"]
+layout_mode = 2
+text = "Opponents"
+
+[node name="BotsSpin" type="SpinBox" parent="Layout/CardCenter/Card/Pages/SoloPage/BotsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 2.0
+max_value = 5.0
+value = 3.0
+alignment = 1
+
+[node name="StartSoloButton" type="Button" parent="Layout/CardCenter/Card/Pages/SoloPage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"PlankButton"
+text = "Take a seat"
+
+[node name="SoloBackButton" type="Button" parent="Layout/CardCenter/Card/Pages/SoloPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TextButton"
+text = "Back"
+
+[node name="OnlinePage" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="OnlineTitle" type="Label" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+layout_mode = 2
+theme_type_variation = &"Heading"
+text = "Play with friends"
+horizontal_alignment = 1
+
+[node name="SteamLabel" type="Label" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Dim"
+text = "Steam"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HostSteamButton" type="Button" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_type_variation = &"PlankButton"
+text = "Host a Steam lobby"
+
+[node name="FriendsRow" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="FriendsLabel" type="Label" parent="Layout/CardCenter/Card/Pages/OnlinePage/FriendsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"Caps"
+text = "FRIENDS' TABLES"
+
+[node name="RefreshFriendsButton" type="Button" parent="Layout/CardCenter/Card/Pages/OnlinePage/FriendsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TextButton"
+text = "Refresh"
+
+[node name="FriendList" type="ItemList" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 76)
+layout_mode = 2
+
+[node name="JoinFriendButton" type="Button" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Join selected table"
+
+[node name="LanSeparator" type="HSeparator" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+layout_mode = 2
+
+[node name="LanLabel" type="Label" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+layout_mode = 2
+theme_type_variation = &"Caps"
+text = "DIRECT IP (LAN)"
+
+[node name="LanRow" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HostLanButton" type="Button" parent="Layout/CardCenter/Card/Pages/OnlinePage/LanRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Host"
+
+[node name="AddressEdit" type="LineEdit" parent="Layout/CardCenter/Card/Pages/OnlinePage/LanRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "Host's IP address"
+
+[node name="JoinLanButton" type="Button" parent="Layout/CardCenter/Card/Pages/OnlinePage/LanRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join"
+
+[node name="OnlineBackButton" type="Button" parent="Layout/CardCenter/Card/Pages/OnlinePage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TextButton"
+text = "Back"
+
+[node name="RoomPage" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RoomTitle" type="Label" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Heading"
+text = "The table"
+horizontal_alignment = 1
+
+[node name="RosterList" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RoomHint" type="Label" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Dim"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HostRow" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AddBotButton" type="Button" parent="Layout/CardCenter/Card/Pages/RoomPage/HostRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add bot"
+
+[node name="RemoveBotButton" type="Button" parent="Layout/CardCenter/Card/Pages/RoomPage/HostRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove bot"
+
+[node name="InviteButton" type="Button" parent="Layout/CardCenter/Card/Pages/RoomPage/HostRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Invite"
+
+[node name="StartButton" type="Button" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_type_variation = &"PlankButton"
+text = "Deal them in"
+
+[node name="LeaveRoomButton" type="Button" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TextButton"
+text = "Leave the table"
+
+[node name="CreditsPage" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="CreditsTitle" type="Label" parent="Layout/CardCenter/Card/Pages/CreditsPage"]
+layout_mode = 2
+theme_type_variation = &"Heading"
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="CreditsText" type="RichTextLabel" parent="Layout/CardCenter/Card/Pages/CreditsPage"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="CreditsBackButton" type="Button" parent="Layout/CardCenter/Card/Pages/CreditsPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TextButton"
+text = "Back"
+
+[node name="StatusLabel" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.97, 0.78, 0.45, 1)
+horizontal_alignment = 1
+autowrap_mode = 3

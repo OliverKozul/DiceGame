@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Boss" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Boss.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"ancient_wyrm"
+display_name = "Ancient Wyrm"
+description = "Older than the mountains."
+base_hp = 6
+hp_per_player = 3
+damage = 5
