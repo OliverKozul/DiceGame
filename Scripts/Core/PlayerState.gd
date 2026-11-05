@@ -5,15 +5,6 @@ extends RefCounted
 
 enum Action { NONE, ATTACK_PLAYER, ATTACK_MOB, ATTACK_BOSS, SHOP, REST }
 
-const ACTION_NAMES: Dictionary = {
-	Action.NONE: "Nothing",
-	Action.ATTACK_PLAYER: "Attack player",
-	Action.ATTACK_MOB: "Attack mob",
-	Action.ATTACK_BOSS: "Attack boss",
-	Action.SHOP: "Shop",
-	Action.REST: "Rest",
-}
-
 var id: int = 0
 var name: String = ""
 var seat: int = 0
@@ -24,6 +15,8 @@ var hp: int = Content.STARTING_HP
 var max_hp: int = Content.STARTING_HP
 var gold: int = 0
 var renown: int = 0
+## Kept words towards the next completed oath (public; a broken word resets it).
+var oath: int = 0
 var score: int = 0
 var dice: Array[PackedInt32Array] = []
 var trinkets: Array[StringName] = []
@@ -51,12 +44,27 @@ var plan_action: Action = Action.NONE
 var plan_target: int = 0
 var plan_attack: int = 0
 var plan_guard: int = 0
-var plan_sabotage: Dictionary[int, int] = {}
 
 var kept_word: bool = false
 var resolved: bool = false
 var attack_left: int = 0
 var guard_left: int = 0
+
+
+## An action's name in the player's language.
+static func action_name(action: Action) -> String:
+	match action:
+		Action.ATTACK_PLAYER:
+			return Loc.t("Attack player")
+		Action.ATTACK_MOB:
+			return Loc.t("Attack mob")
+		Action.ATTACK_BOSS:
+			return Loc.t("Attack boss")
+		Action.SHOP:
+			return Loc.t("Shop")
+		Action.REST:
+			return Loc.t("Rest")
+	return Loc.t("Nothing")
 
 
 func is_active() -> bool:
@@ -91,8 +99,40 @@ func wild_count() -> int:
 	return count
 
 
+## Gold plus renown at its spending value: the most this player can pay for anything.
+func spending_power() -> int:
+	return gold + renown * Content.RENOWN_GOLD
+
+
+## Cunning the next reroll costs: the first is free for everyone, trinkets may add more.
 func reroll_cost() -> int:
-	return 0 if rerolls == 0 else Content.REROLL_CUNNING_COST
+	var free := 1
+	for trinket_id in trinkets:
+		var trinket := Content.trinket(trinket_id)
+		if trinket:
+			free += trinket.free_rerolls()
+	return 0 if rerolls < free else Content.REROLL_CUNNING_COST
+
+
+## What a market price costs this player after trinket discounts (never below 1).
+func price(base: int) -> int:
+	if base <= 0:
+		return base
+	var discount := 0
+	for trinket_id in trinkets:
+		var trinket := Content.trinket(trinket_id)
+		if trinket:
+			discount += trinket.market_discount()
+	return maxi(1, base - discount)
+
+
+## Whether any of this player's trinkets has the given yes/no effect (e.g. "full_comeback").
+func has_effect(effect: StringName) -> bool:
+	for trinket_id in trinkets:
+		var trinket := Content.trinket(trinket_id)
+		if trinket and trinket.call(effect):
+			return true
+	return false
 
 
 static func empty_totals() -> Dictionary:
@@ -178,13 +218,12 @@ func clear_plan() -> void:
 	plan_target = 0
 	plan_attack = 0
 	plan_guard = 0
-	plan_sabotage = {}
 
 
 func to_dict(include_plan: bool) -> Dictionary:
 	var d := {
 		"id": id, "name": name, "seat": seat, "is_bot": is_bot, "connected": connected,
-		"hp": hp, "max_hp": max_hp, "gold": gold, "renown": renown, "score": score,
+		"hp": hp, "max_hp": max_hp, "gold": gold, "renown": renown, "oath": oath, "score": score,
 		"dice": dice.duplicate(true), "trinkets": trinkets.duplicate(),
 		"knocked_out": knocked_out, "out_until_turn": out_until_turn,
 		"showing": showing, "rerolls": rerolls, "cunning_spent": cunning_spent, "roll_done": roll_done,
@@ -196,7 +235,7 @@ func to_dict(include_plan: bool) -> Dictionary:
 	if include_plan:
 		d.merge({
 			"plan_action": plan_action, "plan_target": plan_target, "plan_attack": plan_attack,
-			"plan_guard": plan_guard, "plan_sabotage": plan_sabotage.duplicate(),
+			"plan_guard": plan_guard,
 		})
 	return d
 
@@ -212,6 +251,7 @@ static func from_dict(d: Dictionary) -> PlayerState:
 	p.max_hp = d.max_hp
 	p.gold = d.gold
 	p.renown = d.renown
+	p.oath = d.oath
 	p.score = d.score
 	p.dice.assign(d.dice)
 	p.trinkets.assign(d.trinkets)
@@ -237,5 +277,4 @@ static func from_dict(d: Dictionary) -> PlayerState:
 		p.plan_target = d.plan_target
 		p.plan_attack = d.plan_attack
 		p.plan_guard = d.plan_guard
-		p.plan_sabotage.assign(d.plan_sabotage)
 	return p

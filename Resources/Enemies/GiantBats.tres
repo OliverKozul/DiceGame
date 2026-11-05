@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Mob" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Mob.gd" id="1_script"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinket.gd" id="2_trinket"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/FoxMask.tres" id="3_reward"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/HuntersHorn.tres" id="4_reward"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"giant_bats"
+display_name = "Giant Bats"
+description = "A shrieking cloud of wings."
+tier = 1
+copies = 3
+hp = 2
+damage = 1
+rewards = Array[ExtResource("2_trinket")]([ExtResource("3_reward"), ExtResource("4_reward")])

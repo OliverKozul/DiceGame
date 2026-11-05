@@ -6,4 +6,4 @@
 script = ExtResource("1_script")
 id = &"opportunity"
 display_name = "Opportunity"
-description = "Gain an extra basic die."
+description = "Gain an extra die: {combat}2 {combat}2 {gold}2 {gold}2 {cunning}1 {cunning}1."

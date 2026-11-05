@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Trinket" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/HuntersHorn.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"hunters_horn"
+display_name = "Hunter's Horn"
+description = "+2 {combat} attack when you attack a mob."

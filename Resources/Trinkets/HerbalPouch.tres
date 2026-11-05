@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Trinket" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/HerbalPouch.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"herbal_pouch"
+display_name = "Herbal Pouch"
+description = "Resting heals 2 more {heal}."

@@ -1,5 +1,11 @@
 # Godot 4+ specific ignores
 .godot/
+
+# Build output: shipped through Steam, never stored in git
+*.exe
+*.pck
 *.console.exe
+
 *.tmp
 /android/
+__pycache__/

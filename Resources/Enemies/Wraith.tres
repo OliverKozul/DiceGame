@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Content/Mob.gd" id="1_script"]
 [ext_resource type="Script" path="res://Scripts/Content/Trinket.gd" id="2_trinket"]
-[ext_resource type="Resource" path="res://Resources/Trinkets/SaboteurDagger.tres" id="3_reward"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/BackstabDagger.tres" id="3_reward"]
 [ext_resource type="Resource" path="res://Resources/Trinkets/CoinMagnet.tres" id="4_reward"]
 
 [resource]
@@ -12,6 +12,6 @@ display_name = "Wraith"
 description = "A whisper with claws."
 tier = 3
 copies = 3
-hp = 8
+hp = 6
 damage = 3
 rewards = Array[ExtResource("2_trinket")]([ExtResource("3_reward"), ExtResource("4_reward")])

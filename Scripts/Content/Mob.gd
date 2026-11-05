@@ -11,3 +11,12 @@ extends Resource
 @export var damage: int = 1
 ## One of these is awarded at random to each player who kills the mob.
 @export var rewards: Array[Trinket] = []
+
+
+## The name in the player's language.
+func name_text() -> String:
+	return Loc.t(display_name)
+
+
+func description_text() -> String:
+	return Loc.t(description)

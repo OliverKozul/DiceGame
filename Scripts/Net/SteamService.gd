@@ -13,16 +13,17 @@ const RESULT_OK := 1
 const ENTER_SUCCESS := 1
 const LOBBY_FRIENDS_ONLY := 1
 const FRIEND_FLAG_IMMEDIATE := 4
-const ENTER_ERRORS: Dictionary = {
-	2: "That lobby no longer exists.",
-	3: "You are not allowed to join that lobby.",
-	4: "That lobby is full.",
-}
 
 var available := false
-var status := "Steam is not available in this build."
+## What the menu says about Steam, in the player's language.
+var status: String:
+	get:
+		return tr(_status_key).format({"value": _status_value})
 var lobby_id := 0
 var _steam: Object
+## The status as a msgid and the value it mentions (the player's name or an error).
+var _status_key := Loc.n("Steam is not available in this build.")
+var _status_value := ""
 
 
 func _ready() -> void:
@@ -35,16 +36,18 @@ func _ready() -> void:
 		0:
 			pass
 		2:
-			status = "Steam isn't running. Start Steam to host or join friends' tables."
+			_status_key = Loc.n("Steam isn't running. Start Steam to host or join friends' tables.")
 			return
 		3:
-			status = "Steam needs an update before you can play online."
+			_status_key = Loc.n("Steam needs an update before you can play online.")
 			return
 		_:
-			status = "Steam is unavailable: %s" % result.get("verbal", "unknown error")
+			_status_key = Loc.n("Steam is unavailable: {value}")
+			_status_value = str(result.get("verbal", "?"))
 			return
 	available = true
-	status = "Signed in to Steam as %s." % persona_name()
+	_status_key = Loc.n("Signed in to Steam as {value}.")
+	_status_value = persona_name()
 	_steam.connect("lobby_created", _on_lobby_created)
 	_steam.connect("lobby_joined", _on_lobby_joined)
 	_steam.connect("join_requested", _on_join_requested)
@@ -134,7 +137,7 @@ func _on_lobby_created(result: int, id: int) -> void:
 
 func _on_lobby_joined(id: int, _permissions: int, _locked: bool, response: int) -> void:
 	if response != ENTER_SUCCESS:
-		lobby_joined.emit(id, ENTER_ERRORS.get(response, "Could not join the lobby (code %d)." % response))
+		lobby_joined.emit(id, _enter_error(response))
 		return
 	lobby_id = id
 	# Steam also reports the creator as joining their own lobby; nothing to check then.
@@ -142,13 +145,25 @@ func _on_lobby_joined(id: int, _permissions: int, _locked: bool, response: int) 
 		return
 	if _steam.call("getLobbyData", id, "game") != GAME_TAG:
 		leave_lobby()
-		lobby_joined.emit(id, "That lobby is not a DiceGame lobby.")
+		lobby_joined.emit(id, tr("That lobby is not a game of this kind."))
 		return
 	if _steam.call("getLobbyData", id, "protocol") != str(Network.PROTOCOL):
 		leave_lobby()
-		lobby_joined.emit(id, "That lobby runs a different version of the game.")
+		lobby_joined.emit(id, tr("That lobby runs a different version of the game."))
 		return
 	lobby_joined.emit(id, "")
+
+
+## Why Steam refused to let us into a lobby, translated.
+func _enter_error(response: int) -> String:
+	match response:
+		2:
+			return tr("That lobby no longer exists.")
+		3:
+			return tr("You are not allowed to join that lobby.")
+		4:
+			return tr("That lobby is full.")
+	return tr("Could not join the lobby (code {code}).").format({"code": response})
 
 
 func _on_join_requested(id: int, _friend: int) -> void:

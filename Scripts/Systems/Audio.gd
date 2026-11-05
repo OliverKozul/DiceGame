@@ -124,4 +124,11 @@ func _on_node_added(node: Node) -> void:
 	button.pressed.connect(func() -> void: play(&"click", -4.0))
 	button.mouse_entered.connect(func() -> void:
 		if not button.disabled:
-			play(&"hover", -16.0))
+			play(&"hover", -16.0)
+			Juice.pop(button, 0.05, 0.22))
+	# Every button gives a little under the finger and springs back.
+	button.button_down.connect(func() -> void:
+		if Juice.enabled():
+			button.pivot_offset = button.size / 2.0
+			button.scale = Vector2(0.94, 0.94))
+	button.button_up.connect(func() -> void: Juice.pop(button, 0.04, 0.25))

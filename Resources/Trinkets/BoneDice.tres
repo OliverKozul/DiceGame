@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Trinket" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/BoneDice.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"bone_dice"
+display_name = "Bone Dice"
+description = "Your second reroll each turn is free as well."

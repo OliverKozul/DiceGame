@@ -20,6 +20,7 @@ const ICONS: Dictionary = {
 	Kind.DOUBLE: "{double}",
 }
 
+## English kind names for tools and logs; players see kind_name().
 const NAMES: Dictionary = {
 	Kind.NONE: "Blank",
 	Kind.COMBAT: "Combat",
@@ -56,18 +57,47 @@ static func label(face: int) -> String:
 	return "%s%d" % [icon(kind), value_of(face)]
 
 
+## A kind's name in the player's language.
+static func kind_name(kind: Kind) -> String:
+	match kind:
+		Kind.COMBAT:
+			return Loc.t("Combat")
+		Kind.GOLD:
+			return Loc.t("Gold")
+		Kind.CUNNING:
+			return Loc.t("Cunning")
+		Kind.GUARD:
+			return Loc.t("Guard")
+		Kind.HEAL:
+			return Loc.t("Heal")
+		Kind.WILD:
+			return Loc.t("Wild")
+		Kind.RENOWN:
+			return Loc.t("Renown")
+		Kind.DOUBLE:
+			return Loc.t("Double")
+	return Loc.t("Blank")
+
+
+## What a face does, in the player's language.
 static func describe(face: int) -> String:
 	var kind := kind_of(face)
 	var value := value_of(face)
 	match kind:
+		Kind.COMBAT:
+			return Loc.t("{value} combat").format({"value": value})
+		Kind.GOLD:
+			return Loc.t("{value} gold").format({"value": value})
+		Kind.CUNNING:
+			return Loc.t("{value} cunning").format({"value": value})
 		Kind.GUARD:
-			return "%d combat usable only as guard" % value
+			return Loc.t("{value} combat usable only as guard").format({"value": value})
 		Kind.HEAL:
-			return "Heal %d" % value
+			return Loc.t("Heal {value}").format({"value": value})
 		Kind.WILD:
-			return "%d of combat, gold or cunning (your choice)" % value
+			return Loc.t("{value} of combat, gold or cunning (your choice)").format({"value": value})
 		Kind.RENOWN:
-			return "Gain %d renown" % value
+			return Loc.t("Gain {value} renown").format({"value": value})
 		Kind.DOUBLE:
-			return "Doubles your highest other face"
-	return "%d %s" % [value, NAMES.get(kind, "?").to_lower()]
+			return Loc.t("Doubles your highest other face")
+	return Loc.t("Blank")

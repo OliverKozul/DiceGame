@@ -41,16 +41,19 @@ var boss_damage: Dictionary[int, int] = {}
 
 var market: PackedInt32Array = PackedInt32Array()
 var market_die: bool = true
+## Whether the current shopper has refreshed the row during this visit.
+var refreshed: bool = false
 
-## Boss loot on offer; loot_waiting holds who still has to pick.
+## Boss loot still on offer, and the slayers still to pick, in damage order (first picks now).
 var loot: Array[StringName] = []
-var loot_eligible: Array[int] = []
-var loot_waiting: Array[int] = []
-## One auction per contested item: {"item": int, "bidders": Array[int]}.
-var auctions: Array[Dictionary] = []
+var loot_order: Array[int] = []
+## The extra boss item every player may bid for after the picks, or &"".
+var auction_item: StringName = &""
+## Players whose sealed bid for the auction item is still missing.
 var bid_waiting: Array[int] = []
 
-var log_lines: Array[String] = []
+## The most recent Chronicle entries, as messages (see Loc).
+var log_lines: Array[Dictionary] = []
 ## Final ranking, best first: ids.
 var standings: Array[int] = []
 
@@ -116,7 +119,8 @@ func waiting_on() -> Array[int]:
 				if p.is_active() and not p.plan_locked:
 					ids.append(p.id)
 		Phase.LOOT:
-			ids.assign(loot_waiting)
+			if not loot_order.is_empty():
+				ids.append(loot_order[0])
 		Phase.BID:
 			ids.assign(bid_waiting)
 	return ids
@@ -139,37 +143,44 @@ static func needs_target(action: int) -> bool:
 	return action in [PlayerState.Action.ATTACK_PLAYER, PlayerState.Action.ATTACK_MOB]
 
 
-func describe_choice(action: int, target: int) -> String:
+## An action and its target as a message (see Loc), e.g. "Attack Bob".
+func choice_message(action: int, target: int) -> Dictionary:
 	match action:
 		PlayerState.Action.ATTACK_PLAYER:
 			var t := player(target)
-			return "Attack %s" % (t.name if t else "?")
+			return Loc.msg("Attack {target}", {"target": Loc.player(t) if t else {"player": "?", "seat": 0}})
 		PlayerState.Action.ATTACK_MOB:
 			if target >= 0 and target < mobs.size() and mobs[target].id != &"":
-				return "Attack %s" % Content.mob(mobs[target].id).display_name
-			return "Attack a mob"
+				return Loc.msg("Attack {target}", {"target": Loc.mob(mobs[target].id)})
+			return Loc.msg("Attack a mob")
 		PlayerState.Action.ATTACK_BOSS:
-			return "Attack the boss"
+			return Loc.msg("Attack the boss")
 		PlayerState.Action.SHOP:
-			return "Shop"
+			return Loc.msg("Shop")
 		PlayerState.Action.REST:
-			return "Rest"
-	return "Nothing"
+			return Loc.msg("Rest")
+	return Loc.msg("Nothing")
 
 
-func describe_plan(p: PlayerState) -> String:
+## A locked plan as a message: the choice and its combat split, e.g. "Attack Bob ({combat}3)".
+func plan_message(p: PlayerState) -> Dictionary:
 	var parts := PackedStringArray()
 	if p.plan_attack > 0:
 		parts.append("{combat}%d" % p.plan_attack)
 	if p.plan_guard + p.guard_bonus > 0:
 		parts.append("{guard}%d" % (p.plan_guard + p.guard_bonus))
-	for target_id in p.plan_sabotage:
-		var t := player(target_id)
-		parts.append("sabotage %s %d" % [t.name if t else "?", p.plan_sabotage[target_id]])
-	var text := describe_choice(p.plan_action, p.plan_target)
-	if not parts.is_empty():
-		text += " (%s)" % ", ".join(parts)
-	return text
+	var choice := choice_message(p.plan_action, p.plan_target)
+	if parts.is_empty():
+		return choice
+	return Loc.msg("{choice} ({split})", {"choice": choice, "split": ", ".join(parts)})
+
+
+func describe_choice(action: int, target: int) -> String:
+	return Loc.text(choice_message(action, target))
+
+
+func describe_plan(p: PlayerState) -> String:
+	return Loc.text(plan_message(p))
 
 
 func names_of(ids: Array[int]) -> String:
@@ -178,13 +189,6 @@ func names_of(ids: Array[int]) -> String:
 		var p := player(id)
 		names.append(p.name if p else "?")
 	return ", ".join(names)
-
-
-func auction_for(id: int) -> Dictionary:
-	for auction in auctions:
-		if (auction.bidders as Array).has(id):
-			return auction
-	return {}
 
 
 func final_score(p: PlayerState) -> int:
@@ -212,10 +216,10 @@ func to_view(viewer: int) -> Dictionary:
 		"boss_damage": boss_damage.duplicate(),
 		"market": market,
 		"market_die": market_die,
+		"refreshed": refreshed,
 		"loot": loot.duplicate(),
-		"loot_eligible": loot_eligible.duplicate(),
-		"loot_waiting": loot_waiting.duplicate(),
-		"auctions": auctions.duplicate(true),
+		"loot_order": loot_order.duplicate(),
+		"auction_item": auction_item,
 		"bid_waiting": bid_waiting.duplicate(),
 		"log": log_lines.duplicate(),
 		"standings": standings.duplicate(),
@@ -240,10 +244,10 @@ static func from_view(d: Dictionary) -> GameState:
 	s.boss_damage.assign(d.boss_damage)
 	s.market = d.market
 	s.market_die = d.market_die
+	s.refreshed = d.refreshed
 	s.loot.assign(d.loot)
-	s.loot_eligible.assign(d.loot_eligible)
-	s.loot_waiting.assign(d.loot_waiting)
-	s.auctions.assign(d.auctions)
+	s.loot_order.assign(d.loot_order)
+	s.auction_item = d.auction_item
 	s.bid_waiting.assign(d.bid_waiting)
 	s.log_lines.assign(d.log)
 	s.standings.assign(d.standings)

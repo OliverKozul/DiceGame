@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Boss" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Boss.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"demon_prince"
+display_name = "Demon Prince"
+description = "Every bargain has a price."
+stage = 3
+base_hp = 2
+hp_per_player = 2
+damage = 6

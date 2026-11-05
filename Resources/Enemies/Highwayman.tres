@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Mob" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Mob.gd" id="1_script"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinket.gd" id="2_trinket"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/LuckyCoin.tres" id="3_reward"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/SharpTooth.tres" id="4_reward"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"highwayman"
+display_name = "Highwayman"
+description = "Your purse or your life."
+tier = 1
+copies = 3
+hp = 3
+damage = 2
+rewards = Array[ExtResource("2_trinket")]([ExtResource("3_reward"), ExtResource("4_reward")])

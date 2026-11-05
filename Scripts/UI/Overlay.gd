@@ -1,8 +1,9 @@
 class_name Overlay
 extends Control
 ## Base for modal panels (settings, rules, confirmations, the escape menu): a dimmed
-## backdrop, a centred panel that eases in and out, and Esc to close. Subclasses add their
-## controls to `content` in _build().
+## backdrop, a centred panel that eases in and out, and Esc (or the pad's B button) to close.
+## While open, keyboard and pad focus stays inside the panel and returns where it was after.
+## Subclasses add their controls to `content` in _build().
 
 signal closed
 
@@ -12,6 +13,7 @@ var panel: PanelContainer
 var content: VBoxContainer
 var panel_size := Vector2(620, 520)
 var _tween: Tween
+var _focus_before: Control
 
 
 func _ready() -> void:
@@ -56,7 +58,9 @@ func _build() -> void:
 func open() -> void:
 	if visible:
 		return
+	_focus_before = get_viewport().gui_get_focus_owner()
 	show()
+	Controls.push_scope(self)
 	Audio.play(&"cloth", -6.0)
 	_animate(true)
 	_focus_first.call_deferred()
@@ -65,8 +69,12 @@ func open() -> void:
 func close() -> void:
 	if not visible:
 		return
+	Controls.pop_scope(self)
 	await _animate(false)
 	hide()
+	if is_instance_valid(_focus_before) and _focus_before.is_visible_in_tree():
+		Controls.focus(_focus_before)
+	_focus_before = null
 	closed.emit()
 
 
@@ -94,14 +102,14 @@ func _animate(opening: bool) -> void:
 	await _tween.finished
 
 
+## Focuses the first control a player would use (keys and pad only; see Controls).
 func _focus_first() -> void:
-	var stack: Array[Node] = [content]
-	while not stack.is_empty():
-		var node: Node = stack.pop_front()
-		if node is BaseButton and (node as Control).is_visible_in_tree():
-			(node as Control).grab_focus()
-			return
-		stack.append_array(node.get_children())
+	Controls.focus(_first_control())
+
+
+## The control focus starts on; override to start somewhere else than the first button.
+func _first_control() -> Control:
+	return Controls.first_focusable(content)
 
 
 ## A label with a theme variation, added to `parent`.

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Mob" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Mob.gd" id="1_script"]
+[ext_resource type="Script" path="res://Scripts/Content/Trinket.gd" id="2_trinket"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/ThornedMail.tres" id="3_reward"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/HerbalPouch.tres" id="4_reward"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/SilverTongue.tres" id="5_reward"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"stone_golem"
+display_name = "Stone Golem"
+description = "Slow to wake, slower to fall."
+tier = 3
+copies = 3
+hp = 7
+damage = 2
+rewards = Array[ExtResource("2_trinket")]([ExtResource("3_reward"), ExtResource("4_reward"), ExtResource("5_reward")])

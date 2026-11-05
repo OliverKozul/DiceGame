@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/UI/Menu.gd" id="1_menu"]
 [ext_resource type="PackedScene" path="res://Scenes/Parts/Backdrop.tscn" id="2_backdrop"]
 [ext_resource type="PackedScene" path="res://Scenes/Parts/Candle.tscn" id="3_candle"]
+[ext_resource type="Script" path="res://Scripts/UI/Stepper.gd" id="4_stepper"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sign"]
 content_margin_left = 48.0
@@ -265,13 +266,10 @@ theme_override_constants/separation = 12
 layout_mode = 2
 text = "Opponents"
 
-[node name="BotsSpin" type="SpinBox" parent="Layout/CardCenter/Card/Pages/SoloPage/BotsRow"]
+[node name="BotsSpin" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/SoloPage/BotsRow"]
 unique_name_in_owner = true
 layout_mode = 2
-min_value = 2.0
-max_value = 5.0
-value = 3.0
-alignment = 1
+script = ExtResource("4_stepper")
 
 [node name="StartSoloButton" type="Button" parent="Layout/CardCenter/Card/Pages/SoloPage"]
 unique_name_in_owner = true

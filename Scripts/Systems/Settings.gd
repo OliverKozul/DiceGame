@@ -8,6 +8,8 @@ const DEFAULTS: Dictionary = {
 	"display": {"fullscreen": false, "vsync": true, "ui_scale": 1.0},
 	"audio": {"master": 0.8, "music": 0.55, "sfx": 0.8, "ambience": 0.6},
 	"gameplay": {"animation_speed": 1.0, "reduced_motion": false, "confirm_lock": true, "high_contrast": false, "tips": true},
+	# "" follows the system language (see Loc.resolve_language).
+	"language": {"locale": ""},
 }
 const UI_SCALES: Array[float] = [0.85, 1.0, 1.15, 1.3, 1.5]
 const ANIMATION_SPEEDS: Array[float] = [0.75, 1.0, 1.5, 2.0]
@@ -36,8 +38,11 @@ func set_value(section: String, key: String, value: Variant) -> void:
 	changed.emit()
 
 
+## Everything back to the defaults, except the language.
 func reset_to_defaults() -> void:
+	var language: Variant = get_value("language", "locale")
 	_config = ConfigFile.new()
+	_config.set_value("language", "locale", language)
 	_config.save(PATH)
 	apply()
 	changed.emit()
@@ -72,6 +77,9 @@ func reduced_motion() -> bool:
 
 
 func apply() -> void:
+	var locale := Loc.resolve_language(str(get_value("language", "locale")))
+	if TranslationServer.get_locale() != locale:
+		TranslationServer.set_locale(locale)
 	if DisplayServer.get_name() != "headless":
 		var fullscreen: bool = get_value("display", "fullscreen")
 		var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED

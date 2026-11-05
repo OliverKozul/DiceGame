@@ -1,0 +1,2235 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+"Language: de\n"
+
+#: Scripts/Content/Trinkets/BackstabDagger.gd:12
+msgid "{player}'s {trinket} adds {amount} to the ambush."
+msgstr "{trinket} von {player} verstärkt den Hinterhalt um {amount}."
+
+#: Scripts/Content/Trinkets/CoinMagnet.gd:10
+msgid "{player}'s {trinket} steals 1 {gold} from {target}."
+msgstr "{trinket} von {player} stiehlt {target} 1 {gold}."
+
+#: Scripts/Content/Trinkets/GobletOfBlood.gd:9
+msgid "{player}'s {trinket} heals {amount} {heal}."
+msgstr "{trinket} von {player} heilt {amount} {heal}."
+
+#: Scripts/Content/Trinkets/Opportunity.gd:8
+msgid "{player} gains an extra die."
+msgstr "{player} erhält einen zusätzlichen Würfel."
+
+#: Scripts/Content/Trinkets/SilverTongue.gd:10
+msgid "{player}'s {trinket} earns 1 {gold}."
+msgstr "{trinket} von {player} bringt 1 {gold} ein."
+
+#: Scripts/Content/Trinkets/SmokeBomb.gd:12
+msgid "{player}'s {trinket} adds {amount} {guard}."
+msgstr "{trinket} von {player} gibt {amount} {guard}."
+
+#: Scripts/Content/Trinkets/ThornedMail.gd:11
+msgid "{player}'s {trinket} pricks {target} for {amount}."
+msgstr "{trinket} von {player} sticht {target} für {amount}."
+
+#: Scripts/Content/Trinkets/WyrmHeart.gd:11
+msgid "{player}'s {trinket}: +{amount} maximum health, fully healed."
+msgstr "{trinket} von {player}: +{amount} maximale Gesundheit, voll geheilt."
+
+#: Scripts/Core/Face.gd:64
+msgid "Combat"
+msgstr "Kampf"
+
+#: Scripts/Core/Face.gd:66
+#: Scripts/UI/ActionPanel.gd:503
+msgid "Gold"
+msgstr "Gold"
+
+#: Scripts/Core/Face.gd:68
+msgid "Cunning"
+msgstr "List"
+
+#: Scripts/Core/Face.gd:70
+#: Scripts/UI/ActionPanel.gd:280
+msgid "Guard"
+msgstr "Deckung"
+
+#: Scripts/Core/Face.gd:72
+msgid "Heal"
+msgstr "Heilung"
+
+#: Scripts/Core/Face.gd:74
+msgid "Wild"
+msgstr "Joker"
+
+#: Scripts/Core/Face.gd:76
+#: Scripts/UI/ActionPanel.gd:504
+msgid "Renown"
+msgstr "Ruhm"
+
+#: Scripts/Core/Face.gd:78
+msgid "Double"
+msgstr "Doppel"
+
+#: Scripts/Core/Face.gd:79
+#: Scripts/Core/Face.gd:103
+msgid "Blank"
+msgstr "Leer"
+
+#: Scripts/Core/Face.gd:88
+msgid "{value} combat"
+msgstr "{value} Kampf"
+
+#: Scripts/Core/Face.gd:90
+msgid "{value} gold"
+msgstr "{value} Gold"
+
+#: Scripts/Core/Face.gd:92
+msgid "{value} cunning"
+msgstr "{value} List"
+
+#: Scripts/Core/Face.gd:94
+msgid "{value} combat usable only as guard"
+msgstr "{value} Kampf, nur als Deckung nutzbar"
+
+#: Scripts/Core/Face.gd:96
+msgid "Heal {value}"
+msgstr "{value} heilen"
+
+#: Scripts/Core/Face.gd:98
+msgid "{value} of combat, gold or cunning (your choice)"
+msgstr "{value} Kampf, Gold oder List (nach Wahl)"
+
+#: Scripts/Core/Face.gd:100
+msgid "Gain {value} renown"
+msgstr "{value} Ruhm erhalten"
+
+#: Scripts/Core/Face.gd:102
+msgid "Doubles your highest other face"
+msgstr "Verdoppelt deine höchste andere Seite"
+
+#: Scripts/Core/GameRules.gd:79
+msgid "The game begins: {players} players, {turns} turns."
+msgstr "Das Spiel beginnt: {players} Spieler, {turns} Runden."
+
+#: Scripts/Core/GameRules.gd:88
+msgid "Unknown request."
+msgstr "Unbekannte Anfrage."
+
+#: Scripts/Core/GameRules.gd:91
+#: Scripts/Core/GameRules.gd:94
+msgid "Malformed request."
+msgstr "Fehlerhafte Anfrage."
+
+#: Scripts/Core/GameRules.gd:96
+msgid "You are not in this game."
+msgstr "Du spielst in diesem Spiel nicht mit."
+
+#: Scripts/Core/GameRules.gd:98
+msgid "The game is over."
+msgstr "Das Spiel ist vorbei."
+
+#: Scripts/Core/GameRules.gd:173
+msgid "Choose at least one die to reroll."
+msgstr "Wähle mindestens einen Würfel zum Neuwürfeln."
+
+#: Scripts/Core/GameRules.gd:177
+msgid "Invalid die."
+msgstr "Ungültiger Würfel."
+
+#: Scripts/Core/GameRules.gd:181
+msgid "Rerolling again costs {cost} {cunning}."
+msgstr "Noch einmal würfeln kostet {cost} {cunning}."
+
+#: Scripts/Core/GameRules.gd:215
+msgid "{player} rolls {faces}: {gains}."
+msgstr "{player} würfelt {faces}: {gains}."
+
+#: Scripts/Core/GameRules.gd:221
+msgid "It is not time to declare."
+msgstr "Jetzt wird nicht angekündigt."
+
+#: Scripts/Core/GameRules.gd:223
+msgid "It is not your turn to declare."
+msgstr "Du bist mit dem Ankündigen nicht an der Reihe."
+
+#: Scripts/Core/GameRules.gd:234
+msgid "{player} declares: {choice}."
+msgstr "{player} kündigt an: {choice}."
+
+#: Scripts/Core/GameRules.gd:240
+msgid "It is not time to plan."
+msgstr "Jetzt wird nicht geplant."
+
+#: Scripts/Core/GameRules.gd:243
+#: Scripts/Core/GameRules.gd:405
+msgid "You are knocked out this turn."
+msgstr "Du bist diese Runde k.o."
+
+#: Scripts/Core/GameRules.gd:245
+msgid "Your plan is already locked."
+msgstr "Dein Plan steht bereits fest."
+
+#: Scripts/Core/GameRules.gd:250
+msgid "Combat amounts cannot be negative."
+msgstr "Kampfwerte können nicht negativ sein."
+
+#: Scripts/Core/GameRules.gd:252
+msgid "Only attacks use attack combat."
+msgstr "Nur Angriffe verwenden Angriffskampf."
+
+#: Scripts/Core/GameRules.gd:254
+msgid "You only have {amount} {combat} to split."
+msgstr "Du hast nur {amount} {combat} zum Aufteilen."
+
+#: Scripts/Core/GameRules.gd:270
+msgid "That market slot is empty."
+msgstr "Dieser Marktplatz ist leer."
+
+#: Scripts/Core/GameRules.gd:272
+msgid "Choose one of your faces to replace."
+msgstr "Wähle eine deiner Seiten zum Ersetzen."
+
+#: Scripts/Core/GameRules.gd:284
+msgid "{player} buys {face} for {price} and replaces {old} on die {die}."
+msgstr "{player} kauft {face} für {price} und ersetzt {old} auf Würfel {die}."
+
+#: Scripts/Core/GameRules.gd:295
+msgid "Choose one of your faces to upgrade."
+msgstr "Wähle eine deiner Seiten zum Verbessern."
+
+#: Scripts/Core/GameRules.gd:299
+msgid "That face cannot be upgraded."
+msgstr "Diese Seite lässt sich nicht verbessern."
+
+#: Scripts/Core/GameRules.gd:308
+msgid "{player} upgrades {old} to {face} on die {die} for {price}."
+msgstr "{player} verbessert {old} zu {face} auf Würfel {die} für {price}."
+
+#: Scripts/Core/GameRules.gd:319
+msgid "Renown costs {price} {gold}."
+msgstr "Ruhm kostet {price} {gold}."
+
+#: Scripts/Core/GameRules.gd:323
+msgid "{player} buys 1 {renown} for {price} {gold}."
+msgstr "{player} kauft 1 {renown} für {price} {gold}."
+
+#: Scripts/Core/GameRules.gd:333
+msgid "The market's die is sold out this turn."
+msgstr "Der Würfel des Marktes ist diese Runde ausverkauft."
+
+#: Scripts/Core/GameRules.gd:340
+msgid "{player} buys a new die."
+msgstr "{player} kauft einen neuen Würfel."
+
+#: Scripts/Core/GameRules.gd:359
+msgid "{player} refreshes the market."
+msgstr "{player} frischt den Markt auf."
+
+#: Scripts/Core/GameRules.gd:377
+msgid "It is not your turn to pick loot."
+msgstr "Du bist mit der Beutewahl nicht an der Reihe."
+
+#: Scripts/Core/GameRules.gd:379
+msgid "Choose one of the items."
+msgstr "Wähle einen der Gegenstände."
+
+#: Scripts/Core/GameRules.gd:384
+msgid "{player} takes {trinket}."
+msgstr "{player} nimmt {trinket}."
+
+#: Scripts/Core/GameRules.gd:392
+msgid "You are not bidding."
+msgstr "Du bietest nicht mit."
+
+#: Scripts/Core/GameRules.gd:395
+msgid "You cannot bid more than you have."
+msgstr "Du kannst nicht mehr bieten, als du hast."
+
+#: Scripts/Core/GameRules.gd:403
+msgid "It is not time to roll."
+msgstr "Jetzt wird nicht gewürfelt."
+
+#: Scripts/Core/GameRules.gd:407
+msgid "You already kept your dice."
+msgstr "Du hast deine Würfel bereits behalten."
+
+#: Scripts/Core/GameRules.gd:413
+msgid "You are not shopping right now."
+msgstr "Du kaufst gerade nicht ein."
+
+#: Scripts/Core/GameRules.gd:422
+msgid "Choose a player who is in the game."
+msgstr "Wähle einen Spieler, der im Spiel ist."
+
+#: Scripts/Core/GameRules.gd:425
+msgid "Choose one of the mobs."
+msgstr "Wähle eines der Monster."
+
+#: Scripts/Core/GameRules.gd:428
+msgid "That action has no target."
+msgstr "Diese Aktion hat kein Ziel."
+
+#: Scripts/Core/GameRules.gd:430
+msgid "Choose an action."
+msgstr "Wähle eine Aktion."
+
+#: Scripts/Core/GameRules.gd:438
+msgid "You cannot pay that much renown."
+msgstr "So viel Ruhm kannst du nicht zahlen."
+
+#: Scripts/Core/GameRules.gd:441
+msgid "You cannot afford that."
+msgstr "Das kannst du dir nicht leisten."
+
+#: Scripts/Core/GameRules.gd:498
+msgid "── Turn {turn} of {turns} ──"
+msgstr "── Runde {turn} von {turns} ──"
+
+#: Scripts/Core/GameRules.gd:519
+msgid "Initiative: {order}."
+msgstr "Initiative: {order}."
+
+#: Scripts/Core/GameRules.gd:540
+msgid "{player} reveals: {plan} — kept their word and completed an oath (+{amount} {renown})."
+msgstr "{player} deckt auf: {plan} — hat Wort gehalten und einen Schwur erfüllt (+{amount} {renown})."
+
+#: Scripts/Core/GameRules.gd:543
+msgid "{player} reveals: {plan} — kept their word (oath {oath}/{length})."
+msgstr "{player} deckt auf: {plan} — hat Wort gehalten (Schwur {oath}/{length})."
+
+#: Scripts/Core/GameRules.gd:546
+msgid "{player} reveals: {plan} — broke their word, but their oath holds ({oath}/{length})."
+msgstr "{player} deckt auf: {plan} — hat das Wort gebrochen, doch der Schwur hält ({oath}/{length})."
+
+#: Scripts/Core/GameRules.gd:549
+msgid "{player} reveals: {plan} — broke their word; their oath is broken."
+msgstr "{player} deckt auf: {plan} — hat das Wort gebrochen; der Schwur ist gebrochen."
+
+#: Scripts/Core/GameRules.gd:568
+msgid "{player} is down; their action is lost."
+msgstr "{player} liegt am Boden; die Aktion verfällt."
+
+#: Scripts/Core/GameRules.gd:576
+msgid "{player} goes shopping."
+msgstr "{player} geht einkaufen."
+
+#: Scripts/Core/GameRules.gd:590
+msgid "{player} attacks {target}, but they are already down."
+msgstr "{player} greift {target} an, doch {target} liegt bereits am Boden."
+
+#: Scripts/Core/GameRules.gd:596
+msgid "{player} attacks {target} with {combat}{attack}: {blocked} blocked, {damage} damage."
+msgstr "{player} greift {target} mit {combat}{attack} an: {blocked} abgewehrt, {damage} Schaden."
+
+#: Scripts/Core/GameRules.gd:604
+msgid "{player} takes {amount} {renown} from {target}."
+msgstr "{player} nimmt {target} {amount} {renown} ab."
+
+#: Scripts/Core/GameRules.gd:617
+msgid "{player} attacks the {mob}, but it is already slain."
+msgstr "{player} greift {mob} an, doch es ist bereits besiegt."
+
+#: Scripts/Core/GameRules.gd:626
+msgid "{player} slays the {mob} (+{amount} {score}) and gains {trinket}."
+msgstr "{player} besiegt {mob} (+{amount} {score}) und erhält {trinket}."
+
+#: Scripts/Core/GameRules.gd:634
+msgid "{player} fails to slay the {mob} ({combat}{attack} of {hp}) and takes {damage} damage."
+msgstr "{player} scheitert an {mob} ({combat}{attack} von {hp}) und erleidet {damage} Schaden."
+
+#: Scripts/Core/GameRules.gd:643
+msgid "{player} attacks the {boss}, but it is already slain."
+msgstr "{player} greift {boss} an, doch der Boss ist bereits besiegt."
+
+#: Scripts/Core/GameRules.gd:648
+msgid "{player} hits the {boss} for {damage} ({hp}/{max} left)."
+msgstr "{player} trifft {boss} für {damage} (noch {hp}/{max})."
+
+#: Scripts/Core/GameRules.gd:654
+msgid "The {boss} is slain!"
+msgstr "{boss} ist besiegt!"
+
+#: Scripts/Core/GameRules.gd:661
+msgid "{player} rests and heals {amount} {heal}."
+msgstr "{player} rastet und heilt {amount} {heal}."
+
+#: Scripts/Core/GameRules.gd:686
+msgid "{player} knocks out {target}! ({player} +{gain} {score}, {target} −{loss} {score})"
+msgstr "{player} schlägt {target} k.o.! ({player} +{gain} {score}, {target} −{loss} {score})"
+
+#: Scripts/Core/GameRules.gd:689
+msgid "{player} is knocked out! (−{loss} {score})"
+msgstr "{player} ist k.o.! (−{loss} {score})"
+
+#: Scripts/Core/GameRules.gd:709
+msgid "The {boss} strikes {player}: {blocked} blocked, {damage} damage."
+msgstr "{boss} schlägt {player}: {blocked} abgewehrt, {damage} Schaden."
+
+#: Scripts/Core/GameRules.gd:726
+msgid "Boss slayers: {players} (+{amount} {score} each)."
+msgstr "Bossbezwinger: {players} (je +{amount} {score})."
+
+#: Scripts/Core/GameRules.gd:756
+msgid "Spoils: {items}. {players} pick first, most damage first (at least {share} to share)."
+msgstr "Beute: {items}. {players} wählen zuerst, höchster Schaden zuerst (mindestens {share} für einen Anteil)."
+
+#: Scripts/Core/GameRules.gd:772
+msgid "{trinket} goes to a sealed bid. Everyone may bid {gold} and {renown} (worth {rate} {gold} each)."
+msgstr "{trinket} wird verdeckt versteigert. Alle dürfen {gold} und {renown} bieten (je {rate} {gold} wert)."
+
+#: Scripts/Core/GameRules.gd:797
+msgid "Nobody bids for {trinket}; it is lost."
+msgstr "Niemand bietet für {trinket}; es geht verloren."
+
+#: Scripts/Core/GameRules.gd:804
+msgid "{player} wins {trinket} (bids: {bids})."
+msgstr "{player} gewinnt {trinket} (Gebote: {bids})."
+
+#: Scripts/Core/GameRules.gd:829
+msgid "A new boss appears: the {boss}."
+msgstr "Ein neuer Boss erscheint: {boss}."
+
+#: Scripts/Core/GameRules.gd:844
+msgid "{player} is back on their feet with {amount} {heal}."
+msgstr "{player} steht wieder, mit {amount} {heal}."
+
+#: Scripts/Core/GameRules.gd:872
+msgid "Game over! {standings}"
+msgstr "Spielende! {standings}"
+
+#: Scripts/Core/GameRules.gd:919
+msgid "Act {act} begins: stronger mobs take the table."
+msgstr "Akt {act} beginnt: stärkere Monster erobern den Tisch."
+
+#: Scripts/Core/GameState.gd:151
+#: Scripts/Core/GameState.gd:154
+msgid "Attack {target}"
+msgstr "{target} angreifen"
+
+#: Scripts/Core/GameState.gd:155
+msgid "Attack a mob"
+msgstr "Ein Monster angreifen"
+
+#: Scripts/Core/GameState.gd:157
+msgid "Attack the boss"
+msgstr "Den Boss angreifen"
+
+#: Scripts/Core/GameState.gd:159
+#: Scripts/Core/PlayerState.gd:64
+msgid "Shop"
+msgstr "Einkaufen"
+
+#: Scripts/Core/GameState.gd:161
+#: Scripts/Core/PlayerState.gd:66
+msgid "Rest"
+msgstr "Rasten"
+
+#: Scripts/Core/GameState.gd:162
+#: Scripts/Core/PlayerState.gd:67
+msgid "Nothing"
+msgstr "Nichts"
+
+#: Scripts/Core/GameState.gd:175
+msgid "{choice} ({split})"
+msgstr "{choice} ({split})"
+
+#: Scripts/Core/PlayerState.gd:58
+msgid "Attack player"
+msgstr "Spieler angreifen"
+
+#: Scripts/Core/PlayerState.gd:60
+msgid "Attack mob"
+msgstr "Monster angreifen"
+
+#: Scripts/Core/PlayerState.gd:62
+msgid "Attack boss"
+msgstr "Boss angreifen"
+
+#: Scripts/Dev/Dev.gd:272
+#: Scripts/UI/ActionPanel.gd:213
+msgid "Keep these dice"
+msgstr "Diese Würfel behalten"
+
+#: Scripts/Dev/Dev.gd:292
+#: Scripts/UI/ActionPanel.gd:268
+msgid "Declare"
+msgstr "Ankündigen"
+
+#: Scripts/Dev/Dev.gd:296
+#: Scripts/UI/ActionPanel.gd:283
+msgid "Lock plan"
+msgstr "Plan festlegen"
+
+#: Scripts/Dev/Dev.gd:301
+#: Scripts/UI/ConfirmOverlay.gd:23
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: Scripts/Dev/Dev.gd:303
+#: Scripts/UI/ActionPanel.gd:374
+msgid "Lock it"
+msgstr "Festlegen"
+
+#: Scripts/Dev/Dev.gd:317
+#: Scripts/UI/ActionPanel.gd:442
+msgid "Done shopping"
+msgstr "Fertig mit Einkaufen"
+
+#: Scripts/Dev/Dev.gd:324
+#: Scripts/UI/ActionPanel.gd:506
+msgid "Place bid"
+msgstr "Gebot abgeben"
+
+#: Scripts/Dev/Dev.gd:324
+#: Scripts/UI/ActionPanel.gd:508
+msgid "Pass"
+msgstr "Passen"
+
+#: Scripts/Net/Network.gd:166
+msgid "Could not host on port {port}: {error}."
+msgstr "Hosten auf Port {port} nicht möglich: {error}."
+
+#: Scripts/Net/Network.gd:178
+msgid "Enter the host's IP address."
+msgstr "Gib die IP-Adresse des Gastgebers ein."
+
+#: Scripts/Net/Network.gd:181
+msgid "Could not connect: {error}."
+msgstr "Verbindung nicht möglich: {error}."
+
+#: Scripts/Net/Network.gd:185
+msgid "Connecting to {address}…"
+msgstr "Verbinde mit {address}…"
+
+#: Scripts/Net/Network.gd:196
+msgid "Creating a Steam lobby…"
+msgstr "Erstelle eine Steam-Lobby…"
+
+#: Scripts/Net/Network.gd:208
+msgid "Joining the lobby…"
+msgstr "Trete der Lobby bei…"
+
+#: Scripts/Net/Network.gd:248
+msgid "You left the game."
+msgstr "Du hast das Spiel verlassen."
+
+#: Scripts/Net/Network.gd:264
+msgid "Lost the connection to the host. Reconnecting…"
+msgstr "Verbindung zum Gastgeber verloren. Verbinde neu…"
+
+#: Scripts/Net/Network.gd:273
+msgid "Could not get back to the table."
+msgstr "Zurück an den Tisch war nicht möglich."
+
+#: Scripts/Net/Network.gd:333
+msgid "Bot"
+msgstr "Bot"
+
+#: Scripts/Net/Network.gd:335
+msgid "Bot {name}"
+msgstr "Bot {name}"
+
+#: Scripts/Net/Network.gd:527
+#: Scenes/Menu.tscn:188
+msgid "Player"
+msgstr "Spieler"
+
+#: Scripts/Net/Network.gd:541
+msgid "Connected. Waiting for the host…"
+msgstr "Verbunden. Warte auf den Gastgeber…"
+
+#: Scripts/Net/Network.gd:550
+msgid "Could not connect to the host."
+msgstr "Keine Verbindung zum Gastgeber möglich."
+
+#: Scripts/Net/Network.gd:562
+msgid "Lost the connection to the host."
+msgstr "Verbindung zum Gastgeber verloren."
+
+#: Scripts/Net/Network.gd:569
+msgid "Steam could not create a lobby."
+msgstr "Steam konnte keine Lobby erstellen."
+
+#: Scripts/Net/Network.gd:574
+msgid "Could not host over Steam: {error}."
+msgstr "Hosten über Steam nicht möglich: {error}."
+
+#: Scripts/Net/Network.gd:599
+msgid "Could not connect over Steam: {error}."
+msgstr "Verbindung über Steam nicht möglich: {error}."
+
+#: Scripts/Net/Network.gd:603
+msgid "Connecting to the host…"
+msgstr "Verbinde mit dem Gastgeber…"
+
+#: Scripts/Net/Network.gd:658
+msgid "The host runs a different version of the game."
+msgstr "Der Gastgeber spielt eine andere Version des Spiels."
+
+#: Scripts/Net/Network.gd:662
+msgid "That game has already started."
+msgstr "Dieses Spiel hat schon begonnen."
+
+#: Scripts/Net/Network.gd:666
+msgid "The lobby is full."
+msgstr "Die Lobby ist voll."
+
+#: Scripts/Net/Network.gd:718
+msgid "Back at the table."
+msgstr "Zurück am Tisch."
+
+#: Scripts/Net/Session.gd:114
+msgid "{player} lost the connection; a bot plays their seat until they return."
+msgstr "{player} hat die Verbindung verloren; ein Bot spielt den Platz bis zur Rückkehr."
+
+#: Scripts/Net/Session.gd:131
+msgid "{player} is back at the table."
+msgstr "{player} ist zurück am Tisch."
+
+#: Scripts/Net/Session.gd:257
+msgid "{player} was idle too long and acts automatically."
+msgstr "{player} war zu lange untätig und handelt automatisch."
+
+#: Scripts/Net/SteamService.gd:25
+msgid "Steam is not available in this build."
+msgstr "Steam ist in dieser Version nicht verfügbar."
+
+#: Scripts/Net/SteamService.gd:39
+msgid "Steam isn't running. Start Steam to host or join friends' tables."
+msgstr "Steam läuft nicht. Starte Steam, um Tische zu eröffnen oder Freunden beizutreten."
+
+#: Scripts/Net/SteamService.gd:42
+msgid "Steam needs an update before you can play online."
+msgstr "Steam braucht ein Update, bevor du online spielen kannst."
+
+#: Scripts/Net/SteamService.gd:45
+msgid "Steam is unavailable: {value}"
+msgstr "Steam ist nicht verfügbar: {value}"
+
+#: Scripts/Net/SteamService.gd:49
+msgid "Signed in to Steam as {value}."
+msgstr "Bei Steam angemeldet als {value}."
+
+#: Scripts/Net/SteamService.gd:148
+msgid "That lobby is not a game of this kind."
+msgstr "Diese Lobby gehört nicht zu diesem Spiel."
+
+#: Scripts/Net/SteamService.gd:152
+msgid "That lobby runs a different version of the game."
+msgstr "In dieser Lobby läuft eine andere Version des Spiels."
+
+#: Scripts/Net/SteamService.gd:161
+msgid "That lobby no longer exists."
+msgstr "Diese Lobby gibt es nicht mehr."
+
+#: Scripts/Net/SteamService.gd:163
+msgid "You are not allowed to join that lobby."
+msgstr "Du darfst dieser Lobby nicht beitreten."
+
+#: Scripts/Net/SteamService.gd:165
+msgid "That lobby is full."
+msgstr "Diese Lobby ist voll."
+
+#: Scripts/Net/SteamService.gd:166
+msgid "Could not join the lobby (code {code})."
+msgstr "Beitritt zur Lobby nicht möglich (Code {code})."
+
+#: Scripts/UI/ActionPanel.gd:124
+msgid "You are watching this game."
+msgstr "Du schaust diesem Spiel zu."
+
+#: Scripts/UI/ActionPanel.gd:127
+msgid "The final count"
+msgstr "Die Schlusswertung"
+
+#: Scripts/UI/ActionPanel.gd:128
+msgid "The game is over. The results are on the table."
+msgstr "Das Spiel ist vorbei. Die Ergebnisse liegen auf dem Tisch."
+
+#: Scripts/UI/ActionPanel.gd:131
+#: Scripts/UI/Presenter.gd:218
+msgid "Knocked out"
+msgstr "K.o."
+
+#: Scripts/UI/ActionPanel.gd:132
+msgid "You are back on your feet after turn {turn}. Until then the table plays on without you."
+msgstr "Nach Runde {turn} stehst du wieder. Bis dahin spielt der Tisch ohne dich weiter."
+
+#: Scripts/UI/ActionPanel.gd:141
+msgid "Dice kept"
+msgstr "Würfel behalten"
+
+#: Scripts/UI/ActionPanel.gd:142
+msgid "Waiting for the others to finish rolling."
+msgstr "Warte, bis die anderen fertig gewürfelt haben."
+
+#: Scripts/UI/ActionPanel.gd:147
+#: Scripts/UI/GameScreen.gd:290
+msgid "Declarations"
+msgstr "Ankündigungen"
+
+#: Scripts/UI/ActionPanel.gd:149
+msgid "You said: {choice}. The others are speaking."
+msgstr "Du hast gesagt: {choice}. Die anderen sind an der Reihe."
+
+#: Scripts/UI/ActionPanel.gd:152
+msgid "{player} is declaring. Listen carefully."
+msgstr "{player} kündigt an. Hör genau hin."
+
+#: Scripts/UI/ActionPanel.gd:157
+msgid "Plan locked"
+msgstr "Plan steht"
+
+#: Scripts/UI/ActionPanel.gd:158
+msgid "Your plan: {plan}."
+msgstr "Dein Plan: {plan}."
+
+#: Scripts/UI/ActionPanel.gd:163
+msgid "The reveal"
+msgstr "Die Aufdeckung"
+
+#: Scripts/UI/ActionPanel.gd:165
+msgid "{player} is shopping."
+msgstr "{player} kauft ein."
+
+#: Scripts/UI/ActionPanel.gd:167
+msgid "Plans are playing out. Watch the table and the Chronicle."
+msgstr "Die Pläne werden ausgeführt. Beobachte den Tisch und die Chronik."
+
+#: Scripts/UI/ActionPanel.gd:172
+#: Scripts/UI/GameScreen.gd:296
+msgid "Spoils"
+msgstr "Beute"
+
+#: Scripts/UI/ActionPanel.gd:173
+msgid "The boss slayers pick their spoils, most damage first: {players}."
+msgstr "Die Bossbezwinger wählen ihre Beute, höchster Schaden zuerst: {players}."
+
+#: Scripts/UI/ActionPanel.gd:179
+msgid "Sealed bid"
+msgstr "Verdecktes Gebot"
+
+#: Scripts/UI/ActionPanel.gd:180
+msgid "Your bid is in. Waiting for the others."
+msgstr "Dein Gebot ist abgegeben. Warte auf die anderen."
+
+#: Scripts/UI/ActionPanel.gd:188
+#: Scripts/UI/GameScreen.gd:281
+msgid "Waiting for {players}."
+msgstr "Warte auf {players}."
+
+#: Scripts/UI/ActionPanel.gd:194
+msgid "Your roll"
+msgstr "Dein Wurf"
+
+#: Scripts/UI/ActionPanel.gd:195
+msgid "Choose dice in the tray below to reroll (click them, press 1 to 9, or move onto the tray), or keep what you have."
+msgstr "Wähle unten im Würfelbrett Würfel zum Neuwürfeln (anklicken, 1 bis 9 drücken oder auf das Brett wechseln), oder behalte, was du hast."
+
+#: Scripts/UI/ActionPanel.gd:202
+msgid "Wild face counts as"
+msgstr "Joker zählt als"
+
+#: Scripts/UI/ActionPanel.gd:232
+msgid "Worth:"
+msgstr "Wert:"
+
+#: Scripts/UI/ActionPanel.gd:236
+msgid "Reroll {count} (free)"
+msgstr "{count} neu würfeln (gratis)"
+
+#: Scripts/UI/ActionPanel.gd:238
+msgid "Reroll {count} (costs {cost} cunning)"
+msgstr "{count} neu würfeln (kostet {cost} List)"
+
+#: Scripts/UI/ActionPanel.gd:263
+msgid "Declare your intention"
+msgstr "Kündige deine Absicht an"
+
+#: Scripts/UI/ActionPanel.gd:264
+msgid "Everyone will see it. Keep your word in your secret plan to advance your oath ({oath}/{length}): every {length} kept words earn renown. Break it to surprise them, and your oath starts over."
+msgstr "Alle werden es sehen. Halte im geheimen Plan Wort, um deinen Schwur voranzubringen ({oath}/{length}): je {length} gehaltene Worte bringen Ruhm. Brichst du es, überraschst du sie, und dein Schwur beginnt von vorn."
+
+#: Scripts/UI/ActionPanel.gd:274
+msgid "Your secret plan"
+msgstr "Dein geheimer Plan"
+
+#: Scripts/UI/ActionPanel.gd:275
+msgid "You said: {choice}. Choose what you will really do."
+msgstr "Du hast gesagt: {choice}. Wähle, was du wirklich tust."
+
+#: Scripts/UI/ActionPanel.gd:279
+msgid "Attack"
+msgstr "Angriff"
+
+#: Scripts/UI/ActionPanel.gd:318
+msgid "{player} ({hp} health)"
+msgstr "{player} ({hp} Gesundheit)"
+
+#: Scripts/UI/ActionPanel.gd:324
+msgid "{mob} ({hp} health, hits {damage})"
+msgstr "{mob} ({hp} Gesundheit, trifft mit {damage})"
+
+#: Scripts/UI/ActionPanel.gd:327
+msgid "No target"
+msgstr "Kein Ziel"
+
+#: Scripts/UI/ActionPanel.gd:353
+msgid "{combat} used {used} of {total}"
+msgstr "{combat} verwendet: {used} von {total}"
+
+#: Scripts/UI/ActionPanel.gd:355
+msgid "(plus {guard} {amount} always guarding)"
+msgstr "(plus {guard} {amount}, das immer deckt)"
+
+#: Scripts/UI/ActionPanel.gd:357
+msgid "too much"
+msgstr "zu viel"
+
+#: Scripts/UI/ActionPanel.gd:369
+msgid "You keep your word (oath {oath}/{length})."
+msgstr "Du hältst Wort (Schwur {oath}/{length})."
+
+#: Scripts/UI/ActionPanel.gd:371
+msgid "You break your word: your oath starts over."
+msgstr "Du brichst dein Wort: dein Schwur beginnt von vorn."
+
+#: Scripts/UI/ActionPanel.gd:373
+msgid "You break your word, but your Liar's Mask keeps your oath."
+msgstr "Du brichst dein Wort, doch deine Lügnermaske bewahrt deinen Schwur."
+
+#: Scripts/UI/ActionPanel.gd:374
+msgid "Lock this plan?"
+msgstr "Diesen Plan festlegen?"
+
+#: Scripts/UI/ActionPanel.gd:381
+msgid "Your turn at the market"
+msgstr "Du bist am Markt an der Reihe"
+
+#: Scripts/UI/ActionPanel.gd:382
+msgid "You have {gold} {amount} and {renown} {renown_amount} (each worth {rate} {gold} when spent)."
+msgstr "Du hast {gold} {amount} und {renown} {renown_amount} (beim Ausgeben je {rate} {gold} wert)."
+
+#: Scripts/UI/ActionPanel.gd:385
+msgid "Pay with renown up to"
+msgstr "Mit Ruhm zahlen, bis zu"
+
+#: Scripts/UI/ActionPanel.gd:393
+msgid "Replace which face with {face}?"
+msgstr "Welche Seite durch {face} ersetzen?"
+
+#: Scripts/UI/ActionPanel.gd:395
+msgid "Pick a face in the market to buy it, or one of your faces to upgrade it by 1 (it costs the new value)."
+msgstr "Wähle eine Seite am Markt, um sie zu kaufen, oder eine deiner Seiten, um sie um 1 zu verbessern (kostet den neuen Wert)."
+
+#: Scripts/UI/ActionPanel.gd:400
+msgid "Die {number}"
+msgstr "Würfel {number}"
+
+#: Scripts/UI/ActionPanel.gd:421
+msgid "{face}. Upgrade for {price} gold."
+msgstr "{face}. Verbessern für {price} Gold."
+
+#: Scripts/UI/ActionPanel.gd:423
+msgid "{face}. Cannot be upgraded."
+msgstr "{face}. Nicht verbesserbar."
+
+#: Scripts/UI/ActionPanel.gd:432
+msgid "Buy a die ({price})"
+msgstr "Würfel kaufen ({price})"
+
+#: Scripts/UI/ActionPanel.gd:435
+msgid "Refresh the row ({price})"
+msgstr "Reihe auffrischen ({price})"
+
+#: Scripts/UI/ActionPanel.gd:439
+msgid "Buy 1 renown ({price} gold)"
+msgstr "1 Ruhm kaufen ({price} Gold)"
+
+#: Scripts/UI/ActionPanel.gd:472
+msgid "Spoils of the hunt"
+msgstr "Beute der Jagd"
+
+#: Scripts/UI/ActionPanel.gd:473
+msgid "You dealt the most damage of those still to choose, so you pick now. Take one item."
+msgstr "Von allen, die noch wählen, hast du den meisten Schaden verursacht, also wählst du jetzt. Nimm einen Gegenstand."
+
+#: Scripts/UI/ActionPanel.gd:494
+msgid "Then {item} goes to a sealed bid open to everyone."
+msgstr "Danach wird {item} verdeckt an alle versteigert."
+
+#: Scripts/UI/ActionPanel.gd:499
+msgid "Sealed bid: {item}"
+msgstr "Verdecktes Gebot: {item}"
+
+#: Scripts/UI/ActionPanel.gd:500
+msgid "Everyone bids in secret. The highest bid (at least 1) wins and pays; {renown} counts as {rate} {gold}. Ties go to whoever hurt the boss more."
+msgstr "Alle bieten geheim. Das höchste Gebot (mindestens 1) gewinnt und zahlt; {renown} zählt als {rate} {gold}. Bei Gleichstand gewinnt, wer dem Boss mehr Schaden zugefügt hat."
+
+#: Scripts/UI/ConfirmOverlay.gd:24
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: Scripts/UI/EndOverlay.gd:32
+msgid "Final score: trophies plus unspent renown."
+msgstr "Endwertung: Trophäen plus nicht ausgegebener Ruhm."
+
+#: Scripts/UI/EndOverlay.gd:40
+msgid "Back to the lobby"
+msgstr "Zurück in die Lobby"
+
+#: Scripts/UI/EndOverlay.gd:41
+msgid "View the table"
+msgstr "Tisch ansehen"
+
+#: Scripts/UI/EndOverlay.gd:42
+#: Scripts/UI/PauseMenu.gd:58
+msgid "Leave"
+msgstr "Verlassen"
+
+#: Scripts/UI/EndOverlay.gd:47
+msgid "You win!"
+msgstr "Du gewinnst!"
+
+#: Scripts/UI/EndOverlay.gd:47
+msgid "{player} wins!"
+msgstr "{player} gewinnt!"
+
+#: Scripts/UI/GameScreen.gd:277
+#: Scripts/UI/GameScreen.gd:329
+msgid "Turn {turn} of {turns} · {phase}"
+msgstr "Runde {turn} von {turns} · {phase}"
+
+#: Scripts/UI/GameScreen.gd:288
+msgid "The Roll"
+msgstr "Der Wurf"
+
+#: Scripts/UI/GameScreen.gd:292
+msgid "Secret Plans"
+msgstr "Geheime Pläne"
+
+#: Scripts/UI/GameScreen.gd:294
+msgid "The Reveal"
+msgstr "Die Aufdeckung"
+
+#: Scripts/UI/GameScreen.gd:298
+msgid "Sealed Bids"
+msgstr "Verdeckte Gebote"
+
+#: Scripts/UI/GameScreen.gd:300
+msgid "The Final Count"
+msgstr "Die Schlusswertung"
+
+#: Scripts/UI/GameScreen.gd:301
+msgid "The table is being set"
+msgstr "Der Tisch wird gedeckt"
+
+#: Scripts/UI/GameScreen.gd:307
+msgid "Everyone rolls at once. One free reroll, then each costs 1 cunning."
+msgstr "Alle würfeln gleichzeitig. Ein Neuwurf ist gratis, jeder weitere kostet 1 List."
+
+#: Scripts/UI/GameScreen.gd:309
+msgid "Intentions are spoken aloud, least cunning first."
+msgstr "Absichten werden laut verkündet, die wenigste List zuerst."
+
+#: Scripts/UI/GameScreen.gd:311
+msgid "Everyone locks a secret plan."
+msgstr "Alle legen einen geheimen Plan fest."
+
+#: Scripts/UI/GameScreen.gd:313
+msgid "Plans play out, most cunning first."
+msgstr "Die Pläne werden ausgeführt, die meiste List zuerst."
+
+#: Scripts/UI/GameScreen.gd:315
+msgid "The boss slayers pick their spoils, most damage first."
+msgstr "Die Bossbezwinger wählen ihre Beute, höchster Schaden zuerst."
+
+#: Scripts/UI/GameScreen.gd:317
+msgid "Everyone bids in secret for the last spoil."
+msgstr "Alle bieten geheim um das letzte Beutestück."
+
+#: Scripts/UI/GameScreen.gd:319
+msgid "Trophies plus unspent renown decide the winner."
+msgstr "Trophäen plus nicht ausgegebener Ruhm entscheiden über den Sieg."
+
+#: Scripts/UI/GameScreen.gd:441
+msgid "{heal} {hp} of {max}  ·  strikes each attacker for {damage} if it survives. Slayers deal {share}+."
+msgstr "{heal} {hp} von {max}  ·  trifft jeden Angreifer mit {damage}, wenn er überlebt. Bezwinger verursachen {share}+."
+
+#: Scripts/UI/GameScreen.gd:444
+msgid "Slain this turn."
+msgstr "In dieser Runde besiegt."
+
+#: Scripts/UI/GameScreen.gd:449
+msgid "Wounded by"
+msgstr "Verwundet von"
+
+#: Scripts/UI/GameScreen.gd:493
+msgid "Your turn to shop: pick a face, then the face it replaces."
+msgstr "Du kaufst ein: wähle eine Seite, dann die Seite, die sie ersetzt."
+
+#: Scripts/UI/GameScreen.gd:495
+msgid "A new die costs {price}. Shoppers buy in initiative order."
+msgstr "Ein neuer Würfel kostet {price}. Gekauft wird in Initiativereihenfolge."
+
+#: Scripts/UI/GameScreen.gd:721
+msgid "Choose dice in the tray to reroll: click them, press 1 to 9, or move onto the tray with the arrow keys or the pad. The first reroll each turn is free; each further one costs 1 {cunning}, and {cunning} decides who acts first."
+msgstr "Wähle im Würfelbrett Würfel zum Neuwürfeln: anklicken, 1 bis 9 drücken oder mit den Pfeiltasten oder dem Controller auf das Brett wechseln. Der erste Neuwurf jeder Runde ist gratis; jeder weitere kostet 1 {cunning}, und {cunning} entscheidet, wer zuerst handelt."
+
+#: Scripts/UI/GameScreen.gd:723
+msgid "Say what you will do. Everyone sees it. Every third word you keep in a row completes an oath worth {renown}; breaking your word catches them out but resets your oath."
+msgstr "Sag, was du tun wirst. Alle sehen es. Jedes dritte gehaltene Wort in Folge erfüllt einen Schwur, der {renown} wert ist; ein gebrochenes Wort überrumpelt die anderen, setzt aber deinen Schwur zurück."
+
+#: Scripts/UI/GameScreen.gd:725
+msgid "Now choose what you really do, and split your {combat} into attack and {guard} guard. A hit on a player with more {renown} than you steals 1 {renown}."
+msgstr "Wähle jetzt, was du wirklich tust, und teile deinen {combat} in Angriff und {guard} Deckung auf. Ein Treffer gegen jemanden mit mehr {renown} als du stiehlt 1 {renown}."
+
+#: Scripts/UI/GameScreen.gd:727
+msgid "Plans play out from the most cunning player down. The Chronicle on the right records every hit, theft and broken promise."
+msgstr "Die Pläne werden vom listigsten Spieler abwärts ausgeführt. Die Chronik rechts verzeichnet jeden Treffer, jeden Diebstahl und jedes gebrochene Versprechen."
+
+#: Scripts/UI/GameScreen.gd:729
+msgid "Pick a face in the market on the right, then the face on your dice it replaces. Or pick one of your faces to upgrade it. {renown} spends as 3 {gold}."
+msgstr "Wähle rechts am Markt eine Seite, dann die Seite auf deinen Würfeln, die sie ersetzt. Oder wähle eine deiner Seiten, um sie zu verbessern. {renown} zählt beim Ausgeben als 3 {gold}."
+
+#: Scripts/UI/GameScreen.gd:731
+msgid "Slayers pick spoils one at a time, most damage first."
+msgstr "Die Bezwinger wählen nacheinander ihre Beute, höchster Schaden zuerst."
+
+#: Scripts/UI/GameScreen.gd:733
+msgid "Everyone bids {gold} and {renown} in secret ({renown} counts as 3 {gold}). The highest bid wins and pays."
+msgstr "Alle bieten geheim {gold} und {renown} ({renown} zählt als 3 {gold}). Das höchste Gebot gewinnt und zahlt."
+
+#: Scripts/UI/MarketTile.gd:19
+msgid "{face} for {price} gold"
+msgstr "{face} für {price} Gold"
+
+#: Scripts/UI/MarketTile.gd:21
+msgid "(you cannot afford it)"
+msgstr "(kannst du dir nicht leisten)"
+
+#: Scripts/UI/Menu.gd:58
+msgid "Leave the tavern?"
+msgstr "Die Taverne verlassen?"
+
+#: Scripts/UI/Menu.gd:58
+#: Scripts/UI/PauseMenu.gd:60
+msgid "The game closes."
+msgstr "Das Spiel wird beendet."
+
+#: Scripts/UI/Menu.gd:58
+#: Scripts/UI/PauseMenu.gd:60
+#: Scenes/Menu.tscn:239
+msgid "Quit"
+msgstr "Beenden"
+
+#: Scripts/UI/Menu.gd:119
+msgid "Game design and code"
+msgstr "Spieldesign und Code"
+
+#: Scripts/UI/Menu.gd:120
+#: Scripts/UI/SettingsPanel.gd:57
+msgid "Sound effects"
+msgstr "Soundeffekte"
+
+#: Scripts/UI/Menu.gd:121
+msgid "Music and ambience"
+msgstr "Musik und Atmosphäre"
+
+#: Scripts/UI/Menu.gd:122
+msgid "Fonts"
+msgstr "Schriften"
+
+#: Scripts/UI/Menu.gd:123
+msgid "Icons, shaders, dice and everything else were made for this game."
+msgstr "Symbole, Shader, Würfel und alles Übrige wurden für dieses Spiel gemacht."
+
+#: Scripts/UI/Menu.gd:149
+msgid "Stop rejoining"
+msgstr "Wiedereinstieg abbrechen"
+
+#: Scripts/UI/Menu.gd:149
+msgid "Rejoin your game"
+msgstr "Zurück in dein Spiel"
+
+#: Scripts/UI/Menu.gd:151
+msgid "Rejoining your game… (attempt {attempt})"
+msgstr "Steige wieder in dein Spiel ein… (Versuch {attempt})"
+
+#: Scripts/UI/Menu.gd:193
+msgid "{player}'s table"
+msgstr "Tisch von {player}"
+
+#: Scripts/UI/Menu.gd:196
+msgid "No friends are hosting right now."
+msgstr "Gerade hostet keiner deiner Freunde."
+
+#: Scripts/UI/Menu.gd:219
+msgid "The table ({seats} of {max} seats)"
+msgstr "Der Tisch ({seats} von {max} Plätzen)"
+
+#: Scripts/UI/Menu.gd:230
+#: Scripts/UI/SeatCard.gd:144
+msgid "bot"
+msgstr "Bot"
+
+#: Scripts/UI/Menu.gd:232
+msgid "host"
+msgstr "Gastgeber"
+
+#: Scripts/UI/Menu.gd:234
+#: Scripts/UI/SeatCard.gd:142
+msgid "you"
+msgstr "du"
+
+#: Scripts/UI/Menu.gd:245
+msgid "{min} to {max} players. Add bots to fill empty seats."
+msgstr "{min} bis {max} Spieler. Füge Bots hinzu, um freie Plätze zu besetzen."
+
+#: Scripts/UI/Menu.gd:247
+msgid "Waiting for the host to deal you in."
+msgstr "Warte, bis der Gastgeber dich mitspielen lässt."
+
+#: Scripts/UI/MobRow.gd:95
+msgid "{mob}: {hp} health, hits back for {damage} if you fail. Worth {score} trophies and one of: {rewards}."
+msgstr "{mob}: {hp} Gesundheit, schlägt mit {damage} zurück, wenn du scheiterst. Bringt {score} Trophäen und eines davon: {rewards}."
+
+#: Scripts/UI/MobRow.gd:111
+msgid "{mob} (slain)"
+msgstr "{mob} (besiegt)"
+
+#: Scripts/UI/PauseMenu.gd:17
+msgid "The Tavern"
+msgstr "Die Taverne"
+
+#: Scripts/UI/PauseMenu.gd:18
+msgid "The table keeps playing while this menu is open."
+msgstr "Der Tisch spielt weiter, solange dieses Menü offen ist."
+
+#: Scripts/UI/PauseMenu.gd:19
+msgid "Back to the table"
+msgstr "Zurück an den Tisch"
+
+#: Scripts/UI/PauseMenu.gd:20
+#: Scripts/UI/RulesBook.gd:110
+#: Scripts/UI/RulesBook.gd:268
+#: Scenes/Menu.tscn:214
+msgid "How to play"
+msgstr "Spielanleitung"
+
+#: Scripts/UI/PauseMenu.gd:21
+#: Scripts/UI/SettingsPanel.gd:25
+#: Scenes/Menu.tscn:221
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: Scripts/UI/PauseMenu.gd:22
+#: Scenes/Menu.tscn:435
+msgid "Leave the table"
+msgstr "Den Tisch verlassen"
+
+#: Scripts/UI/PauseMenu.gd:23
+msgid "Quit to desktop"
+msgstr "Zum Desktop beenden"
+
+#: Scripts/UI/PauseMenu.gd:52
+msgid "A bot takes over your seat."
+msgstr "Ein Bot übernimmt deinen Platz."
+
+#: Scripts/UI/PauseMenu.gd:54
+msgid "This game will be lost."
+msgstr "Dieses Spiel geht verloren."
+
+#: Scripts/UI/PauseMenu.gd:56
+msgid "The game ends for everyone, because you are hosting."
+msgstr "Das Spiel endet für alle, weil du der Gastgeber bist."
+
+#: Scripts/UI/PauseMenu.gd:58
+msgid "Leave the table?"
+msgstr "Den Tisch verlassen?"
+
+#: Scripts/UI/PauseMenu.gd:58
+msgid "You return to the main menu."
+msgstr "Du kehrst ins Hauptmenü zurück."
+
+#: Scripts/UI/PauseMenu.gd:60
+msgid "Quit to desktop?"
+msgstr "Zum Desktop beenden?"
+
+#: Scripts/UI/PlayerInfoOverlay.gd:26
+msgid "Previous player (Q)"
+msgstr "Vorheriger Spieler (Q)"
+
+#: Scripts/UI/PlayerInfoOverlay.gd:27
+msgid "Next player (E)"
+msgstr "Nächster Spieler (E)"
+
+#: Scripts/UI/PlayerInfoOverlay.gd:28
+#: Scripts/UI/RulesBook.gd:112
+msgid "Close"
+msgstr "Schließen"
+
+#: Scripts/UI/PlayerInfoOverlay.gd:47
+msgid "Oath: {oath} of {length} kept words (a broken word starts it over)."
+msgstr "Schwur: {oath} von {length} gehaltenen Worten (ein gebrochenes Wort setzt ihn zurück)."
+
+#: Scripts/UI/PlayerInfoOverlay.gd:50
+msgid "Dice"
+msgstr "Würfel"
+
+#: Scripts/UI/PlayerInfoOverlay.gd:55
+msgid "Die {number}:"
+msgstr "Würfel {number}:"
+
+#: Scripts/UI/PlayerInfoOverlay.gd:57
+#: Scripts/UI/RulesBook.gd:127
+#: Scripts/UI/RulesBook.gd:221
+msgid "Trinkets"
+msgstr "Talismane"
+
+#: Scripts/UI/PlayerInfoOverlay.gd:59
+msgid "None yet."
+msgstr "Noch keine."
+
+#: Scripts/UI/Presenter.gd:69
+msgid "Turn {turn}"
+msgstr "Runde {turn}"
+
+#: Scripts/UI/Presenter.gd:118
+msgid "backstab +{amount} {combat}"
+msgstr "Hinterhalt +{amount} {combat}"
+
+#: Scripts/UI/Presenter.gd:125
+msgid "too late"
+msgstr "zu spät"
+
+#: Scripts/UI/Presenter.gd:175
+msgid "The boss falls!"
+msgstr "Der Boss fällt!"
+
+#: Scripts/UI/Presenter.gd:274
+msgid "Spoils!"
+msgstr "Beute!"
+
+#: Scripts/UI/Presenter.gd:278
+msgid "Sealed bids"
+msgstr "Verdeckte Gebote"
+
+#: Scripts/UI/Presenter.gd:286
+msgid "Act {act}"
+msgstr "Akt {act}"
+
+#: Scripts/UI/Presenter.gd:295
+msgid "The {boss} arrives"
+msgstr "{boss} erscheint"
+
+#: Scripts/UI/Presenter.gd:300
+msgid "back on their feet"
+msgstr "wieder auf den Beinen"
+
+#: Scripts/UI/Presenter.gd:305
+msgid "action lost"
+msgstr "Aktion verfällt"
+
+#: Scripts/UI/Presenter.gd:310
+msgid "connection lost"
+msgstr "Verbindung verloren"
+
+#: Scripts/UI/Presenter.gd:316
+msgid "back at the table"
+msgstr "zurück am Tisch"
+
+#: Scripts/UI/Presenter.gd:355
+msgid "Word kept"
+msgstr "Wort gehalten"
+
+#: Scripts/UI/Presenter.gd:355
+msgid "Liar"
+msgstr "Lügner"
+
+#: Scripts/UI/Presenter.gd:357
+msgid "Oath fulfilled +{amount} {renown}"
+msgstr "Schwur erfüllt +{amount} {renown}"
+
+#: Scripts/UI/Presenter.gd:359
+msgid "oath {oath}/{length}"
+msgstr "Schwur {oath}/{length}"
+
+#: Scripts/UI/Presenter.gd:395
+msgid "sealed bid"
+msgstr "verdecktes Gebot"
+
+#: Scripts/UI/Presenter.gd:437
+msgid "AMBUSH!"
+msgstr "HINTERHALT!"
+
+#: Scripts/UI/Presenter.gd:491
+msgid "blocked {guard}"
+msgstr "abgewehrt {guard}"
+
+#: Scripts/UI/ReconnectOverlay.gd:14
+msgid "Connection lost"
+msgstr "Verbindung verloren"
+
+#: Scripts/UI/ReconnectOverlay.gd:15
+msgid "A bot plays your seat until you are back. The game tries to reconnect on its own."
+msgstr "Ein Bot spielt deinen Platz, bis du zurück bist. Das Spiel versucht von selbst, die Verbindung wiederherzustellen."
+
+#: Scripts/UI/ReconnectOverlay.gd:20
+msgid "Leave the game"
+msgstr "Spiel verlassen"
+
+#: Scripts/UI/ReconnectOverlay.gd:34
+msgid "Reconnecting… (attempt {attempt})"
+msgstr "Verbinde neu… (Versuch {attempt})"
+
+#: Scripts/UI/RulesBook.gd:17
+msgid "The goal"
+msgstr "Das Ziel"
+
+#: Scripts/UI/RulesBook.gd:17
+msgid ""
+"[font_size=26]The goal[/font_size]\n"
+"\n"
+"Score the most {score} over [b]15 turns[/b]. Your final score is {score} plus every {renown} you have not spent.\n"
+"\n"
+"You earn {score} by slaying mobs ([b]+1[/b] in the first act, [b]+2[/b] later), by dealing a quarter of the boss's health on the turn it falls ([b]+3[/b]) and by knocking out a rival ([b]+1[/b]).\n"
+"\n"
+"You earn {renown} by keeping your word: every [b]third kept word in a row[/b] completes an oath worth +1 {renown}. Spend {renown} as [b]3 {gold}[/b] each, or keep it for the final count. A hit from a player who holds less {renown} than you steals 1 {renown}.\n"
+"\n"
+"Every turn you say what you will do. Then you decide, in secret, whether you meant it."
+msgstr ""
+"[font_size=26]Das Ziel[/font_size]\n"
+"\n"
+"Sammle in [b]15 Runden[/b] die meisten {score}. Deine Endwertung sind deine {score} plus jeder {renown}, den du nicht ausgegeben hast.\n"
+"\n"
+"{score} bekommst du, wenn du Monster besiegst ([b]+1[/b] im ersten Akt, [b]+2[/b] danach), wenn du in der Runde, in der ein Boss fällt, ein Viertel seiner Gesundheit an Schaden verursachst ([b]+3[/b]), und wenn du einen Rivalen k.o. schlägst ([b]+1[/b]).\n"
+"\n"
+"{renown} bekommst du, wenn du Wort hältst: jedes [b]dritte gehaltene Wort in Folge[/b] erfüllt einen Schwur, der +1 {renown} wert ist. Gib {renown} für je [b]3 {gold}[/b] aus oder behalte ihn für die Schlusswertung. Ein Treffer von jemandem mit weniger {renown} als du stiehlt dir 1 {renown}.\n"
+"\n"
+"Jede Runde sagst du, was du tun wirst. Dann entscheidest du im Geheimen, ob du es ernst gemeint hast."
+
+#: Scripts/UI/RulesBook.gd:26
+msgid "A turn"
+msgstr "Eine Runde"
+
+#: Scripts/UI/RulesBook.gd:26
+msgid ""
+"[font_size=26]A turn[/font_size]\n"
+"\n"
+"[b]1. Roll.[/b] Everyone rolls at once, with one free reroll.\n"
+"\n"
+"[b]2. Declare.[/b] One by one, everyone announces an action and a target.\n"
+"\n"
+"[b]3. Plan.[/b] Everyone locks a secret plan: the real action, and how to split {combat}.\n"
+"\n"
+"[b]4. Resolve.[/b] Plans are revealed and play out, most cunning first.\n"
+"\n"
+"[b]5. End of turn.[/b] The boss strikes back, loot is shared, and {combat} and {cunning} are lost. {gold}, {renown} and {score} stay."
+msgstr ""
+"[font_size=26]Eine Runde[/font_size]\n"
+"\n"
+"[b]1. Würfeln.[/b] Alle würfeln gleichzeitig, mit einem Neuwurf gratis.\n"
+"\n"
+"[b]2. Ankündigen.[/b] Nacheinander kündigen alle eine Aktion und ein Ziel an.\n"
+"\n"
+"[b]3. Planen.[/b] Alle legen einen geheimen Plan fest: die wirkliche Aktion und wie {combat} aufgeteilt wird.\n"
+"\n"
+"[b]4. Auflösen.[/b] Die Pläne werden aufgedeckt und ausgeführt, die meiste List zuerst.\n"
+"\n"
+"[b]5. Rundenende.[/b] Der Boss schlägt zurück, Beute wird verteilt, und {combat} und {cunning} verfallen. {gold}, {renown} und {score} bleiben."
+
+#: Scripts/UI/RulesBook.gd:37
+msgid "Rolling"
+msgstr "Würfeln"
+
+#: Scripts/UI/RulesBook.gd:37
+msgid ""
+"[font_size=26]Rolling[/font_size]\n"
+"\n"
+"Roll all your dice. You may then reroll any of them once for free. Every further reroll costs [b]1 {cunning}[/b]: better dice, but a worse place in the turn order.\n"
+"\n"
+"{combat} [b]Combat[/b]: attack and guard. Lost at the end of the turn.\n"
+"{gold} [b]Gold[/b]: buys faces, upgrades, dice, renown and loot. Kept.\n"
+"{cunning} [b]Cunning[/b]: sets the turn order and pays for rerolls. Lost at the end of the turn.\n"
+"\n"
+"Special faces from the market add {guard} guard, {heal} healing, {wild} wild faces, {renown} renown and {double} doubles. See [i]Faces[/i]."
+msgstr ""
+"[font_size=26]Würfeln[/font_size]\n"
+"\n"
+"Wirf alle deine Würfel. Danach darfst du beliebige davon einmal gratis neu würfeln. Jeder weitere Neuwurf kostet [b]1 {cunning}[/b]: bessere Würfel, aber ein schlechterer Platz in der Zugreihenfolge.\n"
+"\n"
+"{combat} [b]Kampf[/b]: Angriff und Deckung. Verfällt am Rundenende.\n"
+"{gold} [b]Gold[/b]: kauft Seiten, Verbesserungen, Würfel, Ruhm und Beute. Bleibt.\n"
+"{cunning} [b]List[/b]: bestimmt die Zugreihenfolge und bezahlt Neuwürfe. Verfällt am Rundenende.\n"
+"\n"
+"Besondere Seiten vom Markt bringen {guard} Deckung, {heal} Heilung, {wild} Joker, {renown} Ruhm und {double} Verdopplung. Siehe [i]Seiten[/i]."
+
+#: Scripts/UI/RulesBook.gd:46
+msgid "Initiative"
+msgstr "Initiative"
+
+#: Scripts/UI/RulesBook.gd:46
+msgid ""
+"[font_size=26]Initiative and declaring[/font_size]\n"
+"\n"
+"After the roll, players are ranked by {cunning}, highest first. Ties go to the player with less {gold}, then to whoever is closest to the first-player token, which passes left every turn.\n"
+"\n"
+"[b]Declaring runs backwards:[/b] the least cunning player speaks first, and the most cunning speaks last, having heard every claim.\n"
+"\n"
+"[b]Resolving runs forwards:[/b] the most cunning player acts first, so their attacks land before slower players can act, and they shop first."
+msgstr ""
+"[font_size=26]Initiative und Ankündigen[/font_size]\n"
+"\n"
+"Nach dem Würfeln werden alle nach {cunning} geordnet, die meiste zuerst. Bei Gleichstand gewinnt, wer weniger {gold} hat, danach, wer näher am Startspieler-Marker sitzt, der jede Runde nach links wandert.\n"
+"\n"
+"[b]Angekündigt wird rückwärts:[/b] die wenigste List spricht zuerst, die meiste zuletzt, nachdem sie jede Behauptung gehört hat.\n"
+"\n"
+"[b]Aufgelöst wird vorwärts:[/b] die meiste List handelt zuerst, ihre Angriffe treffen also, bevor langsamere Spieler handeln können, und sie kauft zuerst ein."
+
+#: Scripts/UI/RulesBook.gd:53
+msgid "Your plan"
+msgstr "Dein Plan"
+
+#: Scripts/UI/RulesBook.gd:53
+msgid ""
+"[font_size=26]Your secret plan[/font_size]\n"
+"\n"
+"Choose what you will really do: attack a player, a mob or the boss, shop, or rest. It may differ from what you declared.\n"
+"\n"
+"Then split your {combat}:\n"
+"{combat} [b]Attack[/b]: used by an attack.\n"
+"{guard} [b]Guard[/b]: blocks damage from anything, all turn.\n"
+"\n"
+"[b]Keeping your word[/b] means your plan matches your declared action and target. It moves your [b]oath[/b] one step; the third step completes it for [b]+1 {renown}[/b] and starts a new one. Breaking your word starts your oath over, so a lie costs the most just before an oath is complete. Everyone can see how far each oath has come."
+msgstr ""
+"[font_size=26]Dein geheimer Plan[/font_size]\n"
+"\n"
+"Wähle, was du wirklich tust: einen Spieler, ein Monster oder den Boss angreifen, einkaufen oder rasten. Das darf von deiner Ankündigung abweichen.\n"
+"\n"
+"Dann teile deinen {combat} auf:\n"
+"{combat} [b]Angriff[/b]: wird von einem Angriff verwendet.\n"
+"{guard} [b]Deckung[/b]: wehrt die ganze Runde lang Schaden von allem ab.\n"
+"\n"
+"[b]Wort halten[/b] heißt, dein Plan stimmt mit angekündigter Aktion und angekündigtem Ziel überein. Das bringt deinen [b]Schwur[/b] einen Schritt voran; der dritte Schritt erfüllt ihn für [b]+1 {renown}[/b] und beginnt einen neuen. Ein gebrochenes Wort setzt deinen Schwur zurück, eine Lüge kostet also kurz vor einem erfüllten Schwur am meisten. Alle sehen, wie weit jeder Schwur gediehen ist."
+
+#: Scripts/UI/RulesBook.gd:62
+msgid "Resolution"
+msgstr "Auflösung"
+
+#: Scripts/UI/RulesBook.gd:62
+msgid ""
+"[font_size=26]Resolution[/font_size]\n"
+"\n"
+"Plans resolve in initiative order. On your turn:\n"
+"\n"
+"[b]Attack a player:[/b] damage is your attack minus their guard. If it deals damage and they hold more {renown} than you, you also take [b]1 {renown}[/b] from them: only the richer can be robbed. A player knocked out before their turn loses their action.\n"
+"[b]Attack a mob:[/b] with attack at least its {heal}, you slay it. Otherwise it hits back.\n"
+"[b]Attack the boss:[/b] your attack adds to everyone else's this turn.\n"
+"[b]Shop:[/b] buy from the market.\n"
+"[b]Rest:[/b] heal 3 {heal}."
+msgstr ""
+"[font_size=26]Auflösung[/font_size]\n"
+"\n"
+"Die Pläne werden in Initiativereihenfolge aufgelöst. Wenn du dran bist:\n"
+"\n"
+"[b]Einen Spieler angreifen:[/b] der Schaden ist dein Angriff minus seine Deckung. Verursacht er Schaden und hat das Ziel mehr {renown} als du, nimmst du ihm außerdem [b]1 {renown}[/b] ab: nur die Reicheren lassen sich berauben. Wer vor seinem Zug k.o. geht, verliert seine Aktion.\n"
+"[b]Ein Monster angreifen:[/b] ist dein Angriff mindestens so hoch wie seine {heal}, besiegst du es. Sonst schlägt es zurück.\n"
+"[b]Den Boss angreifen:[/b] dein Angriff zählt in dieser Runde zu dem aller anderen.\n"
+"[b]Einkaufen:[/b] kaufe am Markt.\n"
+"[b]Rasten:[/b] heile 3 {heal}."
+
+#: Scripts/UI/RulesBook.gd:71
+msgid "Enemies"
+msgstr "Gegner"
+
+#: Scripts/UI/RulesBook.gd:71
+msgid ""
+"[font_size=26]Mobs, the boss and loot[/font_size]\n"
+"\n"
+"[b]Mobs[/b] are slain by a single player. Each kill is worth {score} (+1 for tier 1, +2 for tiers 2 and 3) and a {trinket} trinket. A mob falls only once per turn: the first attacker in turn order who meets its {heal} slays it, and later attackers find it dead. The game has three acts (turns 1–5, 6–10, 11–15); each act brings a fresh table of stronger mobs.\n"
+"\n"
+"[b]The boss[/b] must fall in a single turn; its health resets every turn. If it survives, it strikes every attacker. If it falls, each attacker who dealt at least a quarter of its health gains +3 {score} and a share of its powerful spoils, and a stronger boss arrives.\n"
+"\n"
+"[b]Loot:[/b] attackers who dealt at least a quarter of the boss's health share the spoils: one item for every two of them, picked one at a time, [b]most damage first[/b]. One more item then goes to a [b]sealed bid[/b] open to every player, in {gold} and {renown} (3 {gold} each): the highest bid wins and pays."
+msgstr ""
+"[font_size=26]Monster, der Boss und Beute[/font_size]\n"
+"\n"
+"[b]Monster[/b] werden von einem einzelnen Spieler besiegt. Jeder Sieg bringt {score} (+1 in Stufe 1, +2 in den Stufen 2 und 3) und einen {trinket} Talisman. Ein Monster fällt nur einmal pro Runde: der erste Angreifer in der Zugreihenfolge, der seine {heal} erreicht, besiegt es, und spätere Angreifer finden es tot vor. Das Spiel hat drei Akte (Runden 1–5, 6–10, 11–15); jeder Akt bringt einen frischen Tisch mit stärkeren Monstern.\n"
+"\n"
+"[b]Der Boss[/b] muss in einer einzigen Runde fallen; seine Gesundheit wird jede Runde zurückgesetzt. Überlebt er, trifft er jeden Angreifer. Fällt er, erhält jeder Angreifer, der mindestens ein Viertel seiner Gesundheit an Schaden verursacht hat, +3 {score} und einen Anteil an seiner mächtigen Beute, und ein stärkerer Boss erscheint.\n"
+"\n"
+"[b]Beute:[/b] Angreifer, die mindestens ein Viertel der Gesundheit des Bosses an Schaden verursacht haben, teilen sich die Beute: ein Gegenstand für je zwei von ihnen, einzeln gewählt, [b]höchster Schaden zuerst[/b]. Ein weiterer Gegenstand geht danach an ein [b]verdecktes Gebot[/b], offen für alle Spieler, in {gold} und {renown} (je 3 {gold}): das höchste Gebot gewinnt und zahlt."
+
+#: Scripts/UI/RulesBook.gd:78
+msgid "The market"
+msgstr "Der Markt"
+
+#: Scripts/UI/RulesBook.gd:78
+msgid ""
+"[font_size=26]The market[/font_size]\n"
+"\n"
+"Everyone shares one market row. Shoppers buy in initiative order, so the most cunning get first pick.\n"
+"\n"
+"[b]Buy a face[/b], then choose any face on any of your dice to replace with it. This is how you build your dice.\n"
+"[b]Upgrade a face[/b] by 1 (up to 5). It costs the new value: raising {combat}2 to {combat}3 costs 3.\n"
+"[b]Buy a die[/b] to roll more each turn.\n"
+"[b]Buy renown[/b]: 5 {gold} for 1 {renown}.\n"
+"[b]Refresh[/b] the row if nothing suits you.\n"
+"\n"
+"You can pay with {gold}, {renown} (worth 3 {gold} each) or both. The row refills at the end of every turn."
+msgstr ""
+"[font_size=26]Der Markt[/font_size]\n"
+"\n"
+"Alle teilen sich eine Marktreihe. Gekauft wird in Initiativereihenfolge, die Listigsten haben also die erste Wahl.\n"
+"\n"
+"[b]Kaufe eine Seite[/b] und wähle dann eine beliebige Seite auf einem deiner Würfel, die sie ersetzt. So baust du deine Würfel.\n"
+"[b]Verbessere eine Seite[/b] um 1 (bis 5). Das kostet den neuen Wert: {combat}2 auf {combat}3 zu heben kostet 3.\n"
+"[b]Kaufe einen Würfel[/b], um jede Runde mehr zu würfeln.\n"
+"[b]Kaufe Ruhm[/b]: 5 {gold} für 1 {renown}.\n"
+"[b]Frische die Reihe auf[/b], wenn nichts passt.\n"
+"\n"
+"Du kannst mit {gold}, {renown} (je 3 {gold} wert) oder beidem zahlen. Die Reihe wird am Ende jeder Runde aufgefüllt."
+
+#: Scripts/UI/RulesBook.gd:89
+msgid "Knockouts"
+msgstr "K.o."
+
+#: Scripts/UI/RulesBook.gd:89
+msgid ""
+"[font_size=26]Knockouts[/font_size]\n"
+"\n"
+"At 0 {heal} you are [b]knocked out[/b]: you lose your action this turn, sit out the next turn and cannot be targeted, then return with half your health.\n"
+"\n"
+"The player who knocked you out gains [b]+1 {score}[/b] and you lose [b]1 {score}[/b]. Falling to a mob or the boss also costs 1 {score}.\n"
+"\n"
+"Nobody is ever eliminated. The game always lasts all 15 turns."
+msgstr ""
+"[font_size=26]K.o.[/font_size]\n"
+"\n"
+"Bei 0 {heal} bist du [b]k.o.[/b]: du verlierst deine Aktion in dieser Runde, setzt die nächste Runde aus und kannst nicht angegriffen werden, dann kehrst du mit halber Gesundheit zurück.\n"
+"\n"
+"Wer dich k.o. geschlagen hat, erhält [b]+1 {score}[/b], und du verlierst [b]1 {score}[/b]. Durch ein Monster oder den Boss k.o. zu gehen kostet ebenfalls 1 {score}.\n"
+"\n"
+"Niemand scheidet je aus. Das Spiel dauert immer alle 15 Runden."
+
+#: Scripts/UI/RulesBook.gd:127
+#: Scripts/UI/RulesBook.gd:205
+msgid "Faces"
+msgstr "Seiten"
+
+#: Scripts/UI/RulesBook.gd:127
+#: Scripts/UI/RulesBook.gd:239
+msgid "Bestiary"
+msgstr "Bestiarium"
+
+#: Scripts/UI/RulesBook.gd:127
+#: Scripts/UI/RulesBook.gd:278
+msgid "Controls"
+msgstr "Steuerung"
+
+#: Scripts/UI/RulesBook.gd:206
+msgid "Every face in the market, with its price in {gold} ({renown} pays 3 {gold})."
+msgstr "Jede Seite des Marktes mit ihrem Preis in {gold} ({renown} zahlt 3 {gold})."
+
+#: Scripts/UI/RulesBook.gd:213
+msgid "A new die costs [b]{die}[/b] and starts with basic faces. Refreshing the row costs [b]{refresh}[/b]."
+msgstr "Ein neuer Würfel kostet [b]{die}[/b] und hat einfache Seiten. Die Reihe aufzufrischen kostet [b]{refresh}[/b]."
+
+#: Scripts/UI/RulesBook.gd:215
+msgid "Upgrading {combat} {gold} {cunning} {guard} or {heal} faces by 1 costs the new value, up to [b]{max}[/b]. One {renown} costs [b]{price}[/b] {gold}."
+msgstr "{combat}-, {gold}-, {cunning}-, {guard}- oder {heal}-Seiten um 1 zu verbessern kostet den neuen Wert, bis höchstens [b]{max}[/b]. Ein {renown} kostet [b]{price}[/b] {gold}."
+
+#: Scripts/UI/RulesBook.gd:222
+msgid "Permanent effects won from mobs and bosses. Boss spoils are the strongest."
+msgstr "Dauerhafte Effekte, gewonnen von Monstern und Bossen. Bossbeute ist am stärksten."
+
+#: Scripts/UI/RulesBook.gd:223
+msgid "From mobs"
+msgstr "Von Monstern"
+
+#: Scripts/UI/RulesBook.gd:231
+msgid "From bosses"
+msgstr "Von Bossen"
+
+#: Scripts/UI/RulesBook.gd:241
+msgid "Act {act} mobs ({score} +{amount} each)"
+msgstr "Monster in Akt {act} (je {score} +{amount})"
+
+#: Scripts/UI/RulesBook.gd:251
+msgid "Bosses"
+msgstr "Bosse"
+
+#: Scripts/UI/RulesBook.gd:252
+msgid "The first boss comes from stage 1, the next from stage 2, every later one from stage 3. Health is shown for 4 players."
+msgstr "Der erste Boss kommt aus Stufe 1, der nächste aus Stufe 2, jeder weitere aus Stufe 3. Die Gesundheit gilt für 4 Spieler."
+
+#: Scripts/UI/RulesBook.gd:255
+msgid "{base} + {per} per player"
+msgstr "{base} + {per} pro Spieler"
+
+#: Scripts/UI/RulesBook.gd:256
+msgid "Stage {stage}"
+msgstr "Stufe {stage}"
+
+#: Scripts/UI/RulesBook.gd:263
+msgid "Move between controls"
+msgstr "Zwischen Elementen wechseln"
+
+#: Scripts/UI/RulesBook.gd:263
+msgid "Arrow keys"
+msgstr "Pfeiltasten"
+
+#: Scripts/UI/RulesBook.gd:263
+msgid "D-pad or left stick"
+msgstr "Steuerkreuz oder linker Stick"
+
+#: Scripts/UI/RulesBook.gd:264
+msgid "Press, choose"
+msgstr "Drücken, wählen"
+
+#: Scripts/UI/RulesBook.gd:264
+msgid "Enter"
+msgstr "Eingabe"
+
+#: Scripts/UI/RulesBook.gd:265
+msgid "Back, close"
+msgstr "Zurück, schließen"
+
+#: Scripts/UI/RulesBook.gd:266
+msgid "Escape menu"
+msgstr "Pausenmenü"
+
+#: Scripts/UI/RulesBook.gd:267
+msgid "Skip animations"
+msgstr "Animationen überspringen"
+
+#: Scripts/UI/RulesBook.gd:267
+msgid "Space"
+msgstr "Leertaste"
+
+#: Scripts/UI/RulesBook.gd:269
+msgid "Player sheets"
+msgstr "Spielerbögen"
+
+#: Scripts/UI/RulesBook.gd:270
+msgid "Turn pages, other players"
+msgstr "Blättern, andere Spieler"
+
+#: Scripts/UI/RulesBook.gd:271
+msgid "Scroll the Chronicle and this book"
+msgstr "Chronik und dieses Buch scrollen"
+
+#: Scripts/UI/RulesBook.gd:271
+msgid "Right stick"
+msgstr "Rechter Stick"
+
+#: Scripts/UI/RulesBook.gd:272
+msgid "Pick dice to reroll"
+msgstr "Würfel zum Neuwürfeln wählen"
+
+#: Scripts/UI/RulesBook.gd:272
+msgid "1 to 9, or move onto the tray"
+msgstr "1 bis 9, oder auf das Würfelbrett wechseln"
+
+#: Scripts/UI/RulesBook.gd:272
+msgid "Move onto the tray, left and right, A"
+msgstr "Auf das Würfelbrett wechseln, links und rechts, A"
+
+#: Scripts/UI/RulesBook.gd:274
+msgid "Action"
+msgstr "Aktion"
+
+#: Scripts/UI/RulesBook.gd:274
+msgid "Keyboard"
+msgstr "Tastatur"
+
+#: Scripts/UI/RulesBook.gd:274
+msgid "Controller"
+msgstr "Controller"
+
+#: Scripts/UI/RulesBook.gd:279
+msgid "Everything can be played with a mouse, a keyboard or a controller."
+msgstr "Alles lässt sich mit Maus, Tastatur oder Controller spielen."
+
+#: Scripts/UI/SeatCard.gd:144
+msgid "away · bot plays"
+msgstr "weg · Bot spielt"
+
+#: Scripts/UI/SeatCard.gd:166
+msgid "{renown} renown. Oath: {oath} of {length} kept words in a row; the next completes it."
+msgstr "{renown} Ruhm. Schwur: {oath} von {length} gehaltenen Worten in Folge; das nächste erfüllt ihn."
+
+#: Scripts/UI/SeatCard.gd:168
+msgid "{renown} renown. Oath: {oath} of {length} kept words in a row."
+msgstr "{renown} Ruhm. Schwur: {oath} von {length} gehaltenen Worten in Folge."
+
+#: Scripts/UI/SeatCard.gd:225
+msgid "Knocked out, back after turn {turn}"
+msgstr "K.o., zurück nach Runde {turn}"
+
+#: Scripts/UI/SeatCard.gd:231
+msgid "kept"
+msgstr "behalten"
+
+#: Scripts/UI/SeatCard.gd:231
+msgid "rolling…"
+msgstr "würfelt…"
+
+#: Scripts/UI/SeatCard.gd:241
+msgid "Says: {choice}"
+msgstr "Sagt: {choice}"
+
+#: Scripts/UI/SeatCard.gd:246
+msgid "Did: {plan}"
+msgstr "Tat: {plan}"
+
+#: Scripts/UI/SeatCard.gd:251
+msgid "kept word"
+msgstr "Wort gehalten"
+
+#: Scripts/UI/SeatCard.gd:251
+msgid "lied"
+msgstr "gelogen"
+
+#: Scripts/UI/SettingsPanel.gd:30
+msgid "Display"
+msgstr "Anzeige"
+
+#: Scripts/UI/SettingsPanel.gd:30
+msgid "Audio"
+msgstr "Audio"
+
+#: Scripts/UI/SettingsPanel.gd:30
+msgid "Gameplay"
+msgstr "Spiel"
+
+#: Scripts/UI/SettingsPanel.gd:50
+msgid "Fullscreen"
+msgstr "Vollbild"
+
+#: Scripts/UI/SettingsPanel.gd:51
+msgid "Vertical sync"
+msgstr "Vertikale Synchronisation"
+
+#: Scripts/UI/SettingsPanel.gd:52
+msgid "Interface size"
+msgstr "Größe der Oberfläche"
+
+#: Scripts/UI/SettingsPanel.gd:55
+msgid "Master volume"
+msgstr "Gesamtlautstärke"
+
+#: Scripts/UI/SettingsPanel.gd:56
+msgid "Music"
+msgstr "Musik"
+
+#: Scripts/UI/SettingsPanel.gd:58
+msgid "Fireplace"
+msgstr "Kaminfeuer"
+
+#: Scripts/UI/SettingsPanel.gd:61
+msgid "Animation speed"
+msgstr "Animationstempo"
+
+#: Scripts/UI/SettingsPanel.gd:62
+msgid "Reduced motion"
+msgstr "Weniger Bewegung"
+
+#: Scripts/UI/SettingsPanel.gd:63
+msgid "Confirm before locking a plan"
+msgstr "Vor dem Festlegen eines Plans nachfragen"
+
+#: Scripts/UI/SettingsPanel.gd:64
+msgid "High-contrast stamps"
+msgstr "Kontrastreiche Stempel"
+
+#: Scripts/UI/SettingsPanel.gd:65
+msgid "First-game tips"
+msgstr "Tipps fürs erste Spiel"
+
+#: Scripts/UI/SettingsPanel.gd:67
+msgid "Show all tips again"
+msgstr "Alle Tipps erneut zeigen"
+
+#: Scripts/UI/SettingsPanel.gd:73
+msgid "Reset to defaults"
+msgstr "Auf Standard zurücksetzen"
+
+#: Scripts/UI/SettingsPanel.gd:77
+msgid "Done"
+msgstr "Fertig"
+
+#: Scripts/UI/SettingsPanel.gd:128
+msgid "Language"
+msgstr "Sprache"
+
+#: Scripts/UI/SettingsPanel.gd:133
+msgid "System language"
+msgstr "Systemsprache"
+
+#: Scripts/UI/SettingsPanel.gd:139
+msgid "Change the language from the main menu."
+msgstr "Die Sprache lässt sich im Hauptmenü ändern."
+
+#: Scenes/Game.tscn:94
+msgid "The table is being set…"
+msgstr "Der Tisch wird gedeckt…"
+
+#: Scenes/Game.tscn:109
+msgid "Menu"
+msgstr "Menü"
+
+#: Scenes/Game.tscn:177
+msgid "THE BOSS"
+msgstr "DER BOSS"
+
+#: Scenes/Game.tscn:183
+#: Resources/Enemies/RedDragon.tres:8
+msgid "Red Dragon"
+msgstr "Roter Drache"
+
+#: Scenes/Game.tscn:212
+msgid "MOBS"
+msgstr "MONSTER"
+
+#: Scenes/Game.tscn:234
+msgid "THE MARKET"
+msgstr "DER MARKT"
+
+#: Scenes/Game.tscn:268
+msgid "The Chronicle"
+msgstr "Die Chronik"
+
+#: Scenes/Game.tscn:302
+msgid "Turn 1"
+msgstr "Runde 1"
+
+#: Scenes/Game.tscn:352
+msgid "No more tips"
+msgstr "Keine Tipps mehr"
+
+#: Scenes/Game.tscn:357
+msgid "Got it"
+msgstr "Verstanden"
+
+#: Scenes/Menu.tscn:150
+msgid "Dice Game"
+msgstr "Dice Game"
+
+#: Scenes/Menu.tscn:158
+msgid "Honest promises. Well-timed betrayal."
+msgstr "Ehrliche Versprechen. Verrat im richtigen Moment."
+
+#: Scenes/Menu.tscn:182
+msgid "YOUR NAME AT THE TABLE"
+msgstr "DEIN NAME AM TISCH"
+
+#: Scenes/Menu.tscn:196
+msgid "Play vs bots"
+msgstr "Gegen Bots spielen"
+
+#: Scenes/Menu.tscn:203
+#: Scenes/Menu.tscn:296
+msgid "Play with friends"
+msgstr "Mit Freunden spielen"
+
+#: Scenes/Menu.tscn:232
+#: Scenes/Menu.tscn:447
+msgid "Credits"
+msgstr "Mitwirkende"
+
+#: Scenes/Menu.tscn:250
+msgid "A table of bots"
+msgstr "Ein Tisch voller Bots"
+
+#: Scenes/Menu.tscn:256
+msgid "Bots see only what a player at the table would see, and they keep their word about two times in three."
+msgstr "Bots sehen nur, was ein Spieler am Tisch sehen würde, und halten ihr Wort etwa zwei von drei Malen."
+
+#: Scenes/Menu.tscn:267
+msgid "Opponents"
+msgstr "Gegner"
+
+#: Scenes/Menu.tscn:279
+msgid "Take a seat"
+msgstr "Platz nehmen"
+
+#: Scenes/Menu.tscn:285
+#: Scenes/Menu.tscn:374
+#: Scenes/Menu.tscn:460
+msgid "Back"
+msgstr "Zurück"
+
+#: Scenes/Menu.tscn:303
+msgid "Steam"
+msgstr "Steam"
+
+#: Scenes/Menu.tscn:312
+msgid "Host a Steam lobby"
+msgstr "Steam-Lobby eröffnen"
+
+#: Scenes/Menu.tscn:322
+msgid "FRIENDS' TABLES"
+msgstr "TISCHE VON FREUNDEN"
+
+#: Scenes/Menu.tscn:328
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: Scenes/Menu.tscn:339
+msgid "Join selected table"
+msgstr "Gewähltem Tisch beitreten"
+
+#: Scenes/Menu.tscn:347
+msgid "DIRECT IP (LAN)"
+msgstr "DIREKTE IP (LAN)"
+
+#: Scenes/Menu.tscn:356
+msgid "Host"
+msgstr "Eröffnen"
+
+#: Scenes/Menu.tscn:363
+msgid "Host's IP address"
+msgstr "IP-Adresse des Gastgebers"
+
+#: Scenes/Menu.tscn:368
+msgid "Join"
+msgstr "Beitreten"
+
+#: Scenes/Menu.tscn:386
+msgid "The table"
+msgstr "Der Tisch"
+
+#: Scenes/Menu.tscn:410
+msgid "Add bot"
+msgstr "Bot hinzufügen"
+
+#: Scenes/Menu.tscn:416
+msgid "Remove bot"
+msgstr "Bot entfernen"
+
+#: Scenes/Menu.tscn:422
+msgid "Invite"
+msgstr "Einladen"
+
+#: Scenes/Menu.tscn:429
+msgid "Deal them in"
+msgstr "Austeilen"
+
+#: Resources/Enemies/AncientWyrm.tres:8
+msgid "Ancient Wyrm"
+msgstr "Urzeitlindwurm"
+
+#: Resources/Enemies/AncientWyrm.tres:9
+msgid "Older than the mountains."
+msgstr "Älter als die Berge."
+
+#: Resources/Enemies/BoneColossus.tres:8
+msgid "Bone Colossus"
+msgstr "Knochenkoloss"
+
+#: Resources/Enemies/BoneColossus.tres:9
+msgid "A giant of a thousand graves."
+msgstr "Ein Riese aus tausend Gräbern."
+
+#: Resources/Enemies/CaveTroll.tres:11
+msgid "Cave Troll"
+msgstr "Höhlentroll"
+
+#: Resources/Enemies/CaveTroll.tres:12
+msgid "Big, slow and hungry."
+msgstr "Groß, langsam und hungrig."
+
+#: Resources/Enemies/DemonPrince.tres:8
+msgid "Demon Prince"
+msgstr "Dämonenprinz"
+
+#: Resources/Enemies/DemonPrince.tres:9
+msgid "Every bargain has a price."
+msgstr "Jeder Handel hat seinen Preis."
+
+#: Resources/Enemies/EldritchHorror.tres:8
+msgid "Eldritch Horror"
+msgstr "Uraltes Grauen"
+
+#: Resources/Enemies/EldritchHorror.tres:9
+msgid "It should not be."
+msgstr "Es dürfte nicht sein."
+
+#: Resources/Enemies/GiantBats.tres:11
+msgid "Giant Bats"
+msgstr "Riesenfledermäuse"
+
+#: Resources/Enemies/GiantBats.tres:12
+msgid "A shrieking cloud of wings."
+msgstr "Eine kreischende Wolke aus Flügeln."
+
+#: Resources/Enemies/GoblinThief.tres:10
+msgid "Goblin Thief"
+msgstr "Koboldsdieb"
+
+#: Resources/Enemies/GoblinThief.tres:11
+msgid "Quick fingers, quicker feet."
+msgstr "Flinke Finger, flinkere Füße."
+
+#: Resources/Enemies/Highwayman.tres:11
+msgid "Highwayman"
+msgstr "Wegelagerer"
+
+#: Resources/Enemies/Highwayman.tres:12
+msgid "Your purse or your life."
+msgstr "Geld oder Leben."
+
+#: Resources/Enemies/Lich.tres:12
+msgid "Lich"
+msgstr "Lich"
+
+#: Resources/Enemies/Lich.tres:13
+msgid "It has outlived every promise it made."
+msgstr "Er hat jedes seiner Versprechen überlebt."
+
+#: Resources/Enemies/OgreChief.tres:12
+msgid "Ogre Chief"
+msgstr "Ogerhäuptling"
+
+#: Resources/Enemies/OgreChief.tres:13
+msgid "Leads by smashing."
+msgstr "Führt mit der Keule."
+
+#: Resources/Enemies/RatKing.tres:11
+msgid "Rat King"
+msgstr "Rattenkönig"
+
+#: Resources/Enemies/RatKing.tres:12
+msgid "Crowned by his own tail."
+msgstr "Gekrönt von seinem eigenen Schwanz."
+
+#: Resources/Enemies/RedDragon.tres:9
+msgid "A fierce dragon."
+msgstr "Ein wilder Drache."
+
+#: Resources/Enemies/StoneGolem.tres:12
+msgid "Stone Golem"
+msgstr "Steingolem"
+
+#: Resources/Enemies/StoneGolem.tres:13
+msgid "Slow to wake, slower to fall."
+msgstr "Langsam erwacht, noch langsamer gefallen."
+
+#: Resources/Enemies/SwampWitch.tres:12
+msgid "Swamp Witch"
+msgstr "Sumpfhexe"
+
+#: Resources/Enemies/SwampWitch.tres:13
+msgid "She brews what she catches."
+msgstr "Sie braut, was sie fängt."
+
+#: Resources/Enemies/TrollKing.tres:8
+msgid "Troll King"
+msgstr "Trollkönig"
+
+#: Resources/Enemies/TrollKing.tres:9
+msgid "He wears the last crown he ate."
+msgstr "Er trägt die letzte Krone, die er gefressen hat."
+
+#: Resources/Enemies/VampireLord.tres:10
+msgid "Vampire Lord"
+msgstr "Vampirfürst"
+
+#: Resources/Enemies/VampireLord.tres:11
+msgid "He never refuses an invitation."
+msgstr "Eine Einladung schlägt er nie aus."
+
+#: Resources/Enemies/Werewolf.tres:11
+msgid "Werewolf"
+msgstr "Werwolf"
+
+#: Resources/Enemies/Werewolf.tres:12
+msgid "A neighbour by day."
+msgstr "Tagsüber ein Nachbar."
+
+#: Resources/Enemies/Wraith.tres:11
+msgid "Wraith"
+msgstr "Gespenst"
+
+#: Resources/Enemies/Wraith.tres:12
+msgid "A whisper with claws."
+msgstr "Ein Flüstern mit Klauen."
+
+#: Resources/Trinkets/BackstabDagger.tres:8
+msgid "Backstab Dagger"
+msgstr "Meuchelmesser"
+
+#: Resources/Trinkets/BackstabDagger.tres:9
+msgid "+2 {combat} attack when you attack a player you did not declare."
+msgstr "+2 {combat} Angriff, wenn du einen Spieler angreifst, den du nicht angekündigt hast."
+
+#: Resources/Trinkets/BoneDice.tres:8
+msgid "Bone Dice"
+msgstr "Knochenwürfel"
+
+#: Resources/Trinkets/BoneDice.tres:9
+msgid "Your second reroll each turn is free as well."
+msgstr "Auch dein zweiter Neuwurf jeder Runde ist gratis."
+
+#: Resources/Trinkets/CoinMagnet.tres:8
+msgid "Coin Magnet"
+msgstr "Münzmagnet"
+
+#: Resources/Trinkets/CoinMagnet.tres:9
+msgid "When your attack damages a player, you also steal 1 {gold} from them."
+msgstr "Wenn dein Angriff einem Spieler schadet, stiehlst du ihm außerdem 1 {gold}."
+
+#: Resources/Trinkets/CrownOfHonor.tres:8
+msgid "Crown of Honor"
+msgstr "Ehrenkrone"
+
+#: Resources/Trinkets/CrownOfHonor.tres:9
+msgid "+2 extra {renown} whenever you complete an oath."
+msgstr "+2 zusätzlicher {renown}, wann immer du einen Schwur erfüllst."
+
+#: Resources/Trinkets/Dragonscale.tres:8
+msgid "Dragonscale"
+msgstr "Drachenschuppe"
+
+#: Resources/Trinkets/Dragonscale.tres:9
+msgid "+2 {guard} guard every turn."
+msgstr "+2 {guard} Deckung in jeder Runde."
+
+#: Resources/Trinkets/FoxMask.tres:8
+msgid "Fox Mask"
+msgstr "Fuchsmaske"
+
+#: Resources/Trinkets/FoxMask.tres:9
+msgid "+1 {cunning} every turn, plus 1 for every cunning face you roll."
+msgstr "+1 {cunning} in jeder Runde, plus 1 für jede gewürfelte List-Seite."
+
+#: Resources/Trinkets/GobletOfBlood.tres:8
+msgid "Goblet of Blood"
+msgstr "Blutkelch"
+
+#: Resources/Trinkets/GobletOfBlood.tres:9
+msgid "When your attack deals damage, heal 1 {heal}, plus 1 for every 5 damage."
+msgstr "Wenn dein Angriff Schaden verursacht, heilst du 1 {heal}, plus 1 je 5 Schaden."
+
+#: Resources/Trinkets/GoldenIdol.tres:8
+msgid "Golden Idol"
+msgstr "Goldener Götze"
+
+#: Resources/Trinkets/GoldenIdol.tres:9
+msgid "+2 {gold} every turn."
+msgstr "+2 {gold} in jeder Runde."
+
+#: Resources/Trinkets/HerbalPouch.tres:8
+msgid "Herbal Pouch"
+msgstr "Kräuterbeutel"
+
+#: Resources/Trinkets/HerbalPouch.tres:9
+msgid "Resting heals 2 more {heal}."
+msgstr "Rasten heilt 2 {heal} mehr."
+
+#: Resources/Trinkets/HuntersHorn.tres:8
+msgid "Hunter's Horn"
+msgstr "Jagdhorn"
+
+#: Resources/Trinkets/HuntersHorn.tres:9
+msgid "+2 {combat} attack when you attack a mob."
+msgstr "+2 {combat} Angriff, wenn du ein Monster angreifst."
+
+#: Resources/Trinkets/LiarsMask.tres:8
+msgid "Liar's Mask"
+msgstr "Lügnermaske"
+
+#: Resources/Trinkets/LiarsMask.tres:9
+msgid "Breaking your word does not start your oath over."
+msgstr "Ein gebrochenes Wort setzt deinen Schwur nicht zurück."
+
+#: Resources/Trinkets/LuckyCoin.tres:8
+msgid "Lucky Coin"
+msgstr "Glücksmünze"
+
+#: Resources/Trinkets/LuckyCoin.tres:9
+msgid "+1 {gold} for every gold face you roll."
+msgstr "+1 {gold} für jede gewürfelte Gold-Seite."
+
+#: Resources/Trinkets/MerchantsSeal.tres:8
+msgid "Merchant's Seal"
+msgstr "Händlersiegel"
+
+#: Resources/Trinkets/MerchantsSeal.tres:9
+msgid "Faces, upgrades and dice cost you 1 {gold} less (never less than 1)."
+msgstr "Seiten, Verbesserungen und Würfel kosten dich 1 {gold} weniger (nie weniger als 1)."
+
+#: Resources/Trinkets/Opportunity.tres:8
+msgid "Opportunity"
+msgstr "Gelegenheit"
+
+#: Resources/Trinkets/Opportunity.tres:9
+msgid "Gain an extra die: {combat}2 {combat}2 {gold}2 {gold}2 {cunning}1 {cunning}1."
+msgstr "Erhalte einen zusätzlichen Würfel: {combat}2 {combat}2 {gold}2 {gold}2 {cunning}1 {cunning}1."
+
+#: Resources/Trinkets/PhoenixFeather.tres:8
+msgid "Phoenix Feather"
+msgstr "Phönixfeder"
+
+#: Resources/Trinkets/PhoenixFeather.tres:9
+msgid "Come back from a knockout at full {heal} health."
+msgstr "Kehre nach einem K.o. mit voller {heal} Gesundheit zurück."
+
+#: Resources/Trinkets/SharpTooth.tres:8
+msgid "Sharp Tooth"
+msgstr "Scharfer Zahn"
+
+#: Resources/Trinkets/SharpTooth.tres:9
+msgid "+1 {combat} for every combat face you roll."
+msgstr "+1 {combat} für jede gewürfelte Kampf-Seite."
+
+#: Resources/Trinkets/SilverTongue.tres:8
+msgid "Silver Tongue"
+msgstr "Silberzunge"
+
+#: Resources/Trinkets/SilverTongue.tres:9
+msgid "+1 {gold} whenever you keep your word."
+msgstr "+1 {gold}, wann immer du Wort hältst."
+
+#: Resources/Trinkets/SmokeBomb.tres:8
+msgid "Smoke Bomb"
+msgstr "Rauchbombe"
+
+#: Resources/Trinkets/SmokeBomb.tres:9
+msgid "+2 {guard} guard on a turn you break your word."
+msgstr "+2 {guard} Deckung in einer Runde, in der du dein Wort brichst."
+
+#: Resources/Trinkets/ThirdEye.tres:8
+msgid "Third Eye"
+msgstr "Drittes Auge"
+
+#: Resources/Trinkets/ThirdEye.tres:9
+msgid "+2 {cunning} every turn, plus 2 more for every cunning face you roll; each cunning face also heals 1 {heal}."
+msgstr "+2 {cunning} in jeder Runde, plus 2 mehr für jede gewürfelte List-Seite; jede List-Seite heilt außerdem 1 {heal}."
+
+#: Resources/Trinkets/ThornedMail.tres:8
+msgid "Thorned Mail"
+msgstr "Dornenpanzer"
+
+#: Resources/Trinkets/ThornedMail.tres:9
+msgid "When another player's attack damages you, they take 1 damage."
+msgstr "Wenn dir der Angriff eines anderen Spielers schadet, erleidet dieser 1 Schaden."
+
+#: Resources/Trinkets/WarBanner.tres:8
+msgid "War Banner"
+msgstr "Kriegsbanner"
+
+#: Resources/Trinkets/WarBanner.tres:9
+msgid "+1 {combat} attack on every attack you make."
+msgstr "+1 {combat} Angriff bei jedem deiner Angriffe."
+
+#: Resources/Trinkets/WyrmHeart.tres:8
+msgid "Wyrm Heart"
+msgstr "Lindwurmherz"
+
+#: Resources/Trinkets/WyrmHeart.tres:9
+msgid "+4 maximum {heal} health, and heal to full."
+msgstr "+4 maximale {heal} Gesundheit, und volle Heilung."

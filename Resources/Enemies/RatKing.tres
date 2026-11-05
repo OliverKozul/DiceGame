@@ -3,13 +3,13 @@
 [ext_resource type="Script" path="res://Scripts/Content/Mob.gd" id="1_script"]
 [ext_resource type="Script" path="res://Scripts/Content/Trinket.gd" id="2_trinket"]
 [ext_resource type="Resource" path="res://Resources/Trinkets/SharpTooth.tres" id="3_reward"]
-[ext_resource type="Resource" path="res://Resources/Trinkets/SaboteurDagger.tres" id="4_reward"]
+[ext_resource type="Resource" path="res://Resources/Trinkets/BackstabDagger.tres" id="4_reward"]
 
 [resource]
 script = ExtResource("1_script")
 id = &"rat_king"
 display_name = "Rat King"
-description = "Simple guy."
+description = "Crowned by his own tail."
 tier = 1
 copies = 3
 hp = 2

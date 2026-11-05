@@ -8,7 +8,7 @@
 script = ExtResource("1_script")
 id = &"goblin_thief"
 display_name = "Goblin Thief"
-description = "He likes to steal."
+description = "Quick fingers, quicker feet."
 tier = 1
 copies = 3
 hp = 4

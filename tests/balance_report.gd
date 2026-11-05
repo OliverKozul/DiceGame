@@ -44,7 +44,7 @@ func _init() -> void:
 						c.combat += e.combat
 						c.turns += 1
 					"reveal":
-						var key := str(e.text).get_slice(" (", 0).get_slice(" ", 0)
+						var key := str(PlayerState.Action.find_key(int(e.action)))
 						c.actions[key] = c.actions.get(key, 0) + 1
 	print("per game: attacks %.1f dmg/attack %.2f blocked/attack %.2f mob kills %.1f mob fails %.1f boss hits %.1f rests %.1f shops %.1f" % [
 		c.attack / float(n), c.damage / maxf(c.attack, 1), c.blocked / maxf(c.attack, 1), c.mob_kill / float(n), c.mob_fail / float(n), c.boss_hit / float(n), c.rest / float(n), c.shop / float(n)])

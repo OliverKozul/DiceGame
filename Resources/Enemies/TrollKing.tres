@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Boss" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Boss.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"troll_king"
+display_name = "Troll King"
+description = "He wears the last crown he ate."
+stage = 1
+base_hp = 2
+hp_per_player = 1
+damage = 2

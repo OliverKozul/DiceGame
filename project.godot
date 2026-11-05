@@ -19,6 +19,7 @@ config/icon="res://Assets/icon.svg"
 [autoload]
 
 Settings="*res://Scripts/Systems/Settings.gd"
+Controls="*res://Scripts/Systems/Controls.gd"
 Audio="*res://Scripts/Systems/Audio.gd"
 Transition="*res://Scripts/Systems/Transition.gd"
 SteamService="*res://Scripts/Net/SteamService.gd"
@@ -35,6 +36,10 @@ window/stretch/aspect="expand"
 
 [gui]
 
-theme/custom="res://Assets/Theme.tres"
 theme/default_font_multichannel_signed_distance_field=true
 theme/default_font_generate_mipmaps=true
+theme/custom="res://Assets/Theme.tres"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://Locale/de.po")

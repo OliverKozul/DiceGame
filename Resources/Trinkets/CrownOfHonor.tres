@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_script")
 id = &"crown_of_honor"
-display_name = "Crown Of Honor"
-description = "+1 extra {renown} whenever you keep your intention."
+display_name = "Crown of Honor"
+description = "+2 extra {renown} whenever you complete an oath."

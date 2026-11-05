@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Trinket" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Trinkets/WyrmHeart.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"wyrm_heart"
+display_name = "Wyrm Heart"
+description = "+4 maximum {heal} health, and heal to full."

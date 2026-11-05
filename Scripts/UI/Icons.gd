@@ -6,7 +6,7 @@ extends RefCounted
 const DIR := "res://Assets/Icons/"
 const NAMES: Array[String] = [
 	"combat", "gold", "cunning", "guard", "heal", "renown", "wild", "double", "blank",
-	"score", "die", "trinket", "lock", "crown", "knockout", "sabotage",
+	"score", "die", "trinket", "lock", "crown", "knockout",
 ]
 
 static var _token := RegEx.create_from_string("\\{([a-z]+)\\}")

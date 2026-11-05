@@ -9,6 +9,9 @@ const HONESTY := 0.7
 ## Keep the declared intention when it is at least this good compared to the best option.
 const KEEP_WORD_RATIO := 0.75
 const LOW_HP := 8
+const LOOT_WORTH: Dictionary = {&"opportunity": 3.0, &"golden_idol": 2.5, &"war_banner": 2.5, &"crown_of_honor": 2.0,
+	&"dragonscale": 2.0, &"merchants_seal": 1.8, &"liars_mask": 1.6, &"wyrm_heart": 1.5, &"phoenix_feather": 1.2,
+	&"third_eye": 1.0}
 
 const FACE_WEIGHTS: Dictionary = {
 	Face.Kind.NONE: 0.0,
@@ -37,9 +40,9 @@ static func decide(view: GameState, me: int, rng: RandomNumberGenerator) -> Arra
 		GameState.Phase.RESOLVE:
 			return _shop(view, p)
 		GameState.Phase.LOOT:
-			return [&"pick_loot", [rng.randi_range(0, view.loot.size() - 1)]]
+			return [&"pick_loot", [_best_loot(view)]]
 		GameState.Phase.BID:
-			return [&"bid", [rng.randi_range(0, mini(p.gold, 4)), 0]]
+			return [&"bid", [rng.randi_range(mini(p.gold, 1), mini(p.gold, 2 + floori(view.turn / 3.0))), 0]]
 	return []
 
 
@@ -84,26 +87,17 @@ static func _plan(view: GameState, p: PlayerState) -> Array:
 	var action: int = choice[0]
 	var target: int = choice[1]
 	var combat := p.combat
-	var threat := _threat_against(view, p.id)
 	var attack := 0
-	var guard := 0
-	var sabotage := {}
-
+	var guard := combat
 	if action == PlayerState.Action.ATTACK_MOB:
 		attack = mini(combat, Content.mob(view.mobs[target].id).hp)
 		guard = combat - attack
 	elif GameState.is_attack(action):
-		guard = mini(threat, floori(combat / 3.0))
+		guard = mini(_threat_against(view, p.id), floori(combat / 3.0))
+		if action == PlayerState.Action.ATTACK_BOSS:
+			guard = mini(guard, maxi(0, combat - Content.boss_loot_threshold(view.boss_max_hp)))
 		attack = combat - guard
-	else:
-		var attacker := _slower_attacker(view, p)
-		if attacker != 0 and combat > 1:
-			var amount := mini(view.player(attacker).combat, floori(combat / 2.0))
-			if amount > 0:
-				sabotage[attacker] = amount
-				combat -= amount
-		guard = combat
-	return [&"lock_plan", [action, target, attack, guard, sabotage]]
+	return [&"lock_plan", [action, target, attack, guard]]
 
 
 static func _shop(view: GameState, p: PlayerState) -> Array:
@@ -115,11 +109,12 @@ static func _shop(view: GameState, p: PlayerState) -> Array:
 	var best_gain := 0.3
 	for slot in view.market.size():
 		var face := view.market[slot]
-		if face == 0 or Content.face_price(face) > p.gold:
+		var price := p.price(Content.face_price(face))
+		if face == 0 or price > p.gold:
 			continue
 		for d in p.dice.size():
 			for f in p.dice[d].size():
-				var gain := (face_worth(face) - face_worth(p.dice[d][f])) / Content.face_price(face)
+				var gain := (face_worth(face) - face_worth(p.dice[d][f])) / price
 				if gain > best_gain:
 					best_gain = gain
 					best_slot = slot
@@ -127,9 +122,40 @@ static func _shop(view: GameState, p: PlayerState) -> Array:
 					best_face = f
 	if best_slot >= 0:
 		return [&"buy_face", [best_slot, best_die, best_face, 0]]
-	if view.market_die and p.gold >= Content.DIE_PRICE and p.dice.size() < 4:
+	var turns_left := view.max_turns - view.turn
+	if view.market_die and p.gold >= p.price(Content.DIE_PRICE) and p.dice.size() < 4 and turns_left >= 4:
 		return [&"buy_die", [0]]
+	# Nothing good in the row: look at a fresh one once, while it can still pay off.
+	if not view.refreshed and p.gold >= 4 and turns_left >= 3:
+		return [&"refresh_market", [0]]
+	# Upgrade the face that gains most per gold, while there are turns left to roll it.
+	var upgrade := Vector2i(-1, -1)
+	var best_upgrade := 0.25
+	for d in p.dice.size():
+		for f in p.dice[d].size():
+			var face := p.dice[d][f]
+			var price := p.price(Content.upgrade_price(face))
+			if price == 0 or price > p.gold:
+				continue
+			var gain := (face_worth(Face.make(Face.kind_of(face), Face.value_of(face) + 1)) - face_worth(face)) / price
+			if gain > best_upgrade:
+				best_upgrade = gain
+				upgrade = Vector2i(d, f)
+	if upgrade.x >= 0 and turns_left >= 3:
+		return [&"upgrade_face", [upgrade.x, upgrade.y, 0]]
+	# Late in the game gold is only good for renown.
+	if p.gold >= Content.RENOWN_PRICE and (turns_left <= 4 or p.gold >= Content.RENOWN_PRICE + 4):
+		return [&"buy_renown", []]
 	return [&"finish_shop", []]
+
+
+## Loot by a fixed preference; anything unknown counts as average.
+static func _best_loot(view: GameState) -> int:
+	var best := 0
+	for i in view.loot.size():
+		if float(LOOT_WORTH.get(view.loot[i], 1.0)) > float(LOOT_WORTH.get(view.loot[best], 1.0)):
+			best = i
+	return best
 
 
 ## Every legal choice with a rough value, best first.
@@ -142,6 +168,8 @@ static func _options(view: GameState, p: PlayerState) -> Array:
 		if mob == null:
 			continue
 		var value := 3.0 + mob.tier - mob.hp * 0.1 if combat >= mob.hp else 0.2
+		if combat >= mob.hp and _claimed_by_faster(view, p, slot, mob.hp):
+			value = 0.3
 		options.append([PlayerState.Action.ATTACK_MOB, slot, value])
 
 	# Join a boss attack that the declared attackers can finish; propose one when the whole
@@ -155,9 +183,11 @@ static func _options(view: GameState, p: PlayerState) -> Array:
 		if other.id != p.id and other.declared and other.intention_action == PlayerState.Action.ATTACK_BOSS:
 			boss_power += other.combat
 	var boss_value := 0.4
-	if combat > 0 and boss_power >= view.boss_hp:
+	# Only a real share of the damage scores the boss.
+	var share := Content.boss_loot_threshold(view.boss_max_hp)
+	if combat >= share and boss_power >= view.boss_hp:
 		boss_value = 3.5
-	elif view.phase == GameState.Phase.DECLARE and combat >= 2 and table_power >= view.boss_hp:
+	elif view.phase == GameState.Phase.DECLARE and combat >= share and table_power >= view.boss_hp:
 		boss_value = 2.2
 	options.append([PlayerState.Action.ATTACK_BOSS, 0, boss_value])
 
@@ -188,6 +218,17 @@ static func _options(view: GameState, p: PlayerState) -> Array:
 	return options
 
 
+## Whether a faster player declared this mob and can slay it first (a mob falls once per turn).
+static func _claimed_by_faster(view: GameState, p: PlayerState, slot: int, hp: int) -> bool:
+	var my_rank := view.initiative.find(p.id)
+	for other in view.players:
+		if other.id == p.id or not other.declared or other.combat < hp:
+			continue
+		if other.intention_action == PlayerState.Action.ATTACK_MOB and other.intention_target == slot and view.initiative.find(other.id) < my_rank:
+			return true
+	return false
+
+
 ## Combat of players who declared they will attack this player.
 static func _threat_against(view: GameState, id: int) -> int:
 	var threat := 0
@@ -195,13 +236,3 @@ static func _threat_against(view: GameState, id: int) -> int:
 		if other.id != id and other.declared and other.intention_action == PlayerState.Action.ATTACK_PLAYER and other.intention_target == id:
 			threat += other.combat
 	return threat
-
-
-## Someone who declared an attack on p and resolves after p, so sabotage hits their attack.
-static func _slower_attacker(view: GameState, p: PlayerState) -> int:
-	var my_rank := view.initiative.find(p.id)
-	for i in range(my_rank + 1, view.initiative.size()):
-		var other := view.player(view.initiative[i])
-		if other.intention_action == PlayerState.Action.ATTACK_PLAYER and other.intention_target == p.id and other.combat > 0:
-			return other.id
-	return 0

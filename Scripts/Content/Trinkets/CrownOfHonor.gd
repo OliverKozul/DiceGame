@@ -1,6 +1,6 @@
 extends Trinket
-## +1 extra renown whenever you keep your intention.
+## +2 extra renown whenever you complete an oath.
 
 
 func honesty_bonus() -> int:
-	return 1
+	return 2

@@ -27,6 +27,7 @@ func _ready() -> void:
 	_cover.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_cover)
+	_set_progress(0.0)
 	Audio.set_ambience(true)
 	_play_music_for.call_deferred(get_tree().current_scene)
 
@@ -93,6 +94,8 @@ func _notification(what: int) -> void:
 
 func _set_progress(value: float) -> void:
 	_material.set_shader_parameter("progress", value)
+	# At rest the cover is hidden: its noisy edge would otherwise leave embers in the corners.
+	_cover.visible = value > 0.0
 
 
 func _play_music_for(scene: Node) -> void:

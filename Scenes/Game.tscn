@@ -19,6 +19,17 @@ shadow_color = Color(0, 0, 0, 0.6)
 shadow_size = 18
 shadow_offset = Vector2(0, 8)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tray"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.17, 0.1, 0.055, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [node name="Game" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -37,8 +48,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 12
@@ -53,6 +62,7 @@ custom_minimum_size = Vector2(318, 0)
 layout_mode = 2
 
 [node name="SeatsScroll" type="ScrollContainer" parent="Margin/Columns/Left"]
+clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
@@ -64,6 +74,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
 [node name="Center" type="VBoxContainer" parent="Margin/Columns"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
@@ -81,6 +92,8 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"Heading"
 text = "The table is being set…"
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="HintLabel" type="Label" parent="Margin/Columns/Center/Header/HeaderText"]
 unique_name_in_owner = true
@@ -103,16 +116,23 @@ edge_burn = 0.35
 
 [node name="ActionMargin" type="MarginContainer" parent="Margin/Columns/Center/ActionCard"]
 layout_mode = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
 
 [node name="ActionScroll" type="ScrollContainer" parent="Margin/Columns/Center/ActionCard/ActionMargin"]
 layout_mode = 2
-horizontal_scroll_mode = 0
 
-[node name="ActionPanel" type="VBoxContainer" parent="Margin/Columns/Center/ActionCard/ActionMargin/ActionScroll"]
+[node name="ActionInset" type="MarginContainer" parent="Margin/Columns/Center/ActionCard/ActionMargin/ActionScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ActionPanel" type="VBoxContainer" parent="Margin/Columns/Center/ActionCard/ActionMargin/ActionScroll/ActionInset"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -120,18 +140,17 @@ theme_override_constants/separation = 10
 script = ExtResource("2_action")
 
 [node name="TrayFrame" type="PanelContainer" parent="Margin/Columns/Center"]
-custom_minimum_size = Vector2(0, 196)
+custom_minimum_size = Vector2(0, 224)
 layout_mode = 2
-theme_type_variation = &"FeltPanel"
+theme_override_styles/panel = SubResource("StyleBoxFlat_tray")
 
-[node name="DiceTray" type="SubViewportContainer" parent="Margin/Columns/Center/TrayFrame"]
+[node name="DiceTray" type="Control" parent="Margin/Columns/Center/TrayFrame"]
 unique_name_in_owner = true
 layout_mode = 2
-stretch = true
 script = ExtResource("5_tray")
 
 [node name="Right" type="VBoxContainer" parent="Margin/Columns"]
-custom_minimum_size = Vector2(318, 0)
+custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 theme_override_constants/separation = 8
 

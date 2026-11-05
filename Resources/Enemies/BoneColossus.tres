@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Boss" format=3]
+
+[ext_resource type="Script" path="res://Scripts/Content/Boss.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"bone_colossus"
+display_name = "Bone Colossus"
+description = "A giant of a thousand graves."
+stage = 2
+base_hp = 3
+hp_per_player = 1
+damage = 3

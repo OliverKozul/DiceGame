@@ -8,7 +8,7 @@
 script = ExtResource("1_script")
 id = &"vampire_lord"
 display_name = "Vampire Lord"
-description = "Likes blood."
+description = "He never refuses an invitation."
 tier = 2
 copies = 3
 hp = 5

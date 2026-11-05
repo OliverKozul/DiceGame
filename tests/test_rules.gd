@@ -1,17 +1,21 @@
 extends SceneTree
 ## Plays many complete bot games straight through GameRules (no networking) and checks
 ## invariants after every request. Also checks determinism, view round-trips, hidden
-## information and that bad requests are refused.
+## information, that bad requests are refused, every trinket effect, and that every Chronicle
+## message of those games is translated into every language with the same placeholders.
 ##   godot --headless --path . --script res://tests/test_rules.gd -- [games]
 
 var failures := 0
 var _exit_code := -1
 ## Every event type seen in any game, to check the presentation layer gets them all.
 var event_types := {}
+## Every Chronicle msgid seen in any game (the dynamic list messages excluded).
+var message_keys := {}
+var _placeholder := RegEx.create_from_string("\\{([a-z_0-9]+)\\}")
 const CORE_EVENTS: Array[String] = ["turn_start", "reroll", "kept", "initiative", "declare", "locked", "reveal",
-	"sabotage", "attack", "mob_kill", "mob_fail", "boss_hit", "boss_slain", "boss_strike", "rest", "knockout",
+	"steal", "attack", "mob_kill", "mob_fail", "boss_hit", "boss_slain", "boss_strike", "rest", "knockout",
 	"trinket", "shop", "buy_face", "shop_done", "loot", "loot_taken", "auction", "auction_won", "mob_spawn",
-	"new_boss", "comeback", "game_over", "boss_reward"]
+	"new_boss", "comeback", "game_over", "boss_reward", "upgrade", "buy_renown", "refresh", "act"]
 
 
 func _init() -> void:
@@ -21,6 +25,10 @@ func _init() -> void:
 		games = args[0].to_int()
 
 	_test_refusals()
+	_test_economy()
+	_test_mob_fail()
+	_test_trinkets()
+	_test_bosses()
 	_test_determinism()
 
 	var stats := _blank_stats()
@@ -42,19 +50,21 @@ func _init() -> void:
 		if not event_types.has(type):
 			_fail("event type never emitted: " + type)
 	print("event types seen: %d" % event_types.size())
-
+	_test_translations()
 	Content.clear_cache()
-	if failures == 0:
-		print("ALL RULE TESTS PASSED")
-	else:
-		print("FAILURES: %d" % failures)
-	_exit_code = 1 if failures else 0
+	_exit_code = 0
 
 
-# Quit on the first frame rather than inside _init, so the autoloads start and stop cleanly.
+# Finish on the first frame rather than inside _init: the autoloads have started by then (the
+# pad bindings are set up by one), and they stop cleanly.
 func _process(_delta: float) -> bool:
 	if _exit_code >= 0:
-		root.get_node("Transition").call("quit_game", _exit_code)
+		_test_pad_bindings()
+		if failures == 0:
+			print("ALL RULE TESTS PASSED")
+		else:
+			print("FAILURES: %d" % failures)
+		root.get_node("Transition").call("quit_game", 1 if failures else 0)
 		_exit_code = -1
 	return false
 
@@ -116,7 +126,7 @@ func _play(seed_value: int, seats: int, stats: Dictionary, boss_cap: int = 0) ->
 			stats.purchases += 1
 		var err := rules.apply(pid, request[0], request[1])
 		if not err.is_empty():
-			_fail("seed %d: bot request %s %s refused: %s" % [seed_value, request[0], request[1], err])
+			_fail("seed %d: bot request %s %s refused: %s" % [seed_value, request[0], request[1], Loc.text(err)])
 			return ""
 		_check_invariants(rules.state, seed_value)
 		for event in rules.events_since(last_seq):
@@ -124,6 +134,7 @@ func _play(seed_value: int, seats: int, stats: Dictionary, boss_cap: int = 0) ->
 				_fail("seed %d: event sequence jumped from %d to %d" % [seed_value, last_seq, event.seq])
 			last_seq = event.seq
 			event_types[str(event.type)] = true
+			_count_event(event, stats)
 		steps += 1
 		if steps > 20000:
 			_fail("seed %d: game did not finish" % seed_value)
@@ -137,20 +148,37 @@ func _play(seed_value: int, seats: int, stats: Dictionary, boss_cap: int = 0) ->
 	for p in s.players:
 		stats.score_total += s.final_score(p)
 	stats.winner_score += s.final_score(s.player(s.standings[0]))
-	for line in rules.history:
-		if line.contains("knocks out") or line.contains("is knocked out"):
+	for entry in rules.history:
+		_collect_keys(entry)
+		for found in _placeholder.search_all(Loc.text(entry)):
+			if not Icons.NAMES.has(found.get_string(1)):
+				_fail("seed %d: unfilled placeholder in %s" % [seed_value, entry.k])
+	return var_to_str(rules.history)
+
+
+## Records a message's msgid and those of the messages nested in it.
+func _collect_keys(message: Dictionary) -> void:
+	var key := str(message.k)
+	if not key.begins_with("{item"):
+		message_keys[key] = true
+	for value: Variant in (message.a as Dictionary).values():
+		if value is Dictionary and (value as Dictionary).has("k"):
+			_collect_keys(value)
+
+
+func _count_event(event: Dictionary, stats: Dictionary) -> void:
+	match str(event.type):
+		"knockout":
 			stats.kos += 1
-		if line.contains(" slays the "):
+		"mob_kill":
 			stats.mob_kills += 1
-		if line.ends_with(" is slain!"):
+		"boss_slain":
 			stats.boss_kills += 1
-		if line.contains("kept their word"):
-			stats.kept += 1
-		if line.contains("broke their word"):
-			stats.broke += 1
-		if line.contains("sealed bids"):
+		"reveal":
+			stats.kept += 1 if event.kept else 0
+			stats.broke += 0 if event.kept else 1
+		"auction":
 			stats.auctions += 1
-	return "\n".join(rules.history)
 
 
 func _check_invariants(s: GameState, seed_value: int) -> void:
@@ -158,6 +186,7 @@ func _check_invariants(s: GameState, seed_value: int) -> void:
 		var bad := p.hp < 0 or p.hp > p.max_hp or p.gold < 0 or p.renown < 0 or p.score < 0
 		bad = bad or p.combat < 0 or p.cunning < 0 or p.attack_left < 0 or p.guard_left < 0
 		bad = bad or p.knocked_out != (p.hp == 0) or p.showing.size() != p.dice.size()
+		bad = bad or p.oath < 0 or p.oath >= Content.OATH_LENGTH
 		if bad:
 			_fail("seed %d turn %d: invariant broken for %s: %s" % [seed_value, s.turn, p.name, p.to_dict(true)])
 	if s.boss_hp < 0 or s.boss_hp > s.boss_max_hp:
@@ -206,22 +235,260 @@ func _test_refusals() -> void:
 	for id in s.declare_order():
 		_expect_ok(rules.apply(id, &"declare", [PlayerState.Action.REST, 0]), "declare")
 	var p0 := s.players[0]
-	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 0, p0.combat + 1, {}]), "overspend")
-	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 1, 0, {}]), "attack combat on rest")
-	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 0, 0, {"x": 1}]), "bad sabotage")
+	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 0, p0.combat + 1]), "overspend")
+	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 1, 0]), "attack combat on rest")
+	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 0, 0, {}]), "old five-argument plan")
+	_expect_refused(rules.apply(p0.id, &"upgrade_face", [0, 0, 0]), "upgrade when not shopping")
+	_expect_refused(rules.apply(p0.id, &"buy_renown", []), "buy renown when not shopping")
+	_expect_refused(rules.apply(p0.id, &"pick_loot", [0]), "pick loot with no loot")
 
 
-func _expect_refused(err: String, what: String) -> void:
+## Paying with renown, upgrading faces and buying renown, on a hand-made shopping turn.
+func _test_economy() -> void:
+	var rules := GameRules.new()
+	rules.setup(_roster(3), 7)
+	var s := rules.state
+	var p := s.players[0]
+	# A shopping turn as the resolution would leave it: p is the only one to resolve.
+	s.phase = GameState.Phase.RESOLVE
+	s.initiative = [p.id]
+	s.cursor = 0
+	s.shopping = p.id
+	p.dice[0][0] = Face.make(Face.Kind.COMBAT, 2)
+	p.gold = 1
+	p.renown = 2
+	# Upgrading combat 2 to 3 costs 3: one renown (3 gold) covers it, a second would be wasted.
+	_expect_refused(rules.apply(p.id, &"upgrade_face", [0, 0, 2]), "renown beyond the price")
+	_expect_ok(rules.apply(p.id, &"upgrade_face", [0, 0, 1]), "upgrade paid in renown")
+	if p.dice[0][0] != Face.make(Face.Kind.COMBAT, 3) or p.renown != 1 or p.gold != 1:
+		_fail("upgrade or payment wrong: face %d renown %d gold %d" % [p.dice[0][0], p.renown, p.gold])
+	p.dice[0][1] = Face.make(Face.Kind.COMBAT, Content.UPGRADE_MAX)
+	p.gold = 20
+	_expect_refused(rules.apply(p.id, &"upgrade_face", [0, 1, 0]), "upgrade past the maximum")
+	p.dice[0][2] = Face.make(Face.Kind.DOUBLE, 2)
+	_expect_refused(rules.apply(p.id, &"upgrade_face", [0, 2, 0]), "upgrade a double")
+	_expect_ok(rules.apply(p.id, &"buy_renown", []), "buy renown")
+	if p.gold != 20 - Content.RENOWN_PRICE or p.renown != 2:
+		_fail("buying renown: gold %d renown %d" % [p.gold, p.renown])
+	p.gold = Content.RENOWN_PRICE - 1
+	_expect_refused(rules.apply(p.id, &"buy_renown", []), "renown without the gold")
+
+
+## A scripted turn where one player attacks a mob too strong for them: it must hit back.
+func _test_mob_fail() -> void:
+	var rules := GameRules.new()
+	rules.setup(_roster(3), 11)
+	var s := rules.state
+	for p in s.players:
+		_expect_ok(rules.apply(p.id, &"finish_roll", [PackedInt32Array()]), "finish roll")
+	var attacker := s.player(s.declare_order()[0])
+	var slot := 0
+	for i in s.mobs.size():
+		if Content.mob(s.mobs[i].id).hp > Content.mob(s.mobs[slot].id).hp:
+			slot = i
+	var mob := Content.mob(s.mobs[slot].id)
+	attacker.combat = mob.hp - 1
+	for id in s.declare_order():
+		var declared := [PlayerState.Action.ATTACK_MOB, slot] if id == attacker.id else [PlayerState.Action.REST, 0]
+		_expect_ok(rules.apply(id, &"declare", declared), "declare")
+	var since := rules.last_event_seq()
+	for p in s.players:
+		var plan := [PlayerState.Action.ATTACK_MOB, slot, p.combat, 0] if p == attacker else [PlayerState.Action.REST, 0, 0, p.combat]
+		_expect_ok(rules.apply(p.id, &"lock_plan", plan), "lock plan")
+	var failed := false
+	for event in rules.events_since(since):
+		event_types[str(event.type)] = true
+		if event.type == &"mob_fail" and event.pid == attacker.id:
+			failed = true
+	if not failed:
+		_fail("attacking a mob with too little combat did not fail")
+
+
+func _expect_refused(err: Dictionary, what: String) -> void:
 	if err.is_empty():
 		_fail("expected refusal: " + what)
 
 
-func _expect_ok(err: String, what: String) -> void:
+func _expect_ok(err: Dictionary, what: String) -> void:
 	if not err.is_empty():
-		_fail("expected success (%s): %s" % [what, err])
+		_fail("expected success (%s): %s" % [what, Loc.text(err)])
+
+
+## A game at the start of its first roll, with trinkets handed to the first player.
+func _game_with(trinkets: Array[StringName], seats: int = 3) -> GameRules:
+	var rules := GameRules.new()
+	rules.setup(_roster(seats), 7)
+	var p := rules.state.players[0]
+	for id in trinkets:
+		p.trinkets.append(id)
+	return rules
+
+
+## Rolls for everyone and declares rest for everyone, so the game waits in the plan phase.
+func _to_plan(rules: GameRules) -> void:
+	for p in rules.state.players:
+		if p.is_active():
+			_expect_ok(rules.apply(p.id, &"finish_roll", [PackedInt32Array()]), "finish roll")
+	for id in rules.state.declare_order():
+		_expect_ok(rules.apply(id, &"declare", [PlayerState.Action.REST, 0]), "declare")
+
+
+func _test_trinkets() -> void:
+	# Every trinket loads, has a name and a description, and boss loot exists.
+	for trinket in Content.trinkets():
+		if trinket == null or trinket.id == &"" or trinket.display_name.is_empty() or trinket.description.is_empty():
+			_fail("a trinket is missing its id, name or description")
+	for id in Content.BOSS_LOOT:
+		if Content.trinket(id) == null:
+			_fail("boss loot %s does not exist" % id)
+	for mob in Content.mobs():
+		for reward in mob.rewards:
+			if not Content.TRINKET_PATHS.has(reward.resource_path):
+				_fail("%s drops %s, which is not in TRINKET_PATHS" % [mob.id, reward.id])
+
+	# Bone Dice: the second reroll is free too.
+	var rules := _game_with([&"bone_dice"])
+	var p := rules.state.players[0]
+	_expect_ok(rules.apply(p.id, &"reroll", [PackedInt32Array([0])]), "first reroll")
+	if p.reroll_cost() != 0:
+		_fail("Bone Dice: the second reroll should be free")
+	_expect_ok(rules.apply(p.id, &"reroll", [PackedInt32Array([0])]), "second reroll")
+	if p.cunning_spent != 0 or p.reroll_cost() != Content.REROLL_CUNNING_COST:
+		_fail("Bone Dice: the third reroll should cost cunning")
+
+	# Merchant's Seal: a die costs 1 less, never below 1.
+	p = _game_with([&"merchants_seal"]).state.players[0]
+	if p.price(Content.DIE_PRICE) != Content.DIE_PRICE - 1 or p.price(1) != 1 or p.price(0) != 0:
+		_fail("Merchant's Seal: wrong prices")
+
+	# Lucky Coin and Fox Mask add per face rolled.
+	p = _game_with([&"lucky_coin", &"fox_mask"]).state.players[0]
+	var plain := PlayerState.new()
+	plain.dice = p.dice.duplicate()
+	plain.showing = p.showing.duplicate()
+	var with_trinkets := p.roll_totals()
+	var without := plain.roll_totals()
+	var kinds := PackedInt32Array()
+	for face in p.showing_faces():
+		kinds.append(Face.kind_of(face))
+	if with_trinkets.gold != without.gold + kinds.count(Face.Kind.GOLD) or with_trinkets.cunning != without.cunning + 1 + kinds.count(Face.Kind.CUNNING):
+		_fail("Lucky Coin / Fox Mask: wrong roll totals")
+
+	# Herbal Pouch: rest heals 2 more.
+	rules = _game_with([&"herbal_pouch"])
+	p = rules.state.players[0]
+	p.hp = 2
+	_to_plan(rules)
+	for q in rules.state.players:
+		_expect_ok(rules.apply(q.id, &"lock_plan", [PlayerState.Action.REST, 0, 0, 0]), "lock rest")
+	if p.hp != 2 + Content.REST_HEAL + 2:
+		_fail("Herbal Pouch: rest healed to %d" % p.hp)
+
+	# Liar's Mask: a broken word keeps the oath; without it the oath starts over.
+	for masked in [true, false]:
+		var worn: Array[StringName] = []
+		if masked:
+			worn.append(&"liars_mask")
+		rules = _game_with(worn)
+		p = rules.state.players[0]
+		p.oath = 2
+		_to_plan(rules)
+		for q in rules.state.players:
+			var plan := [PlayerState.Action.ATTACK_BOSS, 0, q.combat, 0] if q == p else [PlayerState.Action.REST, 0, 0, 0]
+			_expect_ok(rules.apply(q.id, &"lock_plan", plan), "lock plan")
+		if p.oath != (2 if masked else 0):
+			_fail("Liar's Mask (%s): oath is %d after a lie" % [masked, p.oath])
+
+	# Thorned Mail: whoever damages the wearer takes 1; Hunter's Horn adds 2 against mobs.
+	rules = _game_with([&"thorned_mail"])
+	var wearer := rules.state.players[0]
+	var attacker := rules.state.players[1]
+	attacker.trinkets.append(&"war_banner")
+	_to_plan(rules)
+	var attacker_hp := attacker.hp
+	for q in rules.state.players:
+		var plan := [PlayerState.Action.REST, 0, 0, 0]
+		if q == attacker:
+			plan = [PlayerState.Action.ATTACK_PLAYER, wearer.id, 0, 0]
+		_expect_ok(rules.apply(q.id, &"lock_plan", plan), "lock plan")
+	if attacker.hp != attacker_hp - 1:
+		_fail("Thorned Mail: attacker has %d health, expected %d" % [attacker.hp, attacker_hp - 1])
+
+	# Phoenix Feather: back from a knockout at full health.
+	rules = _game_with([&"phoenix_feather"])
+	p = rules.state.players[0]
+	p.max_hp = 20
+	rules.hurt(p, p.hp, GameRules.SOURCE_MOB)
+	while rules.state.turn < 3 and rules.state.phase != GameState.Phase.GAME_OVER:
+		_play_round(rules)
+	if p.knocked_out or p.hp != p.max_hp:
+		_fail("Phoenix Feather: came back with %d of %d" % [p.hp, p.max_hp])
+
+
+## Plays whatever is pending with the bot brain until the turn changes.
+func _play_round(rules: GameRules) -> void:
+	var rng := RandomNumberGenerator.new()
+	var turn := rules.state.turn
+	var guard := 0
+	while rules.state.turn == turn and rules.state.phase != GameState.Phase.GAME_OVER and guard < 500:
+		guard += 1
+		var pid := rules.state.waiting_on()[0]
+		var request := BotBrain.decide(GameState.from_view(rules.state.to_view(pid)), pid, rng)
+		_expect_ok(rules.apply(pid, request[0], request[1]), "bot move")
+
+
+## Each boss comes from its stage, and every stage has a boss.
+func _test_bosses() -> void:
+	for stage in range(1, Content.BOSS_STAGES + 1):
+		if Content.bosses_of_stage(stage).is_empty():
+			_fail("no boss for stage %d" % stage)
+	for seed_value in 20:
+		var rules := GameRules.new()
+		rules.setup(_roster(4), seed_value)
+		if rules.state.boss().stage != 1:
+			_fail("the first boss is not from stage 1")
+
+
+## Every Chronicle message, refusal and interface text the games produced exists in every
+## translation, with the same placeholders.
+func _test_translations() -> void:
+	for code: String in Loc.LANGUAGES:
+		if code == "en":
+			continue
+		var translation := TranslationServer.get_translation_object(code)
+		if translation == null:
+			_fail("no translation loaded for %s" % code)
+			continue
+		var missing := 0
+		for key: String in message_keys:
+			var text := String(translation.get_message(key))
+			if text.is_empty():
+				missing += 1
+				if missing <= 5:
+					_fail("%s: no translation for %s" % [code, key])
+				continue
+			var wanted := {}
+			for found in _placeholder.search_all(key):
+				wanted[found.get_string(1)] = true
+			var got := {}
+			for found in _placeholder.search_all(text):
+				got[found.get_string(1)] = true
+			if wanted != got:
+				_fail("%s: placeholders differ for %s" % [code, key])
+		print("%s: %d Chronicle messages checked" % [code, message_keys.size()])
 
 
 func _fail(message: String) -> void:
 	failures += 1
 	if failures <= 20:
 		printerr("FAIL: " + message)
+
+
+## Every action a controller player needs has a pad binding (Controls adds the ones Godot lacks).
+func _test_pad_bindings() -> void:
+	for action in [&"ui_up", &"ui_down", &"ui_left", &"ui_right", &"ui_accept", &"ui_cancel", &"menu", &"skip",
+			&"rules", &"players", &"prev_tab", &"next_tab", &"scroll_up", &"scroll_down"]:
+		var pad := InputMap.action_get_events(action).filter(func(e: InputEvent) -> bool:
+			return e is InputEventJoypadButton or e is InputEventJoypadMotion)
+		if pad.is_empty():
+			_fail("no controller binding for %s" % action)
