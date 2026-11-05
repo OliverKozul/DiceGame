@@ -56,6 +56,8 @@ var bid_waiting: Array[int] = []
 var log_lines: Array[Dictionary] = []
 ## Final ranking, best first: ids.
 var standings: Array[int] = []
+## What happened over the game (see GameRecap); empty until the game is over.
+var recap: Dictionary = {}
 
 
 func player(id: int) -> PlayerState:
@@ -223,6 +225,7 @@ func to_view(viewer: int) -> Dictionary:
 		"bid_waiting": bid_waiting.duplicate(),
 		"log": log_lines.duplicate(),
 		"standings": standings.duplicate(),
+		"recap": recap,
 	}
 
 
@@ -251,4 +254,5 @@ static func from_view(d: Dictionary) -> GameState:
 	s.bid_waiting.assign(d.bid_waiting)
 	s.log_lines.assign(d.log)
 	s.standings.assign(d.standings)
+	s.recap = d.recap
 	return s

@@ -20,8 +20,9 @@ const OPS: Dictionary = {
 	&"bid": [TYPE_INT, TYPE_INT],
 }
 
+## Sources of damage that are not players. Player ids are never 0, and bots have small negative ones.
 const SOURCE_MOB := 0
-const SOURCE_BOSS := -1
+const SOURCE_BOSS := -1000000
 const EVENT_LIMIT := 400
 
 var state := GameState.new()
@@ -31,6 +32,8 @@ var rng := RandomNumberGenerator.new()
 var history: Array[Dictionary] = []
 ## Structured, public events for clients to animate: {"seq", "type", ...data}.
 var events: Array[Dictionary] = []
+## The story of the game so far, shown when it ends.
+var recap: GameRecap
 
 var _market_deck := PackedInt32Array()
 var _market_discard := PackedInt32Array()
@@ -60,6 +63,7 @@ func setup(roster: Array[Dictionary], seed_value: int, max_turns: int = Content.
 		p.dice = Content.starting_dice()
 		state.players.append(p)
 	state.first_seat = rng.randi_range(0, state.players.size() - 1)
+	recap = GameRecap.new(state.players)
 
 	_market_deck = _shuffled(Content.market_deck())
 	_market_discard = PackedInt32Array()
@@ -144,6 +148,7 @@ func emit_event(type: StringName, data: Dictionary = {}) -> void:
 	event["seq"] = _event_seq
 	event["type"] = type
 	events.append(event)
+	recap.observe(event, state)
 	if events.size() > EVENT_LIMIT:
 		events.assign(events.slice(events.size() - EVENT_LIMIT))
 
@@ -250,7 +255,8 @@ func _op_lock_plan(pid: int, action: int, target: int, attack: int, guard: int) 
 		return Loc.msg("Combat amounts cannot be negative.")
 	if attack > 0 and not GameState.is_attack(action):
 		return Loc.msg("Only attacks use attack combat.")
-	if attack + guard > p.combat:
+	# Compared this way round, because a client could make the sum of huge amounts overflow.
+	if attack > p.combat or guard > p.combat - attack:
 		return Loc.msg("You only have {amount} {combat} to split.", {"amount": p.combat})
 	p.plan_action = action as PlayerState.Action
 	p.plan_target = target
@@ -680,7 +686,7 @@ func _deal_damage(target: PlayerState, amount: int, source: int) -> void:
 	emit_event(&"knockout", {"pid": target.id, "by": source})
 	target.out_until_turn = state.turn + 1
 	target.score = maxi(0, target.score - Content.KO_VICTIM_PENALTY)
-	var attacker := state.player(source) if source > 0 else null
+	var attacker := state.player(source)
 	if attacker:
 		attacker.score += Content.KO_ATTACKER_SCORE
 		log_event("{player} knocks out {target}! ({player} +{gain} {score}, {target} −{loss} {score})", {
@@ -863,6 +869,7 @@ func _finish_game() -> void:
 			return pa.gold > pb.gold
 		return pa.seat < pb.seat)
 	state.standings = ids
+	state.recap = recap.to_dict()
 	state.phase = GameState.Phase.GAME_OVER
 	emit_event(&"game_over", {"standings": ids.duplicate()})
 	var lines := PackedStringArray()

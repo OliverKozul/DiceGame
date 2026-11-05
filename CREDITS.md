@@ -21,7 +21,13 @@ Audio was converted to Ogg Vorbis; nothing else was changed.
 
 ## Fonts
 - **Lora** by Cyreal, SIL Open Font License.
-- **Cloister Black** by Dieter Steffmann, free for use.
+- **Grenze Gotisch** by Renata Polastri and Omnibus-Type, SIL Open Font License.
+
+## Engine and libraries
+- **Godot Engine**, MIT license, with the third-party parts it lists.
+- **GodotSteam**, MIT license. **Steamworks SDK** by Valve.
+
+The licence texts ship with the game: *Credits > Licences* (`Assets/Licenses`, and Godot's own from the engine).
 
 ## Everything else
 Icons, shaders, theme and 3D dice are made for this project.

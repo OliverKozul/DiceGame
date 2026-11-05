@@ -309,7 +309,12 @@ func _play_event(e: Dictionary, view: GameState) -> void:
 			if seat:
 				seat.float_text(_screen.tr("connection lost"), NEUTRAL, d.call(1.0))
 			await _pause(d.call(0.3))
-		"rejoined":
+		"away":
+			var seat := _seat(e.pid)
+			if seat:
+				seat.float_text(_screen.tr("dozed off"), NEUTRAL, d.call(1.0))
+			await _pause(d.call(0.3))
+		"back", "rejoined":
 			var seat := _seat(e.pid)
 			if seat:
 				Juice.pop(seat, 0.06, d.call(0.3))

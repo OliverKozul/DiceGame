@@ -1,0 +1,21 @@
+"lang"
+{
+	"english"
+	{
+		"tokens"
+		{
+			"#Status_Menu"	"In the tavern"
+			"#Status_Room"	"At a table: %seats% of %max% seats"
+			"#Status_Game"	"Turn %turn% of %turns%"
+		}
+	}
+	"german"
+	{
+		"tokens"
+		{
+			"#Status_Menu"	"In der Taverne"
+			"#Status_Room"	"Am Tisch: %seats% von %max% Plätzen"
+			"#Status_Game"	"Runde %turn% von %turns%"
+		}
+	}
+}

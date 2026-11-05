@@ -30,6 +30,9 @@ func _init() -> void:
 	_test_trinkets()
 	_test_bosses()
 	_test_determinism()
+	_test_bot_ids()
+	_test_recap()
+	_test_achievements()
 
 	var stats := _blank_stats()
 	var started := Time.get_ticks_usec()
@@ -209,6 +212,124 @@ func _test_determinism() -> void:
 		_fail("same seed produced different games")
 
 
+## Bots have negative ids in real games: a knockout must be credited to them, and the boss must
+## not be mistaken for the first bot.
+func _test_bot_ids() -> void:
+	var rules := GameRules.new()
+	var roster: Array[Dictionary] = [{"id": 2, "name": "Human", "bot": false}, {"id": -1, "name": "Bot1", "bot": true}, {"id": -2, "name": "Bot2", "bot": true}]
+	rules.setup(roster, 3)
+	var bot := rules.state.player(-1)
+	var score := bot.score
+	rules.hurt(rules.state.player(2), rules.state.player(2).hp, -1)
+	if bot.score != score + Content.KO_ATTACKER_SCORE:
+		_fail("a knockout by a bot was not credited to it")
+	rules.hurt(rules.state.player(-2), rules.state.player(-2).hp, GameRules.SOURCE_BOSS)
+	if bot.score != score + Content.KO_ATTACKER_SCORE:
+		_fail("a knockout by the boss was credited to the first bot")
+
+
+func _test_recap() -> void:
+	# A scripted ambush: declared Rest, attacked instead.
+	var rules := GameRules.new()
+	rules.setup(_roster(3), 5)
+	var s := rules.state
+	if not GameState.from_view(s.to_view(100)).recap.is_empty():
+		_fail("the recap is visible before the game ends")
+	for p in s.players:
+		_expect_ok(rules.apply(p.id, &"finish_roll", [PackedInt32Array()]), "finish roll")
+	for id in s.declare_order():
+		_expect_ok(rules.apply(id, &"declare", [PlayerState.Action.REST, 0]), "declare")
+	s.player(100).combat = 5
+	_expect_ok(rules.apply(100, &"lock_plan", [PlayerState.Action.ATTACK_PLAYER, 101, 5, 0]), "ambush")
+	_expect_ok(rules.apply(101, &"lock_plan", [PlayerState.Action.REST, 0, 0, 0]), "rest")
+	_expect_ok(rules.apply(102, &"lock_plan", [PlayerState.Action.REST, 0, 0, 0]), "rest")
+	var recap := rules.recap.to_dict()
+	var attacker: Dictionary = recap.players[100]
+	if attacker.broke != 1 or attacker.ambush_damage != 5 or recap.players[101].kept != 1 or recap.players[101].damage_taken != 5:
+		_fail("the recap did not count the ambush: %s" % [recap.players])
+	var betrayal: Dictionary = recap.betrayal
+	if betrayal.get("pid") != 100 or betrayal.get("target") != 101 or betrayal.get("damage") != 5 or betrayal.get("turn") != 1:
+		_fail("the recap missed the betrayal: %s" % [betrayal])
+	if Loc.text(betrayal.get("said", {})) != Loc.text(Loc.msg("Rest")):
+		_fail("the recap should remember what the traitor said")
+	for award: Dictionary in recap.awards:
+		if award.id == &"traitor" and award.pids != [100]:
+			_fail("the traitor's title went to %s" % [award.pids])
+		if award.id == &"honest" and award.pids.size() != 2:
+			_fail("a tie should share the title: %s" % [award.pids])
+
+	# A whole game: the recap reaches the players at the end, and its counts add up.
+	var game := GameRules.new()
+	game.setup(_roster(4), 77)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 77
+	var reveals := 0
+	var last := 0
+	while game.state.phase != GameState.Phase.GAME_OVER:
+		var pid: int = game.state.waiting_on()[0]
+		var request := BotBrain.decide(GameState.from_view(game.state.to_view(pid)), pid, rng)
+		_expect_ok(game.apply(pid, request[0], request[1]), "bot move")
+		for event in game.events_since(last):
+			last = event.seq
+			if event.type == &"reveal":
+				reveals += 1
+	var final := GameState.from_view(game.state.to_view(100)).recap
+	var counted := 0
+	for pid: int in final.players:
+		counted += final.players[pid].kept + final.players[pid].broke
+	if counted != reveals or final.humans != 0:
+		_fail("the recap counted %d words of %d" % [counted, reveals])
+	for award: Dictionary in final.awards:
+		for pid: int in award.pids:
+			if game.state.player(pid) == null or award.value <= 0:
+				_fail("a bad award: %s" % [award])
+
+
+func _blank_recap_stats() -> Dictionary:
+	return {"kept": 0, "broke": 0, "oaths": 0, "ambush_damage": 0, "ambush_kos": 0, "damage_taken": 0, "kos": 0,
+		"knocked_out": 0, "mobs": 0, "bosses": 0, "last_stage_bosses": 0, "stolen": 0, "purchases": 0, "auctions": 0}
+
+
+func _test_achievements() -> void:
+	var view := GameState.new()
+	var me := PlayerState.new()
+	me.id = 1
+	me.dice = Content.starting_dice()
+	var rival := PlayerState.new()
+	rival.id = 2
+	view.players.assign([me, rival])
+	view.standings.assign([1, 2])
+	var stats := _blank_recap_stats()
+	view.recap = {"players": {1: stats}, "humans": 1}
+	var check := func(what: String, want: Array[StringName], refuse: Array[StringName], difficulty: int, offline: bool) -> void:
+		var got := AchievementRules.earned(view, 1, difficulty, offline)
+		for id in want:
+			if not got.has(id):
+				_fail("%s: should have earned %s, got %s" % [what, id, got])
+		for id in refuse:
+			if got.has(id):
+				_fail("%s: should not have earned %s" % [what, id])
+	check.call("a plain win", [&"ACH_FIRST_GAME", &"ACH_FIRST_WIN"] as Array[StringName], [&"ACH_BEAT_HARD", &"ACH_WIN_ONLINE", &"ACH_FIVE_DICE"] as Array[StringName], BotTable.Difficulty.NORMAL, true)
+	check.call("a win against hard bots", [&"ACH_BEAT_HARD"] as Array[StringName], [] as Array[StringName], BotTable.Difficulty.HARD, true)
+	check.call("hard online is not solo", [] as Array[StringName], [&"ACH_BEAT_HARD"] as Array[StringName], BotTable.Difficulty.HARD, false)
+	view.recap.humans = 3
+	stats.broke = 5
+	stats.kept = 4
+	stats.knocked_out = 1
+	check.call("a treacherous comeback online", [&"ACH_WIN_ONLINE", &"ACH_FAITHLESS", &"ACH_COMEBACK"] as Array[StringName], [&"ACH_WORD_IS_BOND"] as Array[StringName], BotTable.Difficulty.NORMAL, false)
+	stats.broke = 0
+	stats.kept = AchievementRules.BOND_WORDS
+	check.call("an honest game", [&"ACH_WORD_IS_BOND"] as Array[StringName], [&"ACH_FAITHLESS"] as Array[StringName], BotTable.Difficulty.NORMAL, false)
+	view.standings.assign([2, 1])
+	check.call("a loss", [&"ACH_FIRST_GAME", &"ACH_WORD_IS_BOND"] as Array[StringName], [&"ACH_FIRST_WIN", &"ACH_COMEBACK"] as Array[StringName], BotTable.Difficulty.NORMAL, false)
+	var setup := FileAccess.get_file_as_string("res://steam/SETUP.md")
+	for id in AchievementRules.IDS:
+		if AchievementRules.title(id) == String(id):
+			_fail("achievement %s has no name" % id)
+		if not setup.contains("| %s | %s |" % [id, AchievementRules.title(id)]):
+			_fail("achievement %s is missing from steam/SETUP.md" % id)
+
+
 func _test_refusals() -> void:
 	var rules := GameRules.new()
 	rules.setup(_roster(3), 1)
@@ -237,6 +358,9 @@ func _test_refusals() -> void:
 	var p0 := s.players[0]
 	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 0, p0.combat + 1]), "overspend")
 	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 1, 0]), "attack combat on rest")
+	var biggest := 9223372036854775807
+	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.ATTACK_BOSS, 0, biggest, 1]), "attack and guard that overflow")
+	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.ATTACK_BOSS, 0, 1, biggest]), "guard that overflows")
 	_expect_refused(rules.apply(p0.id, &"lock_plan", [PlayerState.Action.REST, 0, 0, 0, {}]), "old five-argument plan")
 	_expect_refused(rules.apply(p0.id, &"upgrade_face", [0, 0, 0]), "upgrade when not shopping")
 	_expect_refused(rules.apply(p0.id, &"buy_renown", []), "buy renown when not shopping")

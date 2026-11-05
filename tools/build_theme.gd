@@ -3,7 +3,9 @@ extends SceneTree
 ## and rerun:  godot --headless --path . --script res://tools/build_theme.gd
 
 const BODY_FONT := "res://Assets/Fonts/Lora-VariableFont_wght.ttf"
-const TITLE_FONT := "res://Assets/Fonts/CloisterBlack.ttf"
+const TITLE_FONT := "res://Assets/Fonts/GrenzeGotisch-VariableFont_wght.ttf"
+## Headings use the title font at this weight (its file is a variable font).
+const TITLE_WEIGHT := 700
 
 const TEXT := Color("f1e4c6")
 const TEXT_DIM := Color("cdb48c")
@@ -25,7 +27,9 @@ const PAPER_EDGE := Color("7a5428")
 func _init() -> void:
 	var theme := Theme.new()
 	var body: FontFile = load(BODY_FONT)
-	var title: FontFile = load(TITLE_FONT)
+	var title := FontVariation.new()
+	title.base_font = load(TITLE_FONT)
+	title.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("weight"): TITLE_WEIGHT}
 	theme.default_font = body
 	theme.default_font_size = 18
 
@@ -55,7 +59,7 @@ func _box(bg: Color, border: Color = Color.TRANSPARENT, width: int = 0, radius: 
 	return box
 
 
-func _labels(theme: Theme, title: FontFile) -> void:
+func _labels(theme: Theme, title: Font) -> void:
 	theme.set_color("font_color", "Label", TEXT)
 	theme.set_color("font_shadow_color", "Label", Color(0, 0, 0, 0.0))
 	theme.set_color("default_color", "RichTextLabel", TEXT)

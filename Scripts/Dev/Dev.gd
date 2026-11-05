@@ -9,7 +9,12 @@ extends Node
 ##   --autoplay                the bot brain plays the local seat
 ##   --bot-delay=SECONDS       pause between bot moves (default 0.6; 0 also skips animations)
 ##   --instant                 skip all animations
-##   --afk=SECONDS             idle timeout for remote players (0 disables)
+##   --afk=SECONDS             idle timeout for people (0 disables)
+##   --difficulty=N            bot difficulty (0 easy, 1 normal, 2 hard)
+##   --idle                    with --return-at-turn: play nothing at first, so a bot takes the seat
+##   --return-at-turn=N        take the seat back from the bot at this turn, then let the bot brain play it
+##   --kick=NAME               host: remove the player of this name from the room before starting
+##   --retry-after-kick        after being removed, try to join again (expects to be refused)
 ##   --leave-at-turn=N         quit abruptly when turn N starts (tests disconnects)
 ##   --drop-at-turn=N          lose the connection when turn N starts, then rejoin (tests reconnecting)
 ##   --rejoin-file=PATH        where this instance saves its rejoin ticket (several players, one machine)
@@ -23,6 +28,8 @@ extends Node
 ##   --screenshots=DIR         save a screenshot whenever the phase changes (windowed only)
 ##   --menu-shots=DIR          screenshot every menu page and overlay, then quit (windowed only)
 ##   --shot-interval=SECONDS   with --screenshots, also save a screenshot this often
+##   --end-shot=FILE           save a screenshot of the end screen, then quit (windowed only)
+##   --ui-scale=N              interface size for this run
 ##   --layout-check            report whenever the table needs more room than the window has, and
 ##                             what is asking for it; prints LAYOUT OK or LAYOUT OVERFLOW on quitting
 
@@ -31,6 +38,11 @@ var _started := false
 var _finished := false
 var _last_shot := ""
 var _dropped := false
+var _kicked := false
+var _retried := false
+var _printed_room := false
+var _seen_away := false
+var _came_back := false
 var _layout_problems: Dictionary[String, bool] = {}
 
 
@@ -46,11 +58,20 @@ func _ready() -> void:
 	# Fast automated runs skip animations entirely.
 	if options.has("instant") or (options.has("bot-delay") and Session.bot_delay <= 0.0):
 		Settings.instant_animations = true
+	# Room options come from here, so tests never depend on or change the player's settings.
+	Network.room_override = {"turns": Content.MAX_TURNS, "difficulty": BotTable.Difficulty.NORMAL, "afk": int(Session.AFK_TIMEOUT), "public": false}
 	if options.has("afk"):
-		Session.afk_timeout = float(options["afk"])
+		Network.room_override["afk"] = int(options["afk"])
+	if options.has("difficulty"):
+		Network.room_override["difficulty"] = int(options["difficulty"])
+	if options.has("turns"):
+		Network.room_override["turns"] = int(options["turns"])
+	Network.kicked.connect(_on_kicked)
 	Session.autoplay = options.has("autoplay")
 	if options.has("locale"):
 		TranslationServer.set_locale(options["locale"])
+	if options.has("ui-scale"):
+		get_tree().root.content_scale_factor = float(options["ui-scale"])
 	if options.has("rejoin-file"):
 		Network.rejoin_path = options["rejoin-file"]
 	Network.roster_changed.connect(_on_roster_changed)
@@ -137,11 +158,35 @@ func _seed() -> int:
 
 
 func _turns() -> int:
-	return int(options.get("turns", str(Content.MAX_TURNS)))
+	return int(options.get("turns", "-1"))
+
+
+func _on_kicked(reason: String) -> void:
+	print("KICKED: " + reason)
+	if options.has("retry-after-kick") and not _retried:
+		_retried = true
+		await get_tree().create_timer(1.0).timeout
+		var err := Network.join_enet(options.get("name", "Tester"), options["autojoin"])
+		if not err.is_empty():
+			printerr(err)
+		return
+	Transition.quit_game()
 
 
 func _on_roster_changed() -> void:
-	if _started or not Network.is_host() or Network.in_game:
+	if not Network.is_host():
+		if not Network.room.is_empty() and not _printed_room:
+			_printed_room = true
+			print("ROOM difficulty=%d afk=%d turns=%d" % [Network.room.difficulty, Network.room.afk, Network.room.turns])
+		return
+	if _started or Network.in_game:
+		return
+	if options.has("kick") and not _kicked:
+		for seat in Network.roster:
+			if seat.name == options["kick"]:
+				_kicked = true
+				print("KICKING " + seat.name)
+				Network.kick(seat.id)
 		return
 	if Network.human_count() < int(options.get("expect", "1")):
 		return
@@ -154,6 +199,17 @@ func _on_roster_changed() -> void:
 func _on_view_changed(view: GameState) -> void:
 	if options.has("screenshots"):
 		_screenshot(view)
+	var seat := view.player(Session.local_id())
+	if seat and seat.is_bot and not seat.connected and not Network.reconnecting and not _seen_away:
+		_seen_away = true
+		print("AWAY at turn %d" % view.turn)
+	if options.has("return-at-turn") and _seen_away and not _came_back and view.turn >= int(options["return-at-turn"]):
+		_came_back = true
+		print("TAKING THE SEAT BACK at turn %d" % view.turn)
+		Session.take_seat_back()
+	# Only once the host has handed the seat back, or the two would race for the same move.
+	if _came_back and seat and not seat.is_bot:
+		Session.autoplay = true
 	if options.has("leave-at-turn") and view.turn >= int(options["leave-at-turn"]):
 		print("LEAVING at turn %d" % view.turn)
 		Transition.quit_game()
@@ -170,11 +226,21 @@ func _on_view_changed(view: GameState) -> void:
 	for id in view.standings:
 		var p := view.player(id)
 		standings.append([p.name, view.final_score(p)])
-	var summary := {"turn": view.turn, "standings": standings, "log": var_to_str(view.log_lines).hash()}
+	if options.has("end-shot"):
+		_end_shot()
+	var summary := {"turn": view.turn, "standings": standings, "log": var_to_str(view.log_lines).hash(), "recap": var_to_str(view.recap).hash()}
 	print("RESULT " + JSON.stringify(summary))
 	if options.has("quit-on-end"):
 		# The host lingers so the final view reaches every client before it disconnects.
 		get_tree().create_timer(2.0 if Network.is_host() else 0.5).timeout.connect(func() -> void: Transition.quit_game())
+
+
+## Waits for the last animations and the end screen, then saves it.
+func _end_shot() -> void:
+	await get_tree().create_timer(float(options.get("end-wait", "7"))).timeout
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png(options["end-shot"])
+	Transition.quit_game()
 
 
 func _menu_shots(dir: String) -> void:
@@ -186,6 +252,13 @@ func _menu_shots(dir: String) -> void:
 		["solo", func() -> void: menu.call("_show_page", menu.get_node("%SoloPage"))],
 		["online", func() -> void: menu.call("_show_page", menu.get_node("%OnlinePage"))],
 		["credits", func() -> void: menu.call("_show_page", menu.get_node("%CreditsPage"))],
+		["licenses", func() -> void: menu.get("_licenses").call("open")],
+		["room", func() -> void:
+			menu.get("_licenses").call("close")
+			Network.room_override = {"turns": 12, "difficulty": BotTable.Difficulty.HARD, "afk": 120, "public": false}
+			Network.host_enet("Host")
+			for _i in 5:
+				Network.add_bot()],
 		["settings", func() -> void: menu.get("_settings").call("open")],
 		["rules", func() -> void:
 			menu.get("_settings").call("close")

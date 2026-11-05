@@ -1,15 +1,19 @@
 extends Node
-## Player preferences. Saved to user://settings.cfg and applied as soon as they change.
+## Player preferences, applied as soon as they change. Saved to user://settings.cfg, which Steam
+## Cloud carries between machines, except the display settings, which belong to one machine.
 
 signal changed
 
 const PATH := "user://settings.cfg"
+const DISPLAY_PATH := "user://display.cfg"
 const DEFAULTS: Dictionary = {
 	"display": {"fullscreen": false, "vsync": true, "ui_scale": 1.0},
 	"audio": {"master": 0.8, "music": 0.55, "sfx": 0.8, "ambience": 0.6},
 	"gameplay": {"animation_speed": 1.0, "reduced_motion": false, "confirm_lock": true, "high_contrast": false, "tips": true},
 	# "" follows the system language (see Loc.resolve_language).
 	"language": {"locale": ""},
+	# The host's choices for a new table (see Network.room). turns and afk are in turns and seconds.
+	"table": {"turns": Content.MAX_TURNS, "difficulty": 1, "afk": 120, "public": false},
 }
 const UI_SCALES: Array[float] = [0.85, 1.0, 1.15, 1.3, 1.5]
 const ANIMATION_SPEEDS: Array[float] = [0.75, 1.0, 1.5, 2.0]
@@ -18,22 +22,29 @@ const ANIMATION_SPEEDS: Array[float] = [0.75, 1.0, 1.5, 2.0]
 var instant_animations := false
 
 var _config := ConfigFile.new()
+var _display := ConfigFile.new()
 
 
 func _ready() -> void:
 	_config.load(PATH)
+	_display.load(DISPLAY_PATH)
 	apply()
 
 
 func get_value(section: String, key: String) -> Variant:
-	return _config.get_value(section, key, DEFAULTS[section][key])
+	var file := _display if section == "display" else _config
+	return file.get_value(section, key, DEFAULTS[section][key])
 
 
 func set_value(section: String, key: String, value: Variant) -> void:
 	if get_value(section, key) == value:
 		return
-	_config.set_value(section, key, value)
-	_config.save(PATH)
+	if section == "display":
+		_display.set_value(section, key, value)
+		_display.save(DISPLAY_PATH)
+	else:
+		_config.set_value(section, key, value)
+		_config.save(PATH)
 	apply()
 	changed.emit()
 
@@ -44,6 +55,8 @@ func reset_to_defaults() -> void:
 	_config = ConfigFile.new()
 	_config.set_value("language", "locale", language)
 	_config.save(PATH)
+	_display = ConfigFile.new()
+	_display.save(DISPLAY_PATH)
 	apply()
 	changed.emit()
 

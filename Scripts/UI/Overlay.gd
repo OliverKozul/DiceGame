@@ -12,6 +12,8 @@ const OPEN_TIME := 0.18
 var panel: PanelContainer
 var content: VBoxContainer
 var panel_size := Vector2(620, 520)
+## Centres the panel; drawn smaller when the panel would not otherwise fit on the screen.
+var _center := CenterContainer.new()
 var _tween: Tween
 var _focus_before: Control
 
@@ -25,12 +27,10 @@ func _ready() -> void:
 	dim.color = Color(0.02, 0.01, 0.0, 0.62)
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(dim)
-	var center := CenterContainer.new()
-	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(center)
+	add_child(_center)
 	panel = _make_panel()
 	panel.custom_minimum_size = panel_size
-	center.add_child(panel)
+	_center.add_child(panel)
 	var margin := MarginContainer.new()
 	for side in ["left", "right"]:
 		margin.add_theme_constant_override("margin_" + side, 26)
@@ -41,6 +41,8 @@ func _ready() -> void:
 	content.add_theme_constant_override("separation", 12)
 	margin.add_child(content)
 	_build()
+	resized.connect(fit_panel)
+	panel.minimum_size_changed.connect(fit_panel)
 
 
 ## The panel style; override for parchment.
@@ -62,6 +64,7 @@ func open() -> void:
 	show()
 	Controls.push_scope(self)
 	Audio.play(&"cloth", -6.0)
+	fit_panel()
 	_animate(true)
 	_focus_first.call_deferred()
 
@@ -82,6 +85,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	if visible and event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close()
+
+
+## Draws the panel smaller if it needs more room than the window has (a large interface size).
+## The container is scaled, not the panel: containers reset the scale of what they hold.
+func fit_panel() -> void:
+	if not visible:
+		return
+	var room := size - Vector2(16, 16)
+	var needed := panel.get_combined_minimum_size()
+	var fit := minf(1.0, minf(room.x / maxf(needed.x, 1.0), room.y / maxf(needed.y, 1.0)))
+	_center.scale = Vector2.ONE * fit
+	_center.size = size / fit
 
 
 func _animate(opening: bool) -> void:

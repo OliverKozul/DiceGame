@@ -6,13 +6,19 @@ extends HBoxContainer
 
 signal value_changed(value: int)
 
+## The width of a value that is a word.
+const VALUE_WIDTH := 118.0
+
 var min_value := 0
 var max_value := 99
 var value := 0
 var editable := true:
 	set(on):
 		editable = on
+		focus_mode = Control.FOCUS_ALL if on else Control.FOCUS_NONE
 		_refresh()
+## Words to show instead of the number (see setup_choices).
+var choices := PackedStringArray()
 
 var _minus := Button.new()
 var _plus := Button.new()
@@ -42,6 +48,11 @@ func _init() -> void:
 	_refresh()
 
 
+## Sets how wide the value is shown, so steppers above each other line up.
+func set_value_width(width: float) -> void:
+	_label.custom_minimum_size.x = width
+
+
 ## Sets the range and value without emitting value_changed.
 func setup(minimum: int, maximum: int, start: int, label_variation: StringName = &"") -> void:
 	min_value = minimum
@@ -49,6 +60,13 @@ func setup(minimum: int, maximum: int, start: int, label_variation: StringName =
 	value = clampi(start, min_value, max_value)
 	_label.theme_type_variation = label_variation
 	_refresh()
+
+
+## A list to choose from: the value is the index of the word shown.
+func setup_choices(words: PackedStringArray, start: int) -> void:
+	choices = words
+	set_value_width(VALUE_WIDTH)
+	setup(0, words.size() - 1, start)
 
 
 func set_value_no_signal(new_value: int) -> void:
@@ -87,7 +105,7 @@ func _draw() -> void:
 
 
 func _refresh() -> void:
-	_label.text = str(value)
+	_label.text = choices[value] if value < choices.size() else str(value)
 	_minus.disabled = not editable or value <= min_value
 	_plus.disabled = not editable or value >= max_value
 	modulate.a = 1.0 if editable else 0.55

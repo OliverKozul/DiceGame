@@ -2,7 +2,6 @@ extends SceneTree
 ## Where does a simulated game spend its time? Splits engine (apply), view building
 ## (to_view + from_view) and bot decisions.
 
-const StrategyBot := preload("res://tests/sim/strategy_bot.gd")
 
 var _quit := false
 

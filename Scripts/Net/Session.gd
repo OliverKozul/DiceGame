@@ -10,8 +10,13 @@ signal update_received(view: GameState, events: Array)
 signal request_failed(message: String)
 
 const BOT_DELAY := 0.6
-## Seconds a remote human may stay idle before they automatically rest. 0 disables it.
+## Seconds a human may stay idle at a table with other people before the game acts for them. The
+## host chooses this for the table (see Network.room); 0 disables it.
 const AFK_TIMEOUT := 120.0
+## Timeouts in a row after which a bot plays the seat until its player takes it back.
+const AFK_STRIKES := 2
+## Seconds before a timeout at which the player is warned.
+const AFK_WARNING := 30.0
 
 ## The latest view of the game for the local player; null before the game starts.
 var view: GameState
@@ -34,6 +39,15 @@ var _bot_rng := RandomNumberGenerator.new()
 var _bot_timer := Timer.new()
 var _afk_timer := Timer.new()
 var _waiting_since: Dictionary[int, float] = {}
+## Timeouts in a row per seat, and the seats a bot plays because their player went idle.
+var _strikes: Dictionary[int, int] = {}
+var _away: Dictionary[int, bool] = {}
+## When the local player's time runs out (ms), or -1.
+var _afk_deadline := -1
+var _difficulty: int = BotTable.Difficulty.NORMAL
+var _bots: BotTable
+## The last event the bots have seen.
+var _bots_seen := 0
 ## Last event each peer has been sent.
 var _sent_seq: Dictionary[int, int] = {}
 var _autoplay_queued := false
@@ -57,6 +71,11 @@ func reset() -> void:
 	_roster = []
 	_ready_peers.clear()
 	_waiting_since.clear()
+	_strikes.clear()
+	_away.clear()
+	_afk_deadline = -1
+	_bots = null
+	_bots_seen = 0
 	_sent_seq.clear()
 	presentation_busy = false
 	_autoplay_signature = ""
@@ -70,11 +89,13 @@ func local_id() -> int:
 
 
 ## Host: remember who plays and how, before the game scene loads everywhere.
-func prepare_host(roster: Array[Dictionary], seed_value: int, max_turns: int) -> void:
+func prepare_host(roster: Array[Dictionary], seed_value: int, max_turns: int, difficulty: int, afk: float) -> void:
 	reset()
 	_roster = roster.duplicate(true)
 	_seed = seed_value
 	_max_turns = max_turns
+	_difficulty = difficulty
+	afk_timeout = afk
 	_bot_rng.seed = seed_value + 1
 
 
@@ -96,6 +117,19 @@ func submit(op: StringName, args: Array = []) -> void:
 		_rpc_request.rpc_id(1, op, args)
 
 
+## The local player wants their seat back from the bot that took over when they went idle.
+func take_seat_back() -> void:
+	if Network.is_host():
+		_set_away(local_id(), false)
+	elif not Network.reconnecting:
+		_rpc_seat_back.rpc_id(1)
+
+
+## Seconds the local player has left before the game acts for them, or -1 if there is no limit.
+func seconds_left() -> float:
+	return -1.0 if _afk_deadline < 0 else maxf(0.0, (_afk_deadline - Time.get_ticks_msec()) / 1000.0)
+
+
 ## Host: a human left. Before the start their seat simply becomes a bot; during the game a
 ## bot takes over their seat.
 func on_peer_left(id: int) -> void:
@@ -109,6 +143,7 @@ func on_peer_left(id: int) -> void:
 	var p := rules.state.player(id)
 	if p == null:
 		return
+	_away.erase(id)
 	rules.set_bot(id, true, false)
 	rules.emit_event(&"left", {"pid": id})
 	rules.log_event("{player} lost the connection; a bot plays their seat until they return.", {"player": Loc.player(p)})
@@ -126,6 +161,8 @@ func on_peer_rejoined(id: int) -> void:
 	var p := rules.state.player(id)
 	if p == null:
 		return
+	_away.erase(id)
+	_strikes.erase(id)
 	rules.set_bot(id, false, true)
 	rules.emit_event(&"rejoined", {"pid": id})
 	rules.log_event("{player} is back at the table.", {"player": Loc.player(p)})
@@ -152,6 +189,10 @@ func _try_start() -> void:
 		if not seat.bot and seat.connected and not _ready_peers.has(seat.id):
 			return
 	rules = GameRules.new()
+	# Every seat gets a brain, also the humans': a bot may have to take over from them.
+	_bots = BotTable.new(_bot_rng)
+	for seat in _roster:
+		_bots.add_seat(seat.id, _difficulty)
 	rules.setup(_roster, _seed, _max_turns)
 	for seat in _roster:
 		if not seat.bot:
@@ -166,6 +207,7 @@ func _handle(pid: int, op: StringName, args: Array) -> void:
 		return
 	var err := rules.apply(pid, op, args)
 	if err.is_empty():
+		_strikes.erase(pid)
 		_after_change()
 	else:
 		print("Request refused (%s %s from %d): %s" % [op, args, pid, Loc.text(err)])
@@ -173,6 +215,9 @@ func _handle(pid: int, op: StringName, args: Array) -> void:
 
 
 func _after_change() -> void:
+	for event in rules.events_since(_bots_seen):
+		_bots.observe(event)
+	_bots_seen = rules.last_event_seq()
 	var now := Time.get_ticks_msec() / 1000.0
 	var waiting := rules.state.waiting_on()
 	for id in _waiting_since.keys():
@@ -182,7 +227,7 @@ func _after_change() -> void:
 		if not _waiting_since.has(id):
 			_waiting_since[id] = now
 	for p in rules.state.players:
-		if not p.is_bot and p.connected:
+		if (not p.is_bot and p.connected) or _away.has(p.id):
 			_send_view(p.id)
 	if rules.state.phase == GameState.Phase.GAME_OVER:
 		_afk_timer.stop()
@@ -194,11 +239,26 @@ func _send_view(id: int) -> void:
 	# A peer that joins the view stream late gets the current table without a backlog.
 	var since: int = _sent_seq.get(id, rules.last_event_seq())
 	data["events"] = rules.events_since(since)
+	data["afk_left"] = _afk_left(id)
 	_sent_seq[id] = rules.last_event_seq()
 	if id == local_id():
 		_apply_view(data)
 	elif Network.peer_is_reachable(Network.peer_of(id)):
 		_rpc_view.rpc_id(Network.peer_of(id), data)
+
+
+## Seconds this player has left to act, or -1 if nothing is running for them.
+func _afk_left(id: int) -> float:
+	if not _times_out(id) or not _waiting_since.has(id):
+		return -1.0
+	return maxf(0.0, afk_timeout - (Time.get_ticks_msec() / 1000.0 - _waiting_since[id]))
+
+
+## Whether this seat can run out of time: only people, and nobody alone with bots.
+func _times_out(id: int) -> bool:
+	if afk_timeout <= 0.0 or Network.mode == Network.Mode.OFFLINE:
+		return false
+	return not rules.state.player(id).is_bot
 
 
 ## `message` is a Loc message, translated by whoever receives it.
@@ -233,7 +293,7 @@ func _run_bot() -> void:
 		var p := rules.state.player(id)
 		if not p.is_bot:
 			continue
-		var request := BotBrain.decide(GameState.from_view(rules.state.to_view(id)), id, _bot_rng)
+		var request := _bots.decide(GameState.from_view(rules.state.to_view(id)), id)
 		var err: Dictionary = {"k": "no move", "a": {}} if request.is_empty() else rules.apply(id, request[0], request[1])
 		if not err.is_empty():
 			push_error("Bot %s could not act (%s); using the default move." % [p.name, Loc.text(err)])
@@ -249,8 +309,12 @@ func _check_afk() -> void:
 	var now := Time.get_ticks_msec() / 1000.0
 	for id in rules.state.waiting_on():
 		var p := rules.state.player(id)
-		if p.is_bot or id == local_id() or now - _waiting_since.get(id, now) < afk_timeout:
+		if not _times_out(id) or now - _waiting_since.get(id, now) < afk_timeout:
 			continue
+		_strikes[id] = _strikes.get(id, 0) + 1
+		if _strikes[id] >= AFK_STRIKES:
+			_set_away(id, true)
+			return
 		var request := rules.default_request(id)
 		if request.is_empty():
 			continue
@@ -260,10 +324,31 @@ func _check_afk() -> void:
 		return
 
 
+## Host: a bot takes over from a player who keeps timing out, or gives the seat back to them.
+func _set_away(id: int, away: bool) -> void:
+	var p := rules.state.player(id) if rules else null
+	if p == null or _away.has(id) == away:
+		return
+	_strikes.erase(id)
+	_waiting_since.erase(id)
+	rules.set_bot(id, away, not away)
+	if away:
+		_away[id] = true
+		rules.emit_event(&"away", {"pid": id})
+		rules.log_event("{player} has been idle too long; a bot plays their seat until they take it back.", {"player": Loc.player(p)})
+	else:
+		_away.erase(id)
+		rules.emit_event(&"back", {"pid": id})
+		rules.log_event("{player} takes their seat back.", {"player": Loc.player(p)})
+	_after_change()
+
+
 # --- Every peer ---------------------------------------------------------------
 
 func _apply_view(data: Dictionary) -> void:
 	view = GameState.from_view(data)
+	var left: float = data.get("afk_left", -1.0)
+	_afk_deadline = -1 if left < 0.0 else Time.get_ticks_msec() + roundi(left * 1000.0)
 	if view.phase == GameState.Phase.GAME_OVER:
 		Network.game_finished()
 	update_received.emit(view, data.get("events", []))
@@ -320,6 +405,12 @@ func _rpc_request(op: StringName, args: Array) -> void:
 	if p == null or p.is_bot:
 		return
 	_handle(pid, op, args)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _rpc_seat_back() -> void:
+	if Network.is_host():
+		_set_away(Network.pid_of(multiplayer.get_remote_sender_id()), false)
 
 
 @rpc("authority", "call_remote", "reliable")

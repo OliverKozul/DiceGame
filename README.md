@@ -3,18 +3,22 @@
 A dice-building game of honest promises and well-timed betrayal for 3–6 players (about 30–45 minutes).
 Every turn you roll your dice, publicly declare what you will do, secretly plan what you really do, and
 then everything resolves in order of cunning. Keep your word and earn renown; break it and catch your
-rivals off guard. The highest score after 15 turns wins.
+rivals off guard. The highest score after the last turn (15 in a full game) wins.
 
 The game is designed to also work as a physical board game; see [DESIGN.md](DESIGN.md) for the full
 rules and design intent, and [ROADMAP.md](ROADMAP.md) for what is planned next.
 
 ## Playing
 
-- **Play vs bots:** enter a name, press *Play vs bots*, choose 2–5 opponents.
-- **Steam (friends):** *Host Steam lobby*, then *Invite friends* (Steam overlay). Friends accept the invite,
-  or press *Find friends' lobbies* and join from the list. Steam names are used.
+- **Play vs bots:** enter a name, press *Play vs bots*, choose 2–5 opponents, how hard they are and how long the
+  game is. Easy bots play simple heuristics. Normal bots have play styles but believe what they hear. Hard bots
+  build their dice harder and remember who broke their word.
+- **Steam:** *Host Steam lobby*, then *Invite friends* (Steam overlay). Friends accept the invite or use *Join game*
+  in the friends list; anyone can join from *Open tables* if the host set the table to *Public*. Steam names are used.
 - **Direct IP / LAN:** *Host direct IP* on one machine (port 7777, UDP); others type its IP and *Join*.
-- In any lobby the host can add bots to fill seats (3–6 seats) and starts the game.
+- In any lobby the host can add bots to fill seats (3–6 seats), remove a player (who then stays out of that room),
+  and choose the game's length (12 or 15 turns), the bots' difficulty and the time to act. Everyone sees these
+  options. The host starts the game.
 - If a player disconnects, a bot plays their seat until they rejoin. If the host leaves, the game ends for everyone.
   After the game the host can bring everyone back to the lobby for another round.
 - **At the table:** click dice in the tray to choose rerolls; when shopping, click a market face and then
@@ -27,6 +31,11 @@ rules and design intent, and [ROADMAP.md](ROADMAP.md) for what is planned next.
   turn pages, F1 or View opens the rules, Page Up/Down or the right stick scroll the Chronicle. The rules book has a
   Controls page.
 - **Languages:** English and German. The language follows the system unless one is chosen in Settings (main menu).
+- **Going idle:** at a table with other people, whoever runs out of time (2 minutes by default, the last 30 seconds
+  are counted down) gets a safe move played for them; after two in a row a bot plays their seat until they take it back.
+  This goes for the host too. Solo games have no limit.
+- **The end of a game** tells its story: the betrayal of the night, titles such as the Traitor and the Honest One, how
+  often everyone kept their word, and any achievements unlocked.
 - **Rejoining:** a player who loses the connection keeps the table on screen and reconnects on their own for 90
   seconds while a bot plays their seat. After a crash, the main menu offers *Rejoin your game* for a few hours.
 - **Settings:** language, fullscreen, vsync, interface size, four volume sliders, animation speed, reduced motion,
@@ -65,18 +74,22 @@ Open the project with the **GodotSteam 4.6** editor (stock Godot 4.6 also works,
 
 ```
 Scripts/Core      rules engine: GameRules (host-only state machine that also emits events),
-                  GameState/PlayerState, Face, Content (all content and tuning numbers), BotBrain
+                  GameState/PlayerState, Face, Content (all content and tuning numbers), GameRecap
+                  (the end screen's story), AchievementRules, and the bots: BotTable deals out BotBrain
+                  (Easy) or StrategyBot (Normal, Hard)
 Scripts/Content   Trinket / Mob / Boss resource scripts and the trinket effects
-Scripts/Net       Network (connections, lobby, handshake), Session (game channel), SteamService
+Scripts/Net       Network (connections, lobby, handshake), Session (game channel), SteamService,
+                  Presence (rich presence)
 Scripts/Systems   Settings, Audio (effects, music, ambience), Transition (scene changes, quitting),
-                  Loc (translation helpers), Controls (keyboard/controller actions and focus)
+                  Loc (translation helpers), Controls (keyboard/controller actions and focus), Achievements
 Scripts/UI        Menu, GameScreen + Presenter (animations), ActionPanel, SeatCard, DiceTray (3D dice),
                   overlays (settings, how to play, escape menu, player sheet, end screen), Icons, Parchment
 Scripts/Dev       Dev: command-line automation for tests and screenshots
-Assets            fonts, icons (SVG), shaders, audio (CC0, see CREDITS.md), Theme.tres
+Assets            fonts, icons (SVG), shaders, audio (CC0, see CREDITS.md), Theme.tres, Licenses
 Locale            translations: messages.pot (every text) and one .po file per language
 Resources         trinket, mob and boss data (.tres)
 tests, tools      test suites and helper scripts (not exported)
+steam             what goes up to Steamworks (not exported); SETUP.md lists every step
 ```
 
 **Look and feel.** The tavern theme is generated by `tools/build_theme.gd`; wood, parchment, candle light
@@ -136,6 +149,9 @@ Godot path below is the GodotSteam editor; set `GODOT` to override it in the Pyt
 # Rules: hundreds of full bot games with invariants, determinism, hidden-info and refusal checks
 GodotSteam4.6.exe --headless --path . --script res://tests/test_rules.gd -- 300
 
+# Bots: each difficulty must be harder for a proxy player than the one below it
+GodotSteam4.6.exe --headless --path . --script res://tests/test_bots.gd -- 200
+
 # 3D dice: every throw must land flat on exactly the rolled face, with no overlaps
 GodotSteam4.6.exe --headless --path . res://tests/test_dice.tscn -- 20
 
@@ -149,6 +165,9 @@ python tools/i18n.py check
 # rejoins, another quits and is restarted to rejoin from its saved ticket, as after a crash
 python tools/nettest.py
 
+# End to end: the host's options reach clients, removing a player, idle clients and an idle host
+python tools/lobbytest.py
+
 # A whole game played by keys only (and by controller buttons only), in any language
 GodotSteam4.6.exe --headless --path . -- --autohost=offline --bots=3 --bot-delay=0 --keys-test
 GodotSteam4.6.exe --headless --path . -- --autohost=offline --bots=3 --bot-delay=0 --keys-test --pad --locale=de
@@ -158,7 +177,7 @@ python tools/strategy_sim.py                 # 1200 mixed games, ~30 s
 python tools/strategy_sim.py --pool all --only mixed field --reads naive suspicious
 ```
 
-The strategy simulator (`tests/sim/`) plays parameterised bot styles (honest, rational liar, mob farmer,
+The strategy simulator (`tests/sim/`, with `Scripts/Core/StrategyBot.gd`) plays parameterised bot styles (honest, rational liar, mob farmer,
 warlord, engine builder, renown miser, boss hunter, ...) that see only a player's view and remember who broke
 their word. It reports each style's score margin over the table with 95% intervals, where points come from,
 and which trinkets and faces go with winning. `tests/sim/profile_sim.gd` shows where a simulated game spends
@@ -174,4 +193,5 @@ event happens in bot games, for tuning.
 `export_presets.cfg` uses the GodotSteam 4.6 export templates (paths point at the Downloads folder).
 Export with `GodotSteam4.6.exe --headless --path . --export-release "Windows Desktop" DiceGame.exe`.
 Ship `steam_api64.dll` next to the exe. `steam_appid.txt` (App ID 480, Valve's shared test app) is only
-for development and testing outside Steam; remove it once the game has its own App ID.
+for development and testing outside Steam. The exe and pck are build output and stay out of git.
+[steam/SETUP.md](steam/SETUP.md) lists what the game's own App ID will need: achievements, rich presence and Steam Cloud.

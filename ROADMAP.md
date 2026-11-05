@@ -25,6 +25,9 @@ What is planned or still open. Implemented rules live in [README.md](README.md);
   menu (wooden plaque buttons, real candle models, a swinging sign); the rules book page flip; seat figures
   on the table; more music (one track per act); a visible fast-forward button; controller button prompts
   (glyphs) next to buttons; Steam Deck checks (the on-screen keyboard for the name field).
+- **Shorter games.** The rules are tuned for 15 turns. In bot games 12 turns works (0.2 boss kills per player against
+  0.47), but at 9 or 10 turns bosses all but vanish (0.06) and scores halve, so those lengths are not offered. A short
+  game needs its own numbers, for instance weaker bosses or acts that do not outrun the players' dice.
 - **Dice-building depth** (a main focus): more special faces, die types other than D6, face upgrades
   versus replacements, and making the wild, double and renown faces interesting.
 
@@ -42,6 +45,7 @@ What is planned or still open. Implemented rules live in [README.md](README.md);
 - Whether keeping your intention should give a bonus beyond renown (decide after playtests).
 
 ## Accessibility and polish
+- Native read-through of the German text added on 2026-11-05 (lobby options, recap, achievements).
 - Colour-blind check of seat colours (high-contrast stamps exist; seats could add patterns).
 - More languages (copy `Locale/messages.pot`; see README). The German translation should get a native read-through.
   Languages with other scripts need a fallback font (Cloister Black and Lora cover Latin only).
@@ -49,10 +53,11 @@ What is planned or still open. Implemented rules live in [README.md](README.md);
 
 ## Online
 - The host leaving still ends the game (host migration, or saving and resuming a game).
-- Configurable AFK timeout shown in the UI (fixed at 120 s for remote players today).
-- Own Steam App ID; then drop `steam_appid.txt` and the 480 test-app tagging.
-- Steam rich presence ("In a lobby", "Turn 7 of 15") and join-from-friends-list.
+- Own Steam App ID, then everything in [steam/SETUP.md](steam/SETUP.md): achievement icons and entries, rich presence
+  tokens, Auto-Cloud paths, and a real test of lobbies, invites and rejoining between two accounts. The code for these
+  is in, but none of it has run against Steam yet.
 - Spectators.
+- Moderation for public tables: reporting, or at least a block list across games.
 
 ## Physical version
 - Printable components: face tiles, trinket/mob/boss cards, player screens and reference cards.
@@ -61,6 +66,10 @@ What is planned or still open. Implemented rules live in [README.md](README.md);
 - Run the rules test, linter and network test in CI.
 
 ## Done
+- Launch preparation (2026-11-05): bot difficulties (Hard picked and checked with `tests/test_bots.gd`), table options
+  and removing players, public tables, achievements, rich presence, join from the friends list, Steam Cloud set-up, the
+  end-of-game story, idle players handed to a bot (the host too), an open-licence title font, licence texts in the game.
+  Fixed: combat amounts that overflowed the plan check, and knockouts by bots never being credited to them.
 - Content, rejoining, keyboard and controller, localisation (2026-11-03): six mobs, three bosses (drawn per stage),
   eleven trinkets and three face tiles, tuned against the old content in the simulator; rejoining after a lost
   connection or a crash, tested end to end in `tools/nettest.py`; full keyboard and controller play, tested by

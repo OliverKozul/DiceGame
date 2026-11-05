@@ -12,6 +12,7 @@ const SHAKE_PIXELS := 14.0
 const EDGE_SHADER := preload("res://Assets/Shaders/edge_pulse.gdshader")
 ## How fast trauma fades, per second.
 const TRAUMA_DECAY := 1.8
+const WARNING_COLOUR := Color(0.97, 0.62, 0.36)
 ## The smallest space the table is laid out in, in canvas units. A fixed size, because the table's
 ## own minimum height changes with how its text wraps, which would feed back into the fit.
 const TABLE_MIN := Vector2(1150, 700)
@@ -29,6 +30,10 @@ var _cards: Dictionary[int, SeatCard] = {}
 var _presenter: Presenter
 var _pause := PauseMenu.new()
 var _reconnect := ReconnectOverlay.new()
+var _away := AwayOverlay.new()
+## Warns the local player that their time is running out.
+var _time_label := Label.new()
+var _time_timer := Timer.new()
 var _end := EndOverlay.new()
 var _confirm := ConfirmOverlay.new()
 var _confirm_action := Callable()
@@ -83,7 +88,7 @@ func _ready() -> void:
 	add_child(fx)
 	move_child(fx, margin.get_index() + 1)
 	resized.connect(_fit_table)
-	_fit_table()
+	_fit_table.call_deferred()
 	_fade_chronicle_top()
 	_phase_font_size = _phase_label.get_theme_font_size("font_size")
 	_phase_label.resized.connect(_fit_phase_label)
@@ -98,6 +103,15 @@ func _ready() -> void:
 	add_child(_end)
 	add_child(_confirm)
 	add_child(_reconnect)
+	add_child(_away)
+	_time_label.visible = false
+	_time_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_time_label.add_theme_color_override("font_color", WARNING_COLOUR)
+	_hint_label.get_parent().add_child(_time_label)
+	_time_timer.wait_time = 0.25
+	_time_timer.timeout.connect(_update_time_warning)
+	add_child(_time_timer)
+	_time_timer.start()
 	Controls.add_default(_default_focus)
 	Network.reconnect_changed.connect(_on_reconnect_changed)
 	_confirm.confirmed.connect(func() -> void:
@@ -178,7 +192,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _overlay_open() -> bool:
-	for overlay: Overlay in [_pause, _end, _confirm, _reconnect]:
+	for overlay: Overlay in [_pause, _end, _confirm, _reconnect, _away]:
 		if overlay.visible:
 			return true
 	return _action_panel.info_open()
@@ -268,9 +282,30 @@ func render(view: GameState) -> void:
 	_action_panel.render(view, me)
 	_action_panel.modulate.a = 1.0
 	_update_tip(view)
+	_update_away(view)
 	if view.phase == GameState.Phase.GAME_OVER and not _end_shown:
 		_end_shown = true
 		_end.show_results(view, me)
+
+
+## A bot plays the local seat because its player went idle: offer it back.
+func _update_away(view: GameState) -> void:
+	var p := view.player(me)
+	if p and p.is_bot and not p.connected and not Network.reconnecting and view.phase != GameState.Phase.GAME_OVER:
+		_away.open()
+	elif _away.visible:
+		_away.close()
+
+
+## Shown in the last seconds before the game acts for the local player.
+func _update_time_warning() -> void:
+	var left := Session.seconds_left()
+	var warn := left >= 0.0 and left <= Session.AFK_WARNING and shown != null and shown.is_waiting_on(me)
+	if warn and not _time_label.visible:
+		Audio.play(&"creak", -6.0)
+	_time_label.visible = warn
+	if warn:
+		_time_label.text = tr("{seconds} s left, then the game decides for you.").format({"seconds": ceili(left)})
 
 
 func _render_header(view: GameState) -> void:

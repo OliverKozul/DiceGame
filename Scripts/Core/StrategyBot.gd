@@ -1,7 +1,9 @@
+class_name StrategyBot
 extends RefCounted
-## A bot with a play style, for strategy simulations (tests only, never shipped). Like
-## BotBrain it sees only one player's view of the table plus the public events, but what it
-## values comes from a style dictionary, so styles can be pitted against each other.
+## A bot with a play style: the Normal and Hard opponents (see BotTable) and the players of the
+## strategy simulations. Like BotBrain it sees only one player's view of the table plus the
+## public events, but what it values comes from a style dictionary, and it remembers who keeps
+## their word.
 ## Values are in score points; resources convert to points at UNITS_PER_POINT.
 ##
 ## How it reads the table is set by `reads` (the simulator sets it for every bot):

@@ -5,6 +5,8 @@ extends Node
 signal lobby_created(lobby_id: int)
 signal lobby_joined(lobby_id: int, error: String)
 signal join_requested(lobby_id: int)
+## The answer to request_public_lobbies(): [{"lobby", "name", "seats", "turns"}].
+signal public_lobbies_found(lobbies: Array[Dictionary])
 
 ## 480 is Valve's shared test app (Spacewar); lobbies are tagged so we only see our own.
 const APP_ID := 480
@@ -12,6 +14,10 @@ const GAME_TAG := "DiceGame"
 const RESULT_OK := 1
 const ENTER_SUCCESS := 1
 const LOBBY_FRIENDS_ONLY := 1
+const LOBBY_PUBLIC := 2
+const LOBBY_DISTANCE_WORLDWIDE := 3
+const LOBBY_COMPARE_EQUAL := 0
+const LOBBIES_LISTED := 50
 const FRIEND_FLAG_IMMEDIATE := 4
 
 var available := false
@@ -24,6 +30,8 @@ var _steam: Object
 ## The status as a msgid and the value it mentions (the player's name or an error).
 var _status_key := Loc.n("Steam is not available in this build.")
 var _status_value := ""
+## The rich presence last set, so only changes reach Steam.
+var _presence: Dictionary = {}
 
 
 func _ready() -> void:
@@ -36,7 +44,7 @@ func _ready() -> void:
 		0:
 			pass
 		2:
-			_status_key = Loc.n("Steam isn't running. Start Steam to host or join friends' tables.")
+			_status_key = Loc.n("Steam isn't running. Start Steam to host or join online tables.")
 			return
 		3:
 			_status_key = Loc.n("Steam needs an update before you can play online.")
@@ -51,6 +59,8 @@ func _ready() -> void:
 	_steam.connect("lobby_created", _on_lobby_created)
 	_steam.connect("lobby_joined", _on_lobby_joined)
 	_steam.connect("join_requested", _on_join_requested)
+	_steam.connect("join_game_requested", _on_join_game_requested)
+	_steam.connect("lobby_match_list", _on_lobby_match_list)
 	_steam.call("initRelayNetworkAccess")
 	set_process(true)
 
@@ -65,6 +75,50 @@ func persona_name() -> String:
 
 func steam_id() -> int:
 	return _steam.call("getSteamID") if available else 0
+
+
+## Sets the keys of `values` and clears the keys set last time that it no longer has. Text shown
+## to friends comes from the tokens in steam/rich_presence.vdf.
+func set_presence(values: Dictionary) -> void:
+	if not available or values == _presence:
+		return
+	for key: String in _presence:
+		if not values.has(key):
+			_steam.call("setRichPresence", key, "")
+	for key: String in values:
+		if _presence.get(key) != values[key]:
+			_steam.call("setRichPresence", key, values[key])
+	_presence = values.duplicate()
+
+
+## Unlocks achievements (ids from AchievementRules). Steam shows its own notification.
+func unlock_achievements(ids: Array[StringName]) -> void:
+	if not available or ids.is_empty():
+		return
+	for id in ids:
+		_steam.call("setAchievement", String(id))
+	_steam.call("storeStats")
+
+
+## Host: who may find the lobby, how many people may join it, and what the lobby list shows.
+func update_lobby(public: bool, member_limit: int, info: Dictionary) -> void:
+	if not available or lobby_id == 0:
+		return
+	_steam.call("setLobbyType", lobby_id, LOBBY_PUBLIC if public else LOBBY_FRIENDS_ONLY)
+	_steam.call("setLobbyMemberLimit", lobby_id, member_limit)
+	for key: String in info:
+		_steam.call("setLobbyData", lobby_id, key, info[key])
+
+
+## Asks Steam for public tables of this version of the game; public_lobbies_found answers.
+func request_public_lobbies() -> void:
+	if not available:
+		return
+	_steam.call("addRequestLobbyListStringFilter", "game", GAME_TAG, LOBBY_COMPARE_EQUAL)
+	_steam.call("addRequestLobbyListStringFilter", "protocol", str(Network.PROTOCOL), LOBBY_COMPARE_EQUAL)
+	_steam.call("addRequestLobbyListDistanceFilter", LOBBY_DISTANCE_WORLDWIDE)
+	_steam.call("addRequestLobbyListResultCountFilter", LOBBIES_LISTED)
+	_steam.call("requestLobbyList")
 
 
 func create_lobby(max_members: int) -> void:
@@ -168,3 +222,19 @@ func _enter_error(response: int) -> String:
 
 func _on_join_requested(id: int, _friend: int) -> void:
 	join_requested.emit(id)
+
+
+## "Join game" on a friend's rich presence: the connect string this game set for them.
+func _on_join_game_requested(_friend: int, connect_string: String) -> void:
+	var parts := connect_string.split(" ", false)
+	var index := parts.find("+connect_lobby")
+	if index >= 0 and index + 1 < parts.size() and parts[index + 1].is_valid_int():
+		join_requested.emit(parts[index + 1].to_int())
+
+
+func _on_lobby_match_list(found: Array) -> void:
+	var lobbies: Array[Dictionary] = []
+	for id: int in found:
+		lobbies.append({"lobby": id, "name": _steam.call("getLobbyData", id, "host"),
+			"seats": _steam.call("getLobbyData", id, "seats"), "turns": _steam.call("getLobbyData", id, "turns")})
+	public_lobbies_found.emit(lobbies)

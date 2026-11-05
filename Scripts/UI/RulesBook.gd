@@ -16,7 +16,7 @@ func _chapters() -> Array[Array]:
 	return [
 		[tr("The goal"), tr("""[font_size=26]The goal[/font_size]
 
-Score the most {score} over [b]15 turns[/b]. Your final score is {score} plus every {renown} you have not spent.
+Score the most {score} by the [b]last turn[/b] (15 in a full game). Your final score is {score} plus every {renown} you have not spent.
 
 You earn {score} by slaying mobs ([b]+1[/b] in the first act, [b]+2[/b] later), by dealing a quarter of the boss's health on the turn it falls ([b]+3[/b]) and by knocking out a rival ([b]+1[/b]).
 
@@ -92,7 +92,7 @@ At 0 {heal} you are [b]knocked out[/b]: you lose your action this turn, sit out 
 
 The player who knocked you out gains [b]+1 {score}[/b] and you lose [b]1 {score}[/b]. Falling to a mob or the boss also costs 1 {score}.
 
-Nobody is ever eliminated. The game always lasts all 15 turns.""")],
+Nobody is ever eliminated. The game always lasts all its turns.""")],
 	]
 
 

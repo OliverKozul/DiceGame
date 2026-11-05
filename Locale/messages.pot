@@ -35,6 +35,82 @@ msgstr ""
 msgid "{player}'s {trinket}: +{amount} maximum health, fully healed."
 msgstr ""
 
+#: Scripts/Core/AchievementRules.gd:74
+msgid "A Seat at the Table"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:76
+msgid "Toast of the Tavern"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:78
+msgid "Nobody's Fool"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:80
+msgid "Among Friends"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:82
+msgid "My Word Is My Bond"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:84
+msgid "Faithless"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:86
+msgid "Thrice Sworn"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:88
+msgid "Knife in the Dark"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:90
+msgid "Boss Slayer"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:92
+msgid "Bane of the Ancients"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:94
+msgid "Going, Going, Gone"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:96
+msgid "A Fistful of Dice"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:98
+msgid "Master Smith"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:100
+msgid "Magpie"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:102
+msgid "Back from the Floor"
+msgstr ""
+
+#: Scripts/Core/AchievementRules.gd:104
+msgid "Highway Robbery"
+msgstr ""
+
+#: Scripts/Core/BotTable.gd:33
+msgid "Easy"
+msgstr ""
+
+#: Scripts/Core/BotTable.gd:35
+msgid "Hard"
+msgstr ""
+
+#: Scripts/Core/BotTable.gd:36
+msgid "Normal"
+msgstr ""
+
 #: Scripts/Core/Face.gd:64
 msgid "Combat"
 msgstr ""
@@ -107,329 +183,329 @@ msgstr ""
 msgid "Doubles your highest other face"
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:79
+#: Scripts/Core/GameRules.gd:83
 msgid "The game begins: {players} players, {turns} turns."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:88
+#: Scripts/Core/GameRules.gd:92
 msgid "Unknown request."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:91
-#: Scripts/Core/GameRules.gd:94
+#: Scripts/Core/GameRules.gd:95
+#: Scripts/Core/GameRules.gd:98
 msgid "Malformed request."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:96
+#: Scripts/Core/GameRules.gd:100
 msgid "You are not in this game."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:98
+#: Scripts/Core/GameRules.gd:102
 msgid "The game is over."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:173
+#: Scripts/Core/GameRules.gd:178
 msgid "Choose at least one die to reroll."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:177
+#: Scripts/Core/GameRules.gd:182
 msgid "Invalid die."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:181
+#: Scripts/Core/GameRules.gd:186
 msgid "Rerolling again costs {cost} {cunning}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:215
+#: Scripts/Core/GameRules.gd:220
 msgid "{player} rolls {faces}: {gains}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:221
+#: Scripts/Core/GameRules.gd:226
 msgid "It is not time to declare."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:223
+#: Scripts/Core/GameRules.gd:228
 msgid "It is not your turn to declare."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:234
+#: Scripts/Core/GameRules.gd:239
 msgid "{player} declares: {choice}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:240
+#: Scripts/Core/GameRules.gd:245
 msgid "It is not time to plan."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:243
-#: Scripts/Core/GameRules.gd:405
+#: Scripts/Core/GameRules.gd:248
+#: Scripts/Core/GameRules.gd:411
 msgid "You are knocked out this turn."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:245
+#: Scripts/Core/GameRules.gd:250
 msgid "Your plan is already locked."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:250
+#: Scripts/Core/GameRules.gd:255
 msgid "Combat amounts cannot be negative."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:252
+#: Scripts/Core/GameRules.gd:257
 msgid "Only attacks use attack combat."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:254
+#: Scripts/Core/GameRules.gd:260
 msgid "You only have {amount} {combat} to split."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:270
+#: Scripts/Core/GameRules.gd:276
 msgid "That market slot is empty."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:272
+#: Scripts/Core/GameRules.gd:278
 msgid "Choose one of your faces to replace."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:284
+#: Scripts/Core/GameRules.gd:290
 msgid "{player} buys {face} for {price} and replaces {old} on die {die}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:295
+#: Scripts/Core/GameRules.gd:301
 msgid "Choose one of your faces to upgrade."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:299
+#: Scripts/Core/GameRules.gd:305
 msgid "That face cannot be upgraded."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:308
+#: Scripts/Core/GameRules.gd:314
 msgid "{player} upgrades {old} to {face} on die {die} for {price}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:319
+#: Scripts/Core/GameRules.gd:325
 msgid "Renown costs {price} {gold}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:323
+#: Scripts/Core/GameRules.gd:329
 msgid "{player} buys 1 {renown} for {price} {gold}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:333
+#: Scripts/Core/GameRules.gd:339
 msgid "The market's die is sold out this turn."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:340
+#: Scripts/Core/GameRules.gd:346
 msgid "{player} buys a new die."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:359
+#: Scripts/Core/GameRules.gd:365
 msgid "{player} refreshes the market."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:377
+#: Scripts/Core/GameRules.gd:383
 msgid "It is not your turn to pick loot."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:379
+#: Scripts/Core/GameRules.gd:385
 msgid "Choose one of the items."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:384
+#: Scripts/Core/GameRules.gd:390
 msgid "{player} takes {trinket}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:392
+#: Scripts/Core/GameRules.gd:398
 msgid "You are not bidding."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:395
+#: Scripts/Core/GameRules.gd:401
 msgid "You cannot bid more than you have."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:403
+#: Scripts/Core/GameRules.gd:409
 msgid "It is not time to roll."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:407
+#: Scripts/Core/GameRules.gd:413
 msgid "You already kept your dice."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:413
+#: Scripts/Core/GameRules.gd:419
 msgid "You are not shopping right now."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:422
+#: Scripts/Core/GameRules.gd:428
 msgid "Choose a player who is in the game."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:425
+#: Scripts/Core/GameRules.gd:431
 msgid "Choose one of the mobs."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:428
+#: Scripts/Core/GameRules.gd:434
 msgid "That action has no target."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:430
+#: Scripts/Core/GameRules.gd:436
 msgid "Choose an action."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:438
+#: Scripts/Core/GameRules.gd:444
 msgid "You cannot pay that much renown."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:441
+#: Scripts/Core/GameRules.gd:447
 msgid "You cannot afford that."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:498
+#: Scripts/Core/GameRules.gd:504
 msgid "── Turn {turn} of {turns} ──"
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:519
+#: Scripts/Core/GameRules.gd:525
 msgid "Initiative: {order}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:540
+#: Scripts/Core/GameRules.gd:546
 msgid "{player} reveals: {plan} — kept their word and completed an oath (+{amount} {renown})."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:543
+#: Scripts/Core/GameRules.gd:549
 msgid "{player} reveals: {plan} — kept their word (oath {oath}/{length})."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:546
+#: Scripts/Core/GameRules.gd:552
 msgid "{player} reveals: {plan} — broke their word, but their oath holds ({oath}/{length})."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:549
+#: Scripts/Core/GameRules.gd:555
 msgid "{player} reveals: {plan} — broke their word; their oath is broken."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:568
+#: Scripts/Core/GameRules.gd:574
 msgid "{player} is down; their action is lost."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:576
+#: Scripts/Core/GameRules.gd:582
 msgid "{player} goes shopping."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:590
+#: Scripts/Core/GameRules.gd:596
 msgid "{player} attacks {target}, but they are already down."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:596
+#: Scripts/Core/GameRules.gd:602
 msgid "{player} attacks {target} with {combat}{attack}: {blocked} blocked, {damage} damage."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:604
+#: Scripts/Core/GameRules.gd:610
 msgid "{player} takes {amount} {renown} from {target}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:617
+#: Scripts/Core/GameRules.gd:623
 msgid "{player} attacks the {mob}, but it is already slain."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:626
+#: Scripts/Core/GameRules.gd:632
 msgid "{player} slays the {mob} (+{amount} {score}) and gains {trinket}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:634
+#: Scripts/Core/GameRules.gd:640
 msgid "{player} fails to slay the {mob} ({combat}{attack} of {hp}) and takes {damage} damage."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:643
+#: Scripts/Core/GameRules.gd:649
 msgid "{player} attacks the {boss}, but it is already slain."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:648
+#: Scripts/Core/GameRules.gd:654
 msgid "{player} hits the {boss} for {damage} ({hp}/{max} left)."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:654
+#: Scripts/Core/GameRules.gd:660
 msgid "The {boss} is slain!"
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:661
+#: Scripts/Core/GameRules.gd:667
 msgid "{player} rests and heals {amount} {heal}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:686
+#: Scripts/Core/GameRules.gd:692
 msgid "{player} knocks out {target}! ({player} +{gain} {score}, {target} −{loss} {score})"
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:689
+#: Scripts/Core/GameRules.gd:695
 msgid "{player} is knocked out! (−{loss} {score})"
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:709
+#: Scripts/Core/GameRules.gd:715
 msgid "The {boss} strikes {player}: {blocked} blocked, {damage} damage."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:726
+#: Scripts/Core/GameRules.gd:732
 msgid "Boss slayers: {players} (+{amount} {score} each)."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:756
+#: Scripts/Core/GameRules.gd:762
 msgid "Spoils: {items}. {players} pick first, most damage first (at least {share} to share)."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:772
+#: Scripts/Core/GameRules.gd:778
 msgid "{trinket} goes to a sealed bid. Everyone may bid {gold} and {renown} (worth {rate} {gold} each)."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:797
+#: Scripts/Core/GameRules.gd:803
 msgid "Nobody bids for {trinket}; it is lost."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:804
+#: Scripts/Core/GameRules.gd:810
 msgid "{player} wins {trinket} (bids: {bids})."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:829
+#: Scripts/Core/GameRules.gd:835
 msgid "A new boss appears: the {boss}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:844
+#: Scripts/Core/GameRules.gd:850
 msgid "{player} is back on their feet with {amount} {heal}."
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:872
+#: Scripts/Core/GameRules.gd:879
 msgid "Game over! {standings}"
 msgstr ""
 
-#: Scripts/Core/GameRules.gd:919
+#: Scripts/Core/GameRules.gd:926
 msgid "Act {act} begins: stronger mobs take the table."
 msgstr ""
 
-#: Scripts/Core/GameState.gd:151
-#: Scripts/Core/GameState.gd:154
+#: Scripts/Core/GameState.gd:153
+#: Scripts/Core/GameState.gd:156
 msgid "Attack {target}"
 msgstr ""
 
-#: Scripts/Core/GameState.gd:155
+#: Scripts/Core/GameState.gd:157
 msgid "Attack a mob"
 msgstr ""
 
-#: Scripts/Core/GameState.gd:157
+#: Scripts/Core/GameState.gd:159
 msgid "Attack the boss"
 msgstr ""
 
-#: Scripts/Core/GameState.gd:159
+#: Scripts/Core/GameState.gd:161
 #: Scripts/Core/PlayerState.gd:64
 msgid "Shop"
 msgstr ""
 
-#: Scripts/Core/GameState.gd:161
+#: Scripts/Core/GameState.gd:163
 #: Scripts/Core/PlayerState.gd:66
 msgid "Rest"
 msgstr ""
 
-#: Scripts/Core/GameState.gd:162
+#: Scripts/Core/GameState.gd:164
 #: Scripts/Core/PlayerState.gd:67
 msgid "Nothing"
 msgstr ""
 
-#: Scripts/Core/GameState.gd:175
+#: Scripts/Core/GameState.gd:177
 msgid "{choice} ({split})"
 msgstr ""
 
@@ -445,192 +521,209 @@ msgstr ""
 msgid "Attack boss"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:272
+#: Scripts/Dev/Dev.gd:345
 #: Scripts/UI/ActionPanel.gd:213
 msgid "Keep these dice"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:292
+#: Scripts/Dev/Dev.gd:365
 #: Scripts/UI/ActionPanel.gd:268
 msgid "Declare"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:296
+#: Scripts/Dev/Dev.gd:369
 #: Scripts/UI/ActionPanel.gd:283
 msgid "Lock plan"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:301
+#: Scripts/Dev/Dev.gd:374
 #: Scripts/UI/ConfirmOverlay.gd:23
 msgid "Cancel"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:303
+#: Scripts/Dev/Dev.gd:376
 #: Scripts/UI/ActionPanel.gd:374
 msgid "Lock it"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:317
+#: Scripts/Dev/Dev.gd:390
 #: Scripts/UI/ActionPanel.gd:442
 msgid "Done shopping"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:324
+#: Scripts/Dev/Dev.gd:397
 #: Scripts/UI/ActionPanel.gd:506
 msgid "Place bid"
 msgstr ""
 
-#: Scripts/Dev/Dev.gd:324
+#: Scripts/Dev/Dev.gd:397
 #: Scripts/UI/ActionPanel.gd:508
 msgid "Pass"
 msgstr ""
 
-#: Scripts/Net/Network.gd:166
+#: Scripts/Net/Network.gd:178
 msgid "Could not host on port {port}: {error}."
 msgstr ""
 
-#: Scripts/Net/Network.gd:178
+#: Scripts/Net/Network.gd:190
 msgid "Enter the host's IP address."
 msgstr ""
 
-#: Scripts/Net/Network.gd:181
+#: Scripts/Net/Network.gd:193
 msgid "Could not connect: {error}."
 msgstr ""
 
-#: Scripts/Net/Network.gd:185
+#: Scripts/Net/Network.gd:197
 msgid "Connecting to {address}…"
 msgstr ""
 
-#: Scripts/Net/Network.gd:196
+#: Scripts/Net/Network.gd:208
 msgid "Creating a Steam lobby…"
 msgstr ""
 
-#: Scripts/Net/Network.gd:208
+#: Scripts/Net/Network.gd:220
 msgid "Joining the lobby…"
 msgstr ""
 
-#: Scripts/Net/Network.gd:248
+#: Scripts/Net/Network.gd:260
 msgid "You left the game."
 msgstr ""
 
-#: Scripts/Net/Network.gd:264
+#: Scripts/Net/Network.gd:276
 msgid "Lost the connection to the host. Reconnecting…"
 msgstr ""
 
-#: Scripts/Net/Network.gd:273
+#: Scripts/Net/Network.gd:285
 msgid "Could not get back to the table."
 msgstr ""
 
-#: Scripts/Net/Network.gd:333
+#: Scripts/Net/Network.gd:345
 msgid "Bot"
 msgstr ""
 
-#: Scripts/Net/Network.gd:335
+#: Scripts/Net/Network.gd:347
 msgid "Bot {name}"
 msgstr ""
 
-#: Scripts/Net/Network.gd:527
+#: Scripts/Net/Network.gd:384
+#: Scripts/Net/Network.gd:726
+msgid "The host removed you from the table."
+msgstr ""
+
+#: Scripts/Net/Network.gd:588
 #: Scenes/Menu.tscn:188
 msgid "Player"
 msgstr ""
 
-#: Scripts/Net/Network.gd:541
+#: Scripts/Net/Network.gd:602
 msgid "Connected. Waiting for the host…"
 msgstr ""
 
-#: Scripts/Net/Network.gd:550
+#: Scripts/Net/Network.gd:611
 msgid "Could not connect to the host."
 msgstr ""
 
-#: Scripts/Net/Network.gd:562
+#: Scripts/Net/Network.gd:625
 msgid "Lost the connection to the host."
 msgstr ""
 
-#: Scripts/Net/Network.gd:569
+#: Scripts/Net/Network.gd:632
 msgid "Steam could not create a lobby."
 msgstr ""
 
-#: Scripts/Net/Network.gd:574
+#: Scripts/Net/Network.gd:637
 msgid "Could not host over Steam: {error}."
 msgstr ""
 
-#: Scripts/Net/Network.gd:599
+#: Scripts/Net/Network.gd:662
 msgid "Could not connect over Steam: {error}."
 msgstr ""
 
-#: Scripts/Net/Network.gd:603
+#: Scripts/Net/Network.gd:666
 msgid "Connecting to the host…"
 msgstr ""
 
-#: Scripts/Net/Network.gd:658
+#: Scripts/Net/Network.gd:671
+msgid "Finish or leave this game to join your friend."
+msgstr ""
+
+#: Scripts/Net/Network.gd:724
 msgid "The host runs a different version of the game."
 msgstr ""
 
-#: Scripts/Net/Network.gd:662
+#: Scripts/Net/Network.gd:730
 msgid "That game has already started."
 msgstr ""
 
-#: Scripts/Net/Network.gd:666
+#: Scripts/Net/Network.gd:734
 msgid "The lobby is full."
 msgstr ""
 
-#: Scripts/Net/Network.gd:718
+#: Scripts/Net/Network.gd:788
 msgid "Back at the table."
 msgstr ""
 
-#: Scripts/Net/Session.gd:114
+#: Scripts/Net/Session.gd:149
 msgid "{player} lost the connection; a bot plays their seat until they return."
 msgstr ""
 
-#: Scripts/Net/Session.gd:131
+#: Scripts/Net/Session.gd:168
 msgid "{player} is back at the table."
 msgstr ""
 
-#: Scripts/Net/Session.gd:257
+#: Scripts/Net/Session.gd:321
 msgid "{player} was idle too long and acts automatically."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:25
+#: Scripts/Net/Session.gd:338
+msgid "{player} has been idle too long; a bot plays their seat until they take it back."
+msgstr ""
+
+#: Scripts/Net/Session.gd:342
+msgid "{player} takes their seat back."
+msgstr ""
+
+#: Scripts/Net/SteamService.gd:31
 msgid "Steam is not available in this build."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:39
-msgid "Steam isn't running. Start Steam to host or join friends' tables."
+#: Scripts/Net/SteamService.gd:47
+msgid "Steam isn't running. Start Steam to host or join online tables."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:42
+#: Scripts/Net/SteamService.gd:50
 msgid "Steam needs an update before you can play online."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:45
+#: Scripts/Net/SteamService.gd:53
 msgid "Steam is unavailable: {value}"
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:49
+#: Scripts/Net/SteamService.gd:57
 msgid "Signed in to Steam as {value}."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:148
+#: Scripts/Net/SteamService.gd:202
 msgid "That lobby is not a game of this kind."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:152
+#: Scripts/Net/SteamService.gd:206
 msgid "That lobby runs a different version of the game."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:161
+#: Scripts/Net/SteamService.gd:215
 msgid "That lobby no longer exists."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:163
+#: Scripts/Net/SteamService.gd:217
 msgid "You are not allowed to join that lobby."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:165
+#: Scripts/Net/SteamService.gd:219
 msgid "That lobby is full."
 msgstr ""
 
-#: Scripts/Net/SteamService.gd:166
+#: Scripts/Net/SteamService.gd:220
 msgid "Could not join the lobby (code {code})."
 msgstr ""
 
@@ -664,7 +757,7 @@ msgid "Waiting for the others to finish rolling."
 msgstr ""
 
 #: Scripts/UI/ActionPanel.gd:147
-#: Scripts/UI/GameScreen.gd:290
+#: Scripts/UI/GameScreen.gd:325
 msgid "Declarations"
 msgstr ""
 
@@ -697,7 +790,7 @@ msgid "Plans are playing out. Watch the table and the Chronicle."
 msgstr ""
 
 #: Scripts/UI/ActionPanel.gd:172
-#: Scripts/UI/GameScreen.gd:296
+#: Scripts/UI/GameScreen.gd:331
 msgid "Spoils"
 msgstr ""
 
@@ -714,7 +807,7 @@ msgid "Your bid is in. Waiting for the others."
 msgstr ""
 
 #: Scripts/UI/ActionPanel.gd:188
-#: Scripts/UI/GameScreen.gd:281
+#: Scripts/UI/GameScreen.gd:316
 msgid "Waiting for {players}."
 msgstr ""
 
@@ -866,138 +959,262 @@ msgstr ""
 msgid "Everyone bids in secret. The highest bid (at least 1) wins and pays; {renown} counts as {rate} {gold}. Ties go to whoever hurt the boss more."
 msgstr ""
 
+#: Scripts/UI/AwayOverlay.gd:12
+msgid "Still there?"
+msgstr ""
+
+#: Scripts/UI/AwayOverlay.gd:13
+msgid "You were idle, so a bot is playing your seat. It plays until you take your seat back."
+msgstr ""
+
+#: Scripts/UI/AwayOverlay.gd:14
+msgid "Take my seat back"
+msgstr ""
+
 #: Scripts/UI/ConfirmOverlay.gd:24
 msgid "Confirm"
 msgstr ""
 
-#: Scripts/UI/EndOverlay.gd:32
+#: Scripts/UI/EndOverlay.gd:44
 msgid "Final score: trophies plus unspent renown."
 msgstr ""
 
-#: Scripts/UI/EndOverlay.gd:40
+#: Scripts/UI/EndOverlay.gd:58
 msgid "Back to the lobby"
 msgstr ""
 
-#: Scripts/UI/EndOverlay.gd:41
+#: Scripts/UI/EndOverlay.gd:59
 msgid "View the table"
 msgstr ""
 
-#: Scripts/UI/EndOverlay.gd:42
+#: Scripts/UI/EndOverlay.gd:60
 #: Scripts/UI/PauseMenu.gd:58
 msgid "Leave"
 msgstr ""
 
-#: Scripts/UI/EndOverlay.gd:47
+#: Scripts/UI/EndOverlay.gd:65
 msgid "You win!"
 msgstr ""
 
-#: Scripts/UI/EndOverlay.gd:47
+#: Scripts/UI/EndOverlay.gd:65
 msgid "{player} wins!"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:277
-#: Scripts/UI/GameScreen.gd:329
+#: Scripts/UI/EndOverlay.gd:81
+msgid "Words kept {kept}, broken {broken}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:103
+msgid "The night in review"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:109
+msgid "The betrayal of the night"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:109
+msgid "Turn {turn}: {player} said “{said}”, then hit {target} for {damage}."
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:116
+msgid "{player}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:127
+msgid "New achievements:"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:144
+msgid "The Traitor"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:146
+msgid "The Honest One"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:148
+msgid "The Backstabber"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:150
+msgid "The Monster Hunter"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:152
+msgid "The Dragonslayer"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:154
+msgid "The Brawler"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:156
+msgid "The Thief"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:158
+msgid "The Merchant"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:160
+msgid "The Punching Bag"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:168
+msgid "Words broken: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:170
+msgid "Words kept: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:172
+msgid "Ambush damage: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:174
+msgid "Mobs slain: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:176
+msgid "Bosses slain: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:178
+msgid "Knockouts: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:180
+msgid "Renown stolen: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:182
+msgid "Purchases: {value}"
+msgstr ""
+
+#: Scripts/UI/EndOverlay.gd:184
+msgid "Damage taken: {value}"
+msgstr ""
+
+#: Scripts/UI/GameScreen.gd:308
+msgid "{seconds} s left, then the game decides for you."
+msgstr ""
+
+#: Scripts/UI/GameScreen.gd:312
+#: Scripts/UI/GameScreen.gd:364
 msgid "Turn {turn} of {turns} · {phase}"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:288
+#: Scripts/UI/GameScreen.gd:323
 msgid "The Roll"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:292
+#: Scripts/UI/GameScreen.gd:327
 msgid "Secret Plans"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:294
+#: Scripts/UI/GameScreen.gd:329
 msgid "The Reveal"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:298
+#: Scripts/UI/GameScreen.gd:333
 msgid "Sealed Bids"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:300
+#: Scripts/UI/GameScreen.gd:335
 msgid "The Final Count"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:301
+#: Scripts/UI/GameScreen.gd:336
 msgid "The table is being set"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:307
+#: Scripts/UI/GameScreen.gd:342
 msgid "Everyone rolls at once. One free reroll, then each costs 1 cunning."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:309
+#: Scripts/UI/GameScreen.gd:344
 msgid "Intentions are spoken aloud, least cunning first."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:311
+#: Scripts/UI/GameScreen.gd:346
 msgid "Everyone locks a secret plan."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:313
+#: Scripts/UI/GameScreen.gd:348
 msgid "Plans play out, most cunning first."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:315
+#: Scripts/UI/GameScreen.gd:350
 msgid "The boss slayers pick their spoils, most damage first."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:317
+#: Scripts/UI/GameScreen.gd:352
 msgid "Everyone bids in secret for the last spoil."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:319
+#: Scripts/UI/GameScreen.gd:354
 msgid "Trophies plus unspent renown decide the winner."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:441
+#: Scripts/UI/GameScreen.gd:476
 msgid "{heal} {hp} of {max}  ·  strikes each attacker for {damage} if it survives. Slayers deal {share}+."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:444
+#: Scripts/UI/GameScreen.gd:479
 msgid "Slain this turn."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:449
+#: Scripts/UI/GameScreen.gd:484
 msgid "Wounded by"
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:493
+#: Scripts/UI/GameScreen.gd:528
 msgid "Your turn to shop: pick a face, then the face it replaces."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:495
+#: Scripts/UI/GameScreen.gd:530
 msgid "A new die costs {price}. Shoppers buy in initiative order."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:721
+#: Scripts/UI/GameScreen.gd:756
 msgid "Choose dice in the tray to reroll: click them, press 1 to 9, or move onto the tray with the arrow keys or the pad. The first reroll each turn is free; each further one costs 1 {cunning}, and {cunning} decides who acts first."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:723
+#: Scripts/UI/GameScreen.gd:758
 msgid "Say what you will do. Everyone sees it. Every third word you keep in a row completes an oath worth {renown}; breaking your word catches them out but resets your oath."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:725
+#: Scripts/UI/GameScreen.gd:760
 msgid "Now choose what you really do, and split your {combat} into attack and {guard} guard. A hit on a player with more {renown} than you steals 1 {renown}."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:727
+#: Scripts/UI/GameScreen.gd:762
 msgid "Plans play out from the most cunning player down. The Chronicle on the right records every hit, theft and broken promise."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:729
+#: Scripts/UI/GameScreen.gd:764
 msgid "Pick a face in the market on the right, then the face on your dice it replaces. Or pick one of your faces to upgrade it. {renown} spends as 3 {gold}."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:731
+#: Scripts/UI/GameScreen.gd:766
 msgid "Slayers pick spoils one at a time, most damage first."
 msgstr ""
 
-#: Scripts/UI/GameScreen.gd:733
+#: Scripts/UI/GameScreen.gd:768
 msgid "Everyone bids {gold} and {renown} in secret ({renown} counts as 3 {gold}). The highest bid wins and pays."
+msgstr ""
+
+#: Scripts/UI/LicensesOverlay.gd:20
+#: Scripts/UI/Menu.gd:92
+msgid "Licences"
+msgstr ""
+
+#: Scripts/UI/LicensesOverlay.gd:26
+#: Scenes/Menu.tscn:285
+#: Scenes/Menu.tscn:374
+#: Scenes/Menu.tscn:472
+msgid "Back"
 msgstr ""
 
 #: Scripts/UI/MarketTile.gd:19
@@ -1008,85 +1225,135 @@ msgstr ""
 msgid "(you cannot afford it)"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:58
+#: Scripts/UI/Menu.gd:69
 msgid "Leave the tavern?"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:58
+#: Scripts/UI/Menu.gd:69
 #: Scripts/UI/PauseMenu.gd:60
 msgid "The game closes."
 msgstr ""
 
-#: Scripts/UI/Menu.gd:58
+#: Scripts/UI/Menu.gd:69
 #: Scripts/UI/PauseMenu.gd:60
 #: Scenes/Menu.tscn:239
 msgid "Quit"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:119
+#: Scripts/UI/Menu.gd:140
 msgid "Game design and code"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:120
+#: Scripts/UI/Menu.gd:141
 #: Scripts/UI/SettingsPanel.gd:57
 msgid "Sound effects"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:121
+#: Scripts/UI/Menu.gd:142
 msgid "Music and ambience"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:122
+#: Scripts/UI/Menu.gd:143
 msgid "Fonts"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:123
+#: Scripts/UI/Menu.gd:144
+msgid "Made with"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:145
 msgid "Icons, shaders, dice and everything else were made for this game."
 msgstr ""
 
-#: Scripts/UI/Menu.gd:149
+#: Scripts/UI/Menu.gd:170
+msgid "{turns} turns"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:182
+#: Scripts/UI/Menu.gd:200
+msgid "Difficulty"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:183
+#: Scripts/UI/Menu.gd:199
+msgid "Length"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:190
+msgid "{seconds} s"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:190
+msgid "No limit"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:194
+msgid "Friends only"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:194
+msgid "Public"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:201
+msgid "Time to act"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:202
+msgid "Who can join"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:240
 msgid "Stop rejoining"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:149
+#: Scripts/UI/Menu.gd:240
 msgid "Rejoin your game"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:151
+#: Scripts/UI/Menu.gd:242
 msgid "Rejoining your game… (attempt {attempt})"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:193
+#: Scripts/UI/Menu.gd:300
 msgid "{player}'s table"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:196
-msgid "No friends are hosting right now."
+#: Scripts/UI/Menu.gd:302
+msgid "({seats} of {max} seats, {turns} turns)"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:219
+#: Scripts/UI/Menu.gd:306
+msgid "No tables are open right now. Host one!"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:329
 msgid "The table ({seats} of {max} seats)"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:230
+#: Scripts/UI/Menu.gd:340
 #: Scripts/UI/SeatCard.gd:144
 msgid "bot"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:232
+#: Scripts/UI/Menu.gd:342
 msgid "host"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:234
+#: Scripts/UI/Menu.gd:344
 #: Scripts/UI/SeatCard.gd:142
 msgid "you"
 msgstr ""
 
-#: Scripts/UI/Menu.gd:245
+#: Scripts/UI/Menu.gd:351
+msgid "Remove"
+msgstr ""
+
+#: Scripts/UI/Menu.gd:364
 msgid "{min} to {max} players. Add bots to fill empty seats."
 msgstr ""
 
-#: Scripts/UI/Menu.gd:247
+#: Scripts/UI/Menu.gd:366
 msgid "Waiting for the host to deal you in."
 msgstr ""
 
@@ -1124,7 +1391,7 @@ msgid "Settings"
 msgstr ""
 
 #: Scripts/UI/PauseMenu.gd:22
-#: Scenes/Menu.tscn:435
+#: Scenes/Menu.tscn:446
 msgid "Leave the table"
 msgstr ""
 
@@ -1235,35 +1502,39 @@ msgstr ""
 msgid "connection lost"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:316
+#: Scripts/UI/Presenter.gd:315
+msgid "dozed off"
+msgstr ""
+
+#: Scripts/UI/Presenter.gd:321
 msgid "back at the table"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:355
+#: Scripts/UI/Presenter.gd:360
 msgid "Word kept"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:355
+#: Scripts/UI/Presenter.gd:360
 msgid "Liar"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:357
+#: Scripts/UI/Presenter.gd:362
 msgid "Oath fulfilled +{amount} {renown}"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:359
+#: Scripts/UI/Presenter.gd:364
 msgid "oath {oath}/{length}"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:395
+#: Scripts/UI/Presenter.gd:400
 msgid "sealed bid"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:437
+#: Scripts/UI/Presenter.gd:442
 msgid "AMBUSH!"
 msgstr ""
 
-#: Scripts/UI/Presenter.gd:491
+#: Scripts/UI/Presenter.gd:496
 msgid "blocked {guard}"
 msgstr ""
 
@@ -1291,7 +1562,7 @@ msgstr ""
 msgid ""
 "[font_size=26]The goal[/font_size]\n"
 "\n"
-"Score the most {score} over [b]15 turns[/b]. Your final score is {score} plus every {renown} you have not spent.\n"
+"Score the most {score} by the [b]last turn[/b] (15 in a full game). Your final score is {score} plus every {renown} you have not spent.\n"
 "\n"
 "You earn {score} by slaying mobs ([b]+1[/b] in the first act, [b]+2[/b] later), by dealing a quarter of the boss's health on the turn it falls ([b]+3[/b]) and by knocking out a rival ([b]+1[/b]).\n"
 "\n"
@@ -1431,7 +1702,7 @@ msgid ""
 "\n"
 "The player who knocked you out gains [b]+1 {score}[/b] and you lose [b]1 {score}[/b]. Falling to a mob or the boss also costs 1 {score}.\n"
 "\n"
-"Nobody is ever eliminated. The game always lasts all 15 turns."
+"Nobody is ever eliminated. The game always lasts all its turns."
 msgstr ""
 
 #: Scripts/UI/RulesBook.gd:127
@@ -1756,7 +2027,7 @@ msgid "Play with friends"
 msgstr ""
 
 #: Scenes/Menu.tscn:232
-#: Scenes/Menu.tscn:447
+#: Scenes/Menu.tscn:458
 msgid "Credits"
 msgstr ""
 
@@ -1765,7 +2036,7 @@ msgid "A table of bots"
 msgstr ""
 
 #: Scenes/Menu.tscn:256
-msgid "Bots see only what a player at the table would see, and they keep their word about two times in three."
+msgid "Bots see only what a player at the table would see. Normal and Hard bots have play styles of their own, and Hard bots remember who broke their word."
 msgstr ""
 
 #: Scenes/Menu.tscn:267
@@ -1774,12 +2045,6 @@ msgstr ""
 
 #: Scenes/Menu.tscn:279
 msgid "Take a seat"
-msgstr ""
-
-#: Scenes/Menu.tscn:285
-#: Scenes/Menu.tscn:374
-#: Scenes/Menu.tscn:460
-msgid "Back"
 msgstr ""
 
 #: Scenes/Menu.tscn:303
@@ -1791,7 +2056,7 @@ msgid "Host a Steam lobby"
 msgstr ""
 
 #: Scenes/Menu.tscn:322
-msgid "FRIENDS' TABLES"
+msgid "OPEN TABLES"
 msgstr ""
 
 #: Scenes/Menu.tscn:328
@@ -1822,19 +2087,19 @@ msgstr ""
 msgid "The table"
 msgstr ""
 
-#: Scenes/Menu.tscn:410
+#: Scenes/Menu.tscn:421
 msgid "Add bot"
 msgstr ""
 
-#: Scenes/Menu.tscn:416
+#: Scenes/Menu.tscn:427
 msgid "Remove bot"
 msgstr ""
 
-#: Scenes/Menu.tscn:422
+#: Scenes/Menu.tscn:433
 msgid "Invite"
 msgstr ""
 
-#: Scenes/Menu.tscn:429
+#: Scenes/Menu.tscn:440
 msgid "Deal them in"
 msgstr ""
 

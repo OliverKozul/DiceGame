@@ -253,17 +253,17 @@ horizontal_alignment = 1
 [node name="SoloHint" type="Label" parent="Layout/CardCenter/Card/Pages/SoloPage"]
 layout_mode = 2
 theme_type_variation = &"Dim"
-text = "Bots see only what a player at the table would see, and they keep their word about two times in three."
+text = "Bots see only what a player at the table would see. Normal and Hard bots have play styles of their own, and Hard bots remember who broke their word."
 horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="BotsRow" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/SoloPage"]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 12
 
 [node name="BotsLabel" type="Label" parent="Layout/CardCenter/Card/Pages/SoloPage/BotsRow"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Opponents"
 
 [node name="BotsSpin" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/SoloPage/BotsRow"]
@@ -319,7 +319,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"Caps"
-text = "FRIENDS' TABLES"
+text = "OPEN TABLES"
 
 [node name="RefreshFriendsButton" type="Button" parent="Layout/CardCenter/Card/Pages/OnlinePage/FriendsRow"]
 unique_name_in_owner = true
@@ -386,7 +386,18 @@ theme_type_variation = &"Heading"
 text = "The table"
 horizontal_alignment = 1
 
-[node name="RosterList" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+[node name="RoomColumns" type="HBoxContainer" parent="Layout/CardCenter/Card/Pages/RoomPage"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="RosterList" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages/RoomPage/RoomColumns"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="RoomOptions" type="VBoxContainer" parent="Layout/CardCenter/Card/Pages/RoomPage/RoomColumns"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 6
@@ -449,9 +460,10 @@ horizontal_alignment = 1
 
 [node name="CreditsText" type="RichTextLabel" parent="Layout/CardCenter/Card/Pages/CreditsPage"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
+focus_mode = 2
 bbcode_enabled = true
-fit_content = true
 
 [node name="CreditsBackButton" type="Button" parent="Layout/CardCenter/Card/Pages/CreditsPage"]
 unique_name_in_owner = true

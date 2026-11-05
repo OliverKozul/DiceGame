@@ -195,8 +195,13 @@ Attacks can target any player who is not knocked out.
 
 ## Digital-only conveniences (not rules)
 - **Bots.** Play solo against 2–5 bots, fill online lobbies with bots, and a bot takes over the seat of a player who disconnects.
-  Bots only see what a player at the table would see.
-- **AFK timeout** (online only, generous). An idle player automatically declares and plans **Rest**.
+  Bots only see what a player at the table would see. Three difficulties: Easy (simple heuristics), Normal (play styles,
+  believe every declaration) and Hard (stronger builders that discount each player's word by their record of lies).
+- **AFK timeout** (online only, set by the host, the last 30 seconds counted down). An idle player automatically declares
+  and plans **Rest**; after two timeouts in a row a bot plays their seat until they take it back. The host is no exception.
+- **Table options** (digital only): the host picks the length (12 or 15 turns), the difficulty, the time to act and
+  who may join, and can remove a player from the room.
+- **The story of the game**: at the end, the betrayal of the night and titles for the most broken words, kept words and so on.
 - **Event log** (the Chronicle), automatic arithmetic, animations that can be sped up or skipped,
   first-game tips and an illustrated rules book.
 

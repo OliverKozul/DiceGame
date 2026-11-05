@@ -1,6 +1,6 @@
 extends SceneTree
 ## Strategy simulator: plays bot games where each seat has a play style (see
-## strategy_bot.gd; "baseline" is the shipping BotBrain) and writes one JSON line per game
+## Scripts/Core/StrategyBot.gd; "baseline" is the shipping BotBrain) and writes one JSON line per game
 ## with every player's score breakdown. tools/strategy_sim.py runs it in parallel and
 ## analyses the results.
 ##   godot --headless --path . --script res://tests/sim/strategy_sim.gd -- \
@@ -9,7 +9,6 @@ extends SceneTree
 ## mixed: every seat draws a style from the pool. field: one hero seat, the rest play the
 ## field style. mirror: every seat plays the hero style.
 
-const StrategyBot := preload("res://tests/sim/strategy_bot.gd")
 const BASELINE := "baseline"
 const READS: Dictionary = {
 	"naive": StrategyBot.Reads.NAIVE, "gullible": StrategyBot.Reads.GULLIBLE, "suspicious": StrategyBot.Reads.SUSPICIOUS,
@@ -232,7 +231,7 @@ func _count(s: GameState, stats: Dictionary, game: Dictionary, e: Dictionary) ->
 			st.damage_taken += e.damage
 		"knockout":
 			st.kos_taken += 1
-			if int(e.by) > 0:
+			if stats.has(e.by):
 				st.ko_by_enemy += 1
 				stats[e.by].kos_dealt += 1
 		"steal":

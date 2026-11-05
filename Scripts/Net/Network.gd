@@ -15,11 +15,13 @@ signal room_changed(in_room: bool)
 signal status_changed(text: String)
 ## Reconnecting started, made another attempt, or ended (see `reconnecting`).
 signal reconnect_changed
+## The host refused this player or removed them; `reason` is translated.
+signal kicked(reason: String)
 
 enum Mode { NONE, OFFLINE, ENET, STEAM }
 
 ## Bump whenever the network messages or rules change incompatibly.
-const PROTOCOL := 2
+const PROTOCOL := 3
 const PORT := 7777
 const HELLO_TIMEOUT := 10.0
 ## ENet drops a silent peer after this long (ms), so a crashed player is replaced quickly.
@@ -39,11 +41,19 @@ const REJOIN_MAX_AGE := 4 * 3600
 const MENU_SCENE := "res://Scenes/Menu.tscn"
 const GAME_SCENE := "res://Scenes/Game.tscn"
 const BOT_NAMES: Array[String] = ["Ada", "Bram", "Cora", "Dax", "Elin", "Fenn", "Gus", "Hela"]
+## What the host may choose for a table.
+const TURN_CHOICES: Array[int] = [12, 15]
+const AFK_CHOICES: Array[int] = [60, 120, 180, 0]
 
 var mode := Mode.NONE
 ## Seats in order: {"id": int, "name": String, "bot": bool, "connected": bool}.
 ## Humans use their player id, bots negative ids.
 var roster: Array[Dictionary] = []
+## The table's options, chosen by the host and shown to everyone:
+## {"turns": int, "difficulty": int, "afk": seconds, "public": bool}.
+var room: Dictionary = {}
+## Replaces saved options for this run; automated tests use it, so they change no settings.
+var room_override: Dictionary = {}
 var in_game := false
 var local_name := "Player"
 ## Why the last session ended; the menu shows it.
@@ -55,6 +65,8 @@ var reconnect_attempt := 0
 var _next_bot_id := -1
 var _awaiting_hello: Dictionary[int, bool] = {}
 var _kick_reason := ""
+## Host: who was removed from this room (see _peer_key).
+var _banned: Dictionary[String, bool] = {}
 ## The local player's seat in the current game (0 outside a game).
 var _my_pid := 0
 ## Host: each remote seat's token, and which peer plays which seat (both ways).
@@ -147,7 +159,7 @@ func human_count() -> int:
 
 # --- Starting a session -----------------------------------------------------
 
-func play_offline(player_name: String, bots: int, seed_value: int = -1, max_turns: int = Content.MAX_TURNS) -> void:
+func play_offline(player_name: String, bots: int, seed_value: int = -1, max_turns: int = -1) -> void:
 	_close()
 	mode = Mode.OFFLINE
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
@@ -351,7 +363,28 @@ func remove_bot() -> void:
 			return
 
 
-func start_game(seed_value: int = -1, max_turns: int = Content.MAX_TURNS) -> void:
+## Host: changes one of the table's options and tells everyone.
+func set_room_option(key: String, value: Variant) -> void:
+	if not is_host() or in_game or not room.has(key) or room[key] == value:
+		return
+	room[key] = value
+	Settings.set_value("table", key, value)
+	_publish_roster()
+
+
+## Host: removes a player from the room, and keeps them out for as long as it stays open.
+func kick(id: int) -> void:
+	if not is_host() or in_game or id == local_id() or _seat_of(id) < 0 or roster[_seat_of(id)].bot:
+		return
+	var seat := _seat_of(id)
+	_banned[_peer_key(id, roster[seat].name)] = true
+	# Their seat goes at once: the game could otherwise start before the connection closes.
+	roster.remove_at(seat)
+	_publish_roster()
+	_kick(id, Loc.n("The host removed you from the table."))
+
+
+func start_game(seed_value: int = -1, max_turns: int = -1) -> void:
 	if not can_start():
 		return
 	in_game = true
@@ -364,7 +397,8 @@ func start_game(seed_value: int = -1, max_turns: int = Content.MAX_TURNS) -> voi
 			_peer_of_pid[seat.id] = seat.id
 			_pid_of_peer[seat.id] = seat.id
 	_update_lock()
-	Session.prepare_host(roster, seed_value if seed_value >= 0 else randi(), max_turns)
+	Session.prepare_host(roster, seed_value if seed_value >= 0 else randi(), max_turns if max_turns > 0 else int(room.turns),
+		int(room.difficulty), float(room.afk))
 	if mode != Mode.OFFLINE:
 		for seat in roster:
 			if not seat.bot and seat.id != local_id():
@@ -399,6 +433,11 @@ func _open_room(player_name: String) -> void:
 	local_name = _clean_name(player_name)
 	_my_pid = local_id()
 	roster = [{"id": local_id(), "name": local_name, "bot": false, "connected": true}]
+	room = {}
+	for key: String in Settings.DEFAULTS["table"]:
+		room[key] = Settings.get_value("table", key)
+	room.merge(room_override, true)
+	_sync_steam_lobby()
 	room_changed.emit(true)
 	roster_changed.emit()
 
@@ -413,8 +452,19 @@ func _use_peer(peer: MultiplayerPeer) -> void:
 ## the game, and the clients must have the roster before they are told to load it.
 func _publish_roster() -> void:
 	if mode != Mode.OFFLINE and multiplayer.is_server():
-		_rpc_roster.rpc(roster)
+		_rpc_roster.rpc(roster, room)
+	_sync_steam_lobby()
 	roster_changed.emit()
+
+
+## Host: what Steam's lobby list shows about this table, and how many people can still join it
+## (bots hold seats, but only people are lobby members).
+func _sync_steam_lobby() -> void:
+	if mode != Mode.STEAM or room.is_empty():
+		return
+	var humans := human_count()
+	SteamService.update_lobby(bool(room.public), maxi(humans, Content.MAX_SEATS - (roster.size() - humans)), {
+		"host": local_name, "seats": str(roster.size()), "turns": str(room.turns)})
 
 
 ## The room is closed to newcomers during a game, except while a seat waits for its player.
@@ -488,7 +538,7 @@ func _rejoin(peer: int, pid: int) -> void:
 	roster[seat].connected = true
 	roster[seat].bot = false
 	_update_lock()
-	_rpc_rejoined.rpc_id(peer, roster, pid)
+	_rpc_rejoined.rpc_id(peer, roster, room, pid)
 	Session.on_peer_rejoined(pid)
 
 
@@ -505,6 +555,17 @@ func _pid_for_token(token: String) -> int:
 func _kick(id: int, reason: String) -> void:
 	_rpc_kicked.rpc_id(id, reason)
 	get_tree().create_timer(KICK_DELAY).timeout.connect(_disconnect_peer.bind(id))
+
+
+## Who a peer is beyond its connection: its Steam id, or over direct IP its address and name
+## (the address alone would also shut out others in the same house).
+func _peer_key(id: int, player_name: String) -> String:
+	var peer := multiplayer.multiplayer_peer
+	if mode == Mode.STEAM:
+		return str(peer.call("get_steam_id_for_peer_id", id))
+	var enet := peer as ENetMultiplayerPeer
+	var address := enet.get_peer(id).get_remote_address() if enet and enet.get_peer(id) else str(id)
+	return "%s|%s" % [address, player_name]
 
 
 func _disconnect_peer(id: int) -> void:
@@ -552,7 +613,9 @@ func _on_connection_failed() -> void:
 
 func _on_server_disconnected() -> void:
 	if not _kick_reason.is_empty():
-		leave(tr(_kick_reason))
+		var reason := tr(_kick_reason)
+		leave(reason)
+		kicked.emit(reason)
 	elif reconnecting:
 		_drop_peer()
 		_retry_timer.start(RECONNECT_INTERVAL)
@@ -605,6 +668,7 @@ func _on_steam_lobby_joined(lobby_id: int, error: String) -> void:
 
 func _on_steam_join_requested(lobby_id: int) -> void:
 	if in_game:
+		Session.request_failed.emit(tr("Finish or leave this game to join your friend."))
 		return
 	join_steam(lobby_id)
 
@@ -628,6 +692,8 @@ func _close() -> void:
 	reconnect_attempt = 0
 	_awaiting_hello.clear()
 	_kick_reason = ""
+	_banned.clear()
+	room = {}
 	_next_bot_id = -1
 	_my_pid = 0
 	_tokens.clear()
@@ -656,6 +722,8 @@ func _rpc_hello(protocol: int, player_name: String, token: String) -> void:
 		return
 	if protocol != PROTOCOL:
 		_kick(id, Loc.n("The host runs a different version of the game."))
+	elif not in_game and _banned.has(_peer_key(id, _clean_name(player_name))):
+		_kick(id, Loc.n("The host removed you from the table."))
 	elif in_game:
 		var pid := _pid_for_token(token)
 		if pid == 0:
@@ -670,7 +738,8 @@ func _rpc_hello(protocol: int, player_name: String, token: String) -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
-func _rpc_roster(new_roster: Array) -> void:
+func _rpc_roster(new_roster: Array, new_room: Dictionary) -> void:
+	room = new_room
 	if in_game and not reconnecting:
 		return
 	if in_game:
@@ -708,8 +777,9 @@ func _rpc_load_game(new_roster: Array, token: String) -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
-func _rpc_rejoined(new_roster: Array, pid: int) -> void:
+func _rpc_rejoined(new_roster: Array, new_room: Dictionary, pid: int) -> void:
 	roster.assign(new_roster)
+	room = new_room
 	in_game = true
 	reconnecting = false
 	_my_pid = pid

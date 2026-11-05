@@ -2,17 +2,31 @@ extends Control
 ## Main menu and pre-game room. All session state lives in Network; this screen reflects it.
 ## Every page puts the focus on its first control for keys and pads.
 
+## Room kept free above and below the sign and the card.
+const LAYOUT_TOP := 36.0
+const LAYOUT_BOTTOM := 20.0
+
 ## Steam's "+connect_lobby" launch argument is handled once per run.
 static var _launch_lobby_checked := false
 ## After a language change the menu reloads to redraw its text, then reopens the settings.
 static var _reopen_settings := false
 
-var _friend_lobbies: Array[Dictionary] = []
+## The tables listed on the online page: friends' first, then public ones.
+var _tables: Array[Dictionary] = []
 var _page: Control
 var _settings := SettingsPanel.new()
 var _rules := RulesBook.new()
 var _confirm := ConfirmOverlay.new()
+var _licenses := LicensesOverlay.new()
 var _rejoin_button := Button.new()
+## The room's options, as host controls or (for the others) a read-only display.
+var _room_turns := Stepper.new()
+var _room_difficulty := Stepper.new()
+var _room_afk := Stepper.new()
+var _room_public := Stepper.new()
+var _public_row: Control
+var _solo_turns := Stepper.new()
+var _solo_difficulty := Stepper.new()
 
 @onready var _pages: Array[Control] = [%MainPage, %SoloPage, %OnlinePage, %RoomPage, %CreditsPage]
 @onready var _name_edit: LineEdit = %NameEdit
@@ -33,12 +47,18 @@ var _rejoin_button := Button.new()
 @onready var _start_button: Button = %StartButton
 @onready var _status_label: Label = %StatusLabel
 @onready var _sign: Control = %Sign
+@onready var _layout: Control = $Layout
 
 
 func _ready() -> void:
 	add_child(_settings)
 	add_child(_rules)
 	add_child(_confirm)
+	add_child(_licenses)
+	_layout.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	resized.connect(_fit_layout)
+	_layout.minimum_size_changed.connect(_fit_layout)
+	_fit_layout.call_deferred()
 	_confirm.confirmed.connect(func() -> void: Transition.quit_game())
 
 	var wood: ShaderMaterial = $Backdrop/Wood.material
@@ -57,10 +77,14 @@ func _ready() -> void:
 	%CreditsButton.pressed.connect(_show_page.bind(%CreditsPage))
 	%QuitButton.pressed.connect(func() -> void: _confirm.ask(tr("Leave the tavern?"), tr("The game closes."), tr("Quit")))
 	_bots_spin.setup(2, Content.MAX_SEATS - 1, 3)
+	_bots_spin.set_value_width(Stepper.VALUE_WIDTH)
 	%StartSoloButton.pressed.connect(func() -> void: Network.play_offline(_player_name(), _bots_spin.value))
 	%SoloBackButton.pressed.connect(_show_page.bind(%MainPage))
 	_host_steam_button.pressed.connect(func() -> void: _show_error(Network.host_steam()))
-	_refresh_friends_button.pressed.connect(_refresh_friend_lobbies)
+	_refresh_friends_button.pressed.connect(_refresh_tables)
+	SteamService.public_lobbies_found.connect(_on_public_lobbies_found)
+	_build_solo_options()
+	_build_room_options()
 	_friend_list.item_selected.connect(func(_index: int) -> void: _join_friend_button.disabled = false)
 	_join_friend_button.pressed.connect(_on_join_friend_pressed)
 	%HostLanButton.pressed.connect(func() -> void: _show_error(Network.host_enet(_player_name())))
@@ -73,6 +97,12 @@ func _ready() -> void:
 	%LeaveRoomButton.pressed.connect(func() -> void: Network.leave())
 	%CreditsBackButton.pressed.connect(_show_page.bind(%MainPage))
 	%CreditsText.text = _credits()
+	var licenses := Button.new()
+	licenses.text = tr("Licences")
+	licenses.theme_type_variation = &"TextButton"
+	licenses.pressed.connect(_licenses.open)
+	%CreditsPage.add_child(licenses)
+	%CreditsPage.move_child(licenses, %CreditsBackButton.get_index())
 	_settings.language_changed.connect(_on_language_changed)
 	_add_rejoin_button()
 	Controls.add_default(_default_focus)
@@ -106,6 +136,17 @@ func _ready() -> void:
 			_show_error(Network.join_steam(lobby))
 
 
+## Keeps the sign and the card on the screen: at a large interface size, or on a tall page, they
+## are drawn smaller rather than cut off.
+func _fit_layout() -> void:
+	var room := size - Vector2(0.0, LAYOUT_TOP + LAYOUT_BOTTOM)
+	var needed := _layout.get_combined_minimum_size()
+	var fit := minf(1.0, minf(room.x / maxf(needed.x, 1.0), room.y / maxf(needed.y, 1.0)))
+	_layout.scale = Vector2.ONE * fit
+	_layout.position = Vector2(0.0, LAYOUT_TOP)
+	_layout.size = Vector2(size.x, room.y) / fit
+
+
 func _exit_tree() -> void:
 	Controls.remove_default(_default_focus)
 
@@ -119,9 +160,79 @@ func _credits() -> String:
 		"[b]%s[/b]\n%s" % [tr("Game design and code"), "Oliver Kozul, with Claude."],
 		"[b]%s[/b]\n%s" % [tr("Sound effects"), "Casino Audio, RPG Audio and UI SFX Set by Kenney (kenney.nl), CC0."],
 		"[b]%s[/b]\n%s" % [tr("Music and ambience"), "The Old Tower Inn and Medieval: Kings Feast by RandomMind, CC0.\nFireplace Sound Loop by PagDev, CC0."],
-		"[b]%s[/b]\n%s" % [tr("Fonts"), "Lora by Cyreal (SIL Open Font License). Cloister Black by Dieter Steffmann."],
+		"[b]%s[/b]\n%s" % [tr("Fonts"), "Lora by Cyreal, Grenze Gotisch by Renata Polastri and Omnibus-Type (both SIL Open Font License)."],
+		"[b]%s[/b]\n%s" % [tr("Made with"), "Godot Engine, GodotSteam and Steamworks."],
 		tr("Icons, shaders, dice and everything else were made for this game."),
 	]))
+
+
+## A label and a control beside it, for a table option.
+func _option_row(parent: Node, text: String, control: Control) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	var label := Label.new()
+	label.text = text
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
+	row.add_child(control)
+	parent.add_child(row)
+	return row
+
+
+func _difficulty_words() -> PackedStringArray:
+	return PackedStringArray([BotTable.difficulty_name(BotTable.Difficulty.EASY),
+		BotTable.difficulty_name(BotTable.Difficulty.NORMAL), BotTable.difficulty_name(BotTable.Difficulty.HARD)])
+
+
+func _turn_words() -> PackedStringArray:
+	var words := PackedStringArray()
+	for turns in Network.TURN_CHOICES:
+		words.append(tr("{turns} turns").format({"turns": turns}))
+	return words
+
+
+## Solo games remember their options in the same place as hosted tables.
+func _build_solo_options() -> void:
+	var page := %SoloPage
+	var before: int = %StartSoloButton.get_index()
+	_solo_difficulty.setup_choices(_difficulty_words(), int(Settings.get_value("table", "difficulty")))
+	_solo_difficulty.value_changed.connect(func(value: int) -> void: Settings.set_value("table", "difficulty", value))
+	_solo_turns.setup_choices(_turn_words(), maxi(0, Network.TURN_CHOICES.find(int(Settings.get_value("table", "turns")))))
+	_solo_turns.value_changed.connect(func(value: int) -> void: Settings.set_value("table", "turns", Network.TURN_CHOICES[value]))
+	page.move_child(_option_row(page, tr("Difficulty"), _solo_difficulty), before)
+	page.move_child(_option_row(page, tr("Length"), _solo_turns), before + 1)
+
+
+func _build_room_options() -> void:
+	var options := %RoomOptions
+	var afk_words := PackedStringArray()
+	for seconds in Network.AFK_CHOICES:
+		afk_words.append(tr("{seconds} s").format({"seconds": seconds}) if seconds > 0 else tr("No limit"))
+	_room_turns.setup_choices(_turn_words(), 0)
+	_room_difficulty.setup_choices(_difficulty_words(), 0)
+	_room_afk.setup_choices(afk_words, 0)
+	_room_public.setup_choices(PackedStringArray([tr("Friends only"), tr("Public")]), 0)
+	_room_turns.value_changed.connect(func(value: int) -> void: Network.set_room_option("turns", Network.TURN_CHOICES[value]))
+	_room_difficulty.value_changed.connect(func(value: int) -> void: Network.set_room_option("difficulty", value))
+	_room_afk.value_changed.connect(func(value: int) -> void: Network.set_room_option("afk", Network.AFK_CHOICES[value]))
+	_room_public.value_changed.connect(func(value: int) -> void: Network.set_room_option("public", value == 1))
+	_option_row(options, tr("Length"), _room_turns)
+	_option_row(options, tr("Difficulty"), _room_difficulty)
+	_option_row(options, tr("Time to act"), _room_afk)
+	_public_row = _option_row(options, tr("Who can join"), _room_public)
+
+
+## The room's options as the host has set them; only the host can change them.
+func _refresh_room_options(host: bool) -> void:
+	if Network.room.is_empty():
+		return
+	_room_turns.set_value_no_signal(maxi(0, Network.TURN_CHOICES.find(int(Network.room.turns))))
+	_room_difficulty.set_value_no_signal(int(Network.room.difficulty))
+	_room_afk.set_value_no_signal(maxi(0, Network.AFK_CHOICES.find(int(Network.room.afk))))
+	_room_public.set_value_no_signal(1 if Network.room.public else 0)
+	for stepper: Stepper in [_room_turns, _room_difficulty, _room_afk, _room_public]:
+		stepper.editable = host
+	_public_row.visible = Network.mode == Network.Mode.STEAM
 
 
 ## The page's first control, for a key or pad press when nothing has focus.
@@ -173,7 +284,7 @@ func _show_page(page: Control) -> void:
 	if duration > 0.0:
 		create_tween().tween_property(page, "modulate:a", 1.0, duration)
 	if page == %OnlinePage and SteamService.available:
-		_refresh_friend_lobbies()
+		_refresh_tables()
 
 
 func _sway_sign() -> void:
@@ -186,22 +297,41 @@ func _sway_sign() -> void:
 	tween.tween_property(_sign, "rotation_degrees", -0.9, 3.0)
 
 
-func _refresh_friend_lobbies() -> void:
-	_friend_lobbies = SteamService.friend_lobbies()
+## Lists friends' tables at once; public ones are added when Steam answers.
+func _refresh_tables() -> void:
+	_tables = SteamService.friend_lobbies()
+	_draw_tables()
+	SteamService.request_public_lobbies()
+
+
+func _on_public_lobbies_found(lobbies: Array[Dictionary]) -> void:
+	var known := {}
+	for table in _tables:
+		known[table.lobby] = true
+	for lobby in lobbies:
+		if not known.has(lobby.lobby):
+			_tables.append(lobby)
+	_draw_tables()
+
+
+func _draw_tables() -> void:
 	_friend_list.clear()
-	for lobby in _friend_lobbies:
-		_friend_list.add_item(tr("{player}'s table").format({"player": lobby.name}))
+	for table in _tables:
+		var text := tr("{player}'s table").format({"player": table.name})
+		if table.has("seats"):
+			text += "  " + tr("({seats} of {max} seats, {turns} turns)").format({"seats": table.seats, "max": Content.MAX_SEATS, "turns": table.turns})
+		_friend_list.add_item(text)
 	_join_friend_button.disabled = true
-	if _friend_lobbies.is_empty():
-		_friend_list.add_item(tr("No friends are hosting right now."))
+	if _tables.is_empty():
+		_friend_list.add_item(tr("No tables are open right now. Host one!"))
 		_friend_list.set_item_disabled(0, true)
 		_friend_list.set_item_selectable(0, false)
 
 
 func _on_join_friend_pressed() -> void:
 	var selected := _friend_list.get_selected_items()
-	if not selected.is_empty() and selected[0] < _friend_lobbies.size():
-		_show_error(Network.join_steam(_friend_lobbies[selected[0]].lobby))
+	if not selected.is_empty() and selected[0] < _tables.size():
+		_show_error(Network.join_steam(_tables[selected[0]].lobby))
 
 
 func _refresh() -> void:
@@ -233,8 +363,17 @@ func _refresh() -> void:
 		if seat.id == Network.local_id():
 			tags.append(tr("you"))
 		label.text = seat.name + (" (%s)" % ", ".join(tags) if not tags.is_empty() else "")
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.clip_text = true
 		row.add_child(label)
+		if host and not seat.bot and seat.id != Network.local_id():
+			var kick := Button.new()
+			kick.text = tr("Remove")
+			kick.theme_type_variation = &"TextButton"
+			kick.pressed.connect(Network.kick.bind(seat.id))
+			row.add_child(kick)
 		_roster_list.add_child(row)
+	_refresh_room_options(host)
 	_host_row.visible = host
 	_start_button.visible = host
 	_add_bot_button.disabled = Network.roster.size() >= Content.MAX_SEATS
